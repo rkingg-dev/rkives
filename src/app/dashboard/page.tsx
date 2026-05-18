@@ -7,7 +7,7 @@ import WorkspaceWidgets from "@/components/dashboard/WorkspaceWidgets";
 
 export default function DashboardPage() {
   return (
-    <div className="flex gap-6">
+    <div className="flex flex-col xl:flex-row gap-4 md:gap-6">
       {/* Main Content */}
       <div className="flex-1 space-y-4 min-w-0">
         <KpiTabs />
@@ -16,7 +16,9 @@ export default function DashboardPage() {
       </div>
 
       {/* Right Sidebar */}
-      <WorkspaceWidgets />
+      <div className="w-full xl:w-[280px] shrink-0">
+        <WorkspaceWidgets />
+      </div>
     </div>
   );
 }

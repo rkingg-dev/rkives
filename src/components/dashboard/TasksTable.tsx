@@ -57,7 +57,7 @@ function ExpandedRow({ task }: { task: any }) {
     >
       <td colSpan={6} className="p-0">
         <div className="px-8 py-5 border-l-2 border-orange-400">
-          <div className="flex items-start gap-8">
+          <div className="flex flex-col md:flex-row items-start gap-4 md:gap-8">
             <div className="flex-1 space-y-3">
               <div>
                 <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-1.5">
@@ -65,7 +65,7 @@ function ExpandedRow({ task }: { task: any }) {
                 </p>
                 <p className="text-sm text-foreground">{task.details?.description}</p>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-1.5">
                     Client
@@ -108,7 +108,7 @@ function ExpandedRow({ task }: { task: any }) {
                 </p>
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <button className="flex items-center gap-1.5 px-4 py-2 bg-orange-500 text-white rounded-xl text-xs font-medium hover:bg-orange-600 transition-colors">
                 View Website <ExternalLink className="h-3 w-3" />
               </button>
@@ -138,7 +138,7 @@ export default function TasksTable() {
       className="relative"
     >
       {/* Folder Tabs */}
-      <div className="flex items-end gap-0">
+      <div className="flex items-end gap-0 overflow-x-auto scrollbar-hide">
         {tabs.map((tab, i) => (
           <button
             key={tab}

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Search, Bell, User, Settings, LogOut, CreditCard, PanelLeftClose, PanelLeft } from "lucide-react";
+import { Search, Bell, User, Settings, LogOut, CreditCard, PanelLeftClose, PanelLeft, Menu } from "lucide-react";
 import { useSidebar } from "./SidebarContext";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const { collapsed, toggle } = useSidebar();
+  const { collapsed, toggle, toggleMobile } = useSidebar();
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -18,11 +18,17 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 flex items-center justify-between px-8 py-3 bg-background/80 backdrop-blur-md border-b border-border">
+    <header className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 py-3 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="flex items-center gap-3 flex-1 max-w-md">
         <button
+          onClick={toggleMobile}
+          className="md:hidden h-10 w-10 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors shrink-0"
+        >
+          <Menu className="h-4 w-4 text-muted-foreground" />
+        </button>
+        <button
           onClick={toggle}
-          className="h-10 w-10 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors shrink-0"
+          className="hidden md:flex h-10 w-10 rounded-full bg-muted items-center justify-center hover:bg-muted/80 transition-colors shrink-0"
         >
           {collapsed ? (
             <PanelLeft className="h-4 w-4 text-muted-foreground" />
@@ -37,7 +43,7 @@ export default function Navbar() {
           <input
             type="text"
             placeholder="Search..."
-            className="flex-1 bg-transparent text-sm placeholder:text-muted-foreground focus:outline-none"
+            className="flex-1 bg-transparent text-sm placeholder:text-muted-foreground focus:outline-none min-w-0"
           />
         </div>
       </div>

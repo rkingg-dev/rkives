@@ -14,9 +14,10 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
       <motion.div
         animate={{ marginLeft: collapsed ? 68 : 220 }}
         transition={{ duration: 0.2, ease: "easeInOut" }}
+        className="md:ml-[220px] min-w-0"
       >
         <Navbar />
-        <main className="p-8">{children}</main>
+        <main className="p-4 md:p-8">{children}</main>
       </motion.div>
     </div>
   );

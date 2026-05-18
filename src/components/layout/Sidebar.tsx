@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -15,8 +14,9 @@ import {
   BarChart3,
   Settings,
   StickyNote,
+  X,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
 import { useSidebar } from "./SidebarContext";
 
@@ -48,16 +48,12 @@ const bottomNav = [
   { label: "Settings", icon: "settings", href: "/dashboard/settings" },
 ];
 
-export default function Sidebar() {
+function SidebarContent() {
   const pathname = usePathname();
-  const { collapsed } = useSidebar();
+  const { collapsed, closeMobile } = useSidebar();
 
   return (
-    <motion.aside
-      animate={{ width: collapsed ? 68 : 220 }}
-      transition={{ duration: 0.2, ease: "easeInOut" }}
-      className="fixed left-0 top-0 bottom-0 bg-sidebar border-r border-border flex flex-col z-50 overflow-hidden"
-    >
+    <>
       {/* Logo */}
       <div className="p-5 pb-4 flex items-center gap-2.5">
         <div className="h-8 w-8 rounded-lg bg-foreground flex items-center justify-center overflow-hidden shrink-0">
@@ -90,6 +86,7 @@ export default function Sidebar() {
               key={item.href}
               href={item.href}
               title={collapsed ? item.label : undefined}
+              onClick={closeMobile}
               className={cn(
                 "flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium transition-all duration-200",
                 collapsed && "justify-center px-0",
@@ -124,6 +121,7 @@ export default function Sidebar() {
               key={item.href}
               href={item.href}
               title={collapsed ? item.label : undefined}
+              onClick={closeMobile}
               className={cn(
                 "flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium transition-all duration-200",
                 collapsed && "justify-center px-0",
@@ -157,6 +155,53 @@ export default function Sidebar() {
           )}
         </div>
       </div>
-    </motion.aside>
+    </>
+  );
+}
+
+export default function Sidebar() {
+  const { collapsed, mobileOpen, closeMobile } = useSidebar();
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <motion.aside
+        animate={{ width: collapsed ? 68 : 220 }}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
+        className="hidden md:flex fixed left-0 top-0 bottom-0 bg-sidebar border-r border-border flex-col z-50 overflow-hidden"
+      >
+        <SidebarContent />
+      </motion.aside>
+
+      {/* Mobile Sidebar */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeMobile}
+              className="fixed inset-0 bg-black/50 z-50 md:hidden"
+            />
+            <motion.aside
+              initial={{ x: -280 }}
+              animate={{ x: 0 }}
+              exit={{ x: -280 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className="fixed left-0 top-0 bottom-0 w-[260px] bg-sidebar border-r border-border flex flex-col z-50 md:hidden"
+            >
+              <button
+                onClick={closeMobile}
+                className="absolute top-4 right-4 p-1 rounded-lg hover:bg-muted transition-colors"
+              >
+                <X className="h-4 w-4 text-muted-foreground" />
+              </button>
+              <SidebarContent />
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

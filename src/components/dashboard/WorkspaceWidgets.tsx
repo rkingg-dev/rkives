@@ -1,7 +1,6 @@
 "use client";
 
 import { portfolioData, maintenanceData } from "@/lib/mock-data";
-import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { MoreHorizontal, ExternalLink, FolderOpen, FileText } from "lucide-react";
 import { BarChart, Bar, ResponsiveContainer, Cell } from "recharts";
@@ -45,7 +44,6 @@ function PortfolioWidget() {
         </div>
       </div>
 
-      {/* Top Projects */}
       <div className="mt-4 pt-4 border-t border-border">
         <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-3">Top Projects</p>
         <div className="space-y-2">
@@ -97,7 +95,6 @@ function MaintenanceWidget() {
           </div>
         </div>
 
-        {/* Bar Chart */}
         <div className="h-16">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={maintenanceData.barData} barCategoryGap="30%">
@@ -127,7 +124,7 @@ function MaintenanceWidget() {
 
 export default function WorkspaceWidgets() {
   return (
-    <div className="w-[280px] space-y-4 shrink-0">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-4">
       <PortfolioWidget />
       <MaintenanceWidget />
     </div>
