@@ -56,7 +56,7 @@ function ExpandedRow({ task }: { task: any }) {
       className="bg-muted/10"
     >
       <td colSpan={6} className="p-0">
-        <div className="px-8 py-5 border-l-2 border-orange-400 ml-4">
+        <div className="px-8 py-5 border-l-2 border-orange-400">
           <div className="flex items-start gap-8">
             <div className="flex-1 space-y-3">
               <div>
@@ -138,7 +138,7 @@ export default function TasksTable() {
       className="relative"
     >
       {/* Folder Tabs */}
-      <div className="flex items-end gap-0 pl-2">
+      <div className="flex items-end gap-0">
         {tabs.map((tab, i) => (
           <button
             key={tab}
