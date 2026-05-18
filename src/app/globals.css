@@ -22,6 +22,23 @@
     --sidebar-active: #f0f1f3;
     --radius: 1rem;
   }
+
+  .dark {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --card: #141414;
+    --card-foreground: #ededed;
+    --primary: #ededed;
+    --primary-foreground: #0a0a0a;
+    --muted: #1a1a1a;
+    --muted-foreground: #888888;
+    --border: #262626;
+    --accent: #1a1a1a;
+    --accent-foreground: #ededed;
+    --sidebar: #111111;
+    --sidebar-foreground: #888888;
+    --sidebar-active: #1f1f1f;
+  }
 }
 
 @layer base {

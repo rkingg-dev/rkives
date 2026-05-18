@@ -14,7 +14,7 @@ import {
   ChevronDown,
   BarChart3,
   Moon,
-  Zap,
+  Sun,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -56,9 +56,14 @@ export default function Sidebar() {
       <div className="p-5 pb-4">
         <div className="flex items-center gap-2.5">
           <div className="h-8 w-8 rounded-lg bg-foreground flex items-center justify-center">
-            <Zap className="h-4 w-4 text-white" />
+            <svg className="h-5 w-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12c0 1.82.49 3.53 1.34 5L2 22l5-1.34C8.47 21.51 10.18 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm-2 15l-1-1 4-4-4-4 1-1 5 5-5 5z"/>
+              <circle cx="9" cy="10" r="1.5"/>
+              <circle cx="15" cy="10" r="1.5"/>
+              <rect x="8" y="13" width="8" height="2" rx="1"/>
+            </svg>
           </div>
-          <span className="text-sm font-semibold text-foreground tracking-tight">shadkuro</span>
+          <span className="text-sm font-semibold text-foreground tracking-tight">rkives</span>
         </div>
       </div>
 
@@ -153,12 +158,16 @@ export default function Sidebar() {
         })}
 
         <div className="flex items-center justify-between px-3 pt-3 mt-2 border-t border-border">
-          <button className="p-1.5 rounded-lg hover:bg-sidebar-active transition-colors">
-            <Moon className="h-4 w-4 text-muted-foreground" />
+          <button
+            onClick={() => document.documentElement.classList.toggle("dark")}
+            className="p-1.5 rounded-lg hover:bg-sidebar-active transition-colors"
+          >
+            <Moon className="h-4 w-4 text-muted-foreground dark:hidden" />
+            <Sun className="h-4 w-4 text-muted-foreground hidden dark:block" />
           </button>
           <div className="flex items-center gap-2">
             <div className="h-6 w-6 rounded-full bg-gradient-to-br from-orange-400 to-pink-500" />
-            <span className="text-[11px] text-muted-foreground">by shakuro</span>
+            <span className="text-[11px] text-muted-foreground">by rkingg</span>
           </div>
         </div>
       </div>

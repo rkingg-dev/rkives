@@ -1,9 +1,22 @@
 "use client";
 
-import { Search, Bell } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Search, Bell, User, Settings, LogOut, CreditCard } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 export default function Navbar() {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
   return (
     <header className="sticky top-0 z-40 flex items-center justify-between px-8 py-3 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="flex-1 max-w-md">
@@ -11,7 +24,7 @@ export default function Navbar() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search..."
-            className="pl-9 bg-muted/50 border-transparent focus:border-border focus:bg-white h-9"
+            className="pl-9 bg-muted/50 border-transparent focus:border-border focus:bg-white h-9 dark:focus:bg-card"
           />
         </div>
       </div>
@@ -20,7 +33,38 @@ export default function Navbar() {
           <Bell className="h-4 w-4 text-muted-foreground" />
           <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-orange-500" />
         </button>
-        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 cursor-pointer" />
+        <div ref={ref} className="relative">
+          <button
+            onClick={() => setOpen(!open)}
+            className="h-8 w-8 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 cursor-pointer ring-2 ring-transparent hover:ring-border transition-all"
+          />
+          {open && (
+            <div className="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-lg py-1 z-50">
+              <div className="px-3 py-2 border-b border-border">
+                <p className="text-sm font-medium text-foreground">R King Garcia</p>
+                <p className="text-xs text-muted-foreground">rking@rkives.io</p>
+              </div>
+              <button className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors text-left">
+                <User className="h-4 w-4 text-muted-foreground" />
+                Profile
+              </button>
+              <button className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors text-left">
+                <CreditCard className="h-4 w-4 text-muted-foreground" />
+                Billing
+              </button>
+              <button className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors text-left">
+                <Settings className="h-4 w-4 text-muted-foreground" />
+                Settings
+              </button>
+              <div className="border-t border-border mt-1 pt-1">
+                <button className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-red-500 hover:bg-muted transition-colors text-left">
+                  <LogOut className="h-4 w-4" />
+                  Sign out
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
