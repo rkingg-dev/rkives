@@ -4,24 +4,28 @@ import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { wpUpdateData, websiteData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
-import { RefreshCw, AlertTriangle, CheckCircle, ArrowUpCircle } from "lucide-react";
+import { RefreshCw, AlertTriangle, ArrowUpCircle } from "lucide-react";
 import { Pagination } from "@/components/ui/pagination";
+import { Select } from "@/components/ui/select";
 
 const typeFilters = ["All", "Core", "Plugin", "Theme"];
 
 export default function WordpressPage() {
   const [filter, setFilter] = useState("All");
+  const [siteFilter, setSiteFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
   const wpSites = Array.from(new Set(wpUpdateData.map((u) => u.websiteId)));
+  const siteOptions = [{ label: "All Websites", value: "all" }, ...wpSites.map((id) => ({ label: websiteData.find((w) => w.id === id)?.name || id, value: id }))];
 
   const filtered = useMemo(() => {
     return wpUpdateData.filter((u) => {
+      if (siteFilter !== "all" && u.websiteId !== siteFilter) return false;
       if (filter === "All") return true;
       return u.itemType === filter;
     });
-  }, [filter]);
+  }, [filter, siteFilter]);
 
   const totalPages = Math.ceil(filtered.length / pageSize);
   const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);
@@ -62,11 +66,14 @@ export default function WordpressPage() {
         })}
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex gap-1 bg-card border border-border rounded-lg p-1 w-fit">
-        {typeFilters.map((f) => (
-          <button key={f} onClick={() => setFilter(f)} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", filter === f ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{f}</button>
-        ))}
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-3">
+        <Select options={siteOptions} value={siteFilter} onValueChange={(v) => { setSiteFilter(v); setPage(1); }} className="w-[200px]" />
+        <div className="flex gap-1 bg-card border border-border rounded-lg p-1 w-fit">
+          {typeFilters.map((f) => (
+            <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", filter === f ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{f}</button>
+          ))}
+        </div>
       </div>
 
       {/* Updates Table */}
