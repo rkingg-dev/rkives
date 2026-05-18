@@ -161,7 +161,7 @@ export default function TasksTable() {
       </div>
 
       {/* Table Panel */}
-      <div className="bg-card rounded-tr-2xl rounded-b-2xl rounded-tl-xl border border-border shadow-sm overflow-hidden -mt-[1px]">
+      <div className="bg-card rounded-tr-2xl rounded-b-2xl border border-border shadow-sm overflow-hidden -mt-[1px]">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
