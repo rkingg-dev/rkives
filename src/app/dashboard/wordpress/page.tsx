@@ -1,0 +1,114 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { wpUpdateData, websiteData } from "@/lib/mock-data";
+import { cn } from "@/lib/utils";
+import { RefreshCw, AlertTriangle, CheckCircle, ArrowUpCircle } from "lucide-react";
+
+const typeFilters = ["All", "Core", "Plugin", "Theme"];
+
+export default function WordpressPage() {
+  const [filter, setFilter] = useState("All");
+
+  const wpSites = Array.from(new Set(wpUpdateData.map((u) => u.websiteId)));
+
+  const filtered = wpUpdateData.filter((u) => {
+    if (filter === "All") return true;
+    return u.itemType === filter;
+  });
+
+  const totalUpdates = wpUpdateData.filter((u) => u.status !== "Up-to-date").length;
+  const critical = wpUpdateData.filter((u) => u.status === "Critical").length;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-foreground">WordPress Updates</h2>
+        <div className="flex items-center gap-3">
+          {critical > 0 && (
+            <span className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg text-red-500 bg-red-50 dark:bg-red-500/10">
+              <AlertTriangle className="h-3.5 w-3.5" /> {critical} Critical
+            </span>
+          )}
+          <span className="text-sm text-muted-foreground">{totalUpdates} updates available</span>
+          <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2">
+            <RefreshCw className="h-4 w-4" /> Scan All
+          </button>
+        </div>
+      </div>
+
+      {/* Site Summary */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+        {wpSites.map((siteId) => {
+          const site = websiteData.find((w) => w.id === siteId);
+          const updates = wpUpdateData.filter((u) => u.websiteId === siteId);
+          const hasUpdates = updates.some((u) => u.status !== "Up-to-date");
+          return (
+            <div key={siteId} className={cn("bg-card rounded-xl border p-4 cursor-pointer transition-colors hover:border-[var(--accent-brand)]", hasUpdates ? "border-amber-300 dark:border-amber-500/30" : "border-border")}>
+              <p className="text-sm font-medium text-foreground truncate">{site?.name}</p>
+              <p className="text-xs text-muted-foreground mt-1">{updates.length} items</p>
+              {hasUpdates && <span className="text-[10px] font-semibold text-amber-500 mt-2 block">{updates.filter((u) => u.status !== "Up-to-date").length} updates</span>}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="flex gap-1 bg-muted/50 rounded-lg p-1 w-fit">
+        {typeFilters.map((f) => (
+          <button key={f} onClick={() => setFilter(f)} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", filter === f ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{f}</button>
+        ))}
+      </div>
+
+      {/* Updates Table */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Website</th>
+                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Type</th>
+                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Item</th>
+                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Current</th>
+                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Latest</th>
+                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Auto</th>
+                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((item) => {
+                const site = websiteData.find((w) => w.id === item.websiteId);
+                return (
+                  <tr key={item.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
+                    <td className="px-5 py-3 text-foreground font-medium">{site?.name}</td>
+                    <td className="px-5 py-3 text-muted-foreground">{item.itemType}</td>
+                    <td className="px-5 py-3 text-foreground">{item.itemName}</td>
+                    <td className="px-5 py-3 text-muted-foreground font-mono text-xs">{item.currentVersion}</td>
+                    <td className="px-5 py-3 text-foreground font-mono text-xs">{item.latestVersion}</td>
+                    <td className="px-5 py-3">
+                      <span className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-md", item.status === "Up-to-date" ? "text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10" : item.status === "Critical" ? "text-red-500 bg-red-50 dark:bg-red-500/10" : "text-amber-500 bg-amber-50 dark:bg-amber-500/10")}>
+                        {item.status}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3">
+                      <span className={cn("text-xs", item.autoUpdate ? "text-emerald-500" : "text-muted-foreground")}>{item.autoUpdate ? "On" : "Off"}</span>
+                    </td>
+                    <td className="px-5 py-3">
+                      {item.status !== "Up-to-date" && (
+                        <button className="p-1.5 rounded-md hover:bg-muted transition-colors">
+                          <ArrowUpCircle className="h-4 w-4 text-[var(--accent-brand)]" />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+    </div>
+  );
+}

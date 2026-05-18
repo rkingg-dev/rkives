@@ -14,6 +14,12 @@ import {
   BarChart3,
   Settings,
   StickyNote,
+  Code,
+  Shield,
+  CreditCard,
+  ScrollText,
+  Clipboard,
+  RefreshCw,
   X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -31,6 +37,12 @@ const iconMap: Record<string, React.ElementType> = {
   chart: BarChart3,
   settings: Settings,
   file: FileText,
+  code: Code,
+  shield: Shield,
+  credit: CreditCard,
+  scroll: ScrollText,
+  clipboard: Clipboard,
+  refresh: RefreshCw,
 };
 
 const mainNav = [
@@ -39,8 +51,12 @@ const mainNav = [
   { label: "Websites", icon: "globe", href: "/dashboard/websites" },
   { label: "Projects", icon: "folder", href: "/dashboard/projects" },
   { label: "Tasks", icon: "tasks", href: "/dashboard/tasks" },
-  { label: "Credentials", icon: "key", href: "/dashboard/credentials" },
+  { label: "WordPress", icon: "refresh", href: "/dashboard/wordpress" },
+  { label: "Passwords", icon: "shield", href: "/dashboard/passwords" },
+  { label: "Payments", icon: "credit", href: "/dashboard/payments" },
+  { label: "Changelog", icon: "scroll", href: "/dashboard/changelog" },
   { label: "Notes", icon: "note", href: "/dashboard/notes" },
+  { label: "Pastebin", icon: "code", href: "/dashboard/pastebin" },
 ];
 
 const bottomNav = [
@@ -50,11 +66,10 @@ const bottomNav = [
 
 function SidebarContent() {
   const pathname = usePathname();
-  const { collapsed, closeMobile } = useSidebar();
+  const { collapsed } = useSidebar();
 
   return (
     <>
-      {/* Logo */}
       <div className="p-5 pb-4 flex items-center gap-2.5">
         <div className="h-8 w-8 rounded-lg bg-foreground flex items-center justify-center overflow-hidden shrink-0">
           <svg className="h-5 w-5 text-primary-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -65,18 +80,12 @@ function SidebarContent() {
           </svg>
         </div>
         {!collapsed && (
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="text-sm font-semibold text-foreground tracking-tight whitespace-nowrap"
-          >
+          <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-sm font-semibold text-foreground tracking-tight whitespace-nowrap">
             rkives
           </motion.span>
         )}
       </div>
 
-      {/* Main Nav */}
       <nav className="flex-1 px-3 space-y-0.5 overflow-y-auto scrollbar-hide">
         {mainNav.map((item) => {
           const Icon = iconMap[item.icon];
@@ -86,7 +95,6 @@ function SidebarContent() {
               key={item.href}
               href={item.href}
               title={collapsed ? item.label : undefined}
-              onClick={closeMobile}
               className={cn(
                 "flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium transition-all duration-200",
                 collapsed && "justify-center px-0",
@@ -96,22 +104,12 @@ function SidebarContent() {
               )}
             >
               <Icon className={cn("h-4 w-4 shrink-0 transition-colors", isActive && "text-[var(--accent-brand)]")} />
-              {!collapsed && (
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="whitespace-nowrap"
-                >
-                  {item.label}
-                </motion.span>
-              )}
+              {!collapsed && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="whitespace-nowrap">{item.label}</motion.span>}
             </Link>
           );
         })}
       </nav>
 
-      {/* Bottom */}
       <div className="px-3 pb-4 space-y-0.5">
         {bottomNav.map((item) => {
           const Icon = iconMap[item.icon];
@@ -121,7 +119,6 @@ function SidebarContent() {
               key={item.href}
               href={item.href}
               title={collapsed ? item.label : undefined}
-              onClick={closeMobile}
               className={cn(
                 "flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium transition-all duration-200",
                 collapsed && "justify-center px-0",
@@ -131,25 +128,13 @@ function SidebarContent() {
               )}
             >
               <Icon className={cn("h-4 w-4 shrink-0 transition-colors", isActive && "text-[var(--accent-brand)]")} />
-              {!collapsed && (
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="whitespace-nowrap"
-                >
-                  {item.label}
-                </motion.span>
-              )}
+              {!collapsed && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="whitespace-nowrap">{item.label}</motion.span>}
             </Link>
           );
         })}
-
         <div className={cn("flex items-center pt-3 mt-2 border-t border-border", collapsed ? "justify-center" : "justify-between px-3")}>
           <ThemeToggle />
-          {!collapsed && (
-            <span className="text-[11px] text-muted-foreground">by rkingg</span>
-          )}
+          {!collapsed && <span className="text-[11px] text-muted-foreground">by rkingg</span>}
         </div>
       </div>
     </>
@@ -161,7 +146,6 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Desktop Sidebar */}
       <motion.aside
         animate={{ width: collapsed ? 68 : 220 }}
         transition={{ duration: 0.2, ease: "easeInOut" }}
@@ -169,29 +153,12 @@ export default function Sidebar() {
       >
         <SidebarContent />
       </motion.aside>
-
-      {/* Mobile Sidebar */}
       <AnimatePresence>
         {mobileOpen && (
           <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={closeMobile}
-              className="fixed inset-0 bg-black/50 z-50 md:hidden"
-            />
-            <motion.aside
-              initial={{ x: -280 }}
-              animate={{ x: 0 }}
-              exit={{ x: -280 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="fixed left-0 top-0 bottom-0 w-[260px] bg-sidebar border-r border-border flex flex-col z-50 md:hidden"
-            >
-              <button
-                onClick={closeMobile}
-                className="absolute top-4 right-4 p-1 rounded-lg hover:bg-muted transition-colors"
-              >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeMobile} className="fixed inset-0 bg-black/50 z-50 md:hidden" />
+            <motion.aside initial={{ x: -280 }} animate={{ x: 0 }} exit={{ x: -280 }} transition={{ duration: 0.2, ease: "easeInOut" }} className="fixed left-0 top-0 bottom-0 w-[260px] bg-sidebar border-r border-border flex flex-col z-50 md:hidden">
+              <button onClick={closeMobile} className="absolute top-4 right-4 p-1 rounded-lg hover:bg-muted transition-colors z-10">
                 <X className="h-4 w-4 text-muted-foreground" />
               </button>
               <SidebarContent />

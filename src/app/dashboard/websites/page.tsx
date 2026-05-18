@@ -1,67 +1,66 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { websiteData } from "@/lib/mock-data";
+import { websiteData, clientData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
-import { ExternalLink, Star } from "lucide-react";
+import { ExternalLink, Star, Calendar, Globe, Server, AlertTriangle } from "lucide-react";
 
 export default function WebsitesPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-foreground">Websites</h2>
-        <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
-          Add Website
-        </button>
+        <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">Add Website</button>
       </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden"
-      >
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border">
-              <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Website</th>
-              <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Platform</th>
-              <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Hosting</th>
-              <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Status</th>
-              <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Launch</th>
-              <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Hosting Renewal</th>
-              <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Portfolio</th>
-            </tr>
-          </thead>
-          <tbody>
-            {websiteData.map((site) => (
-              <tr key={site.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors cursor-pointer">
-                <td className="px-5 py-3">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-foreground">{site.name}</span>
-                    <a href={site.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
-                      <ExternalLink className="h-3 w-3" />
-                    </a>
-                  </div>
-                </td>
-                <td className="px-5 py-3 text-muted-foreground">{site.platform}</td>
-                <td className="px-5 py-3 text-muted-foreground">{site.hosting}</td>
-                <td className="px-5 py-3">
-                  <span className={cn(
-                    "text-[10px] font-semibold px-2 py-0.5 rounded-md",
-                    site.status === "Live" ? "text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10" : "text-amber-500 bg-amber-50 dark:bg-amber-500/10"
-                  )}>
-                    {site.status}
-                  </span>
-                </td>
-                <td className="px-5 py-3 text-muted-foreground">{site.launchDate}</td>
-                <td className="px-5 py-3 text-muted-foreground">{site.hostingRenewal}</td>
-                <td className="px-5 py-3">
-                  {site.isPortfolio && <Star className="h-4 w-4 text-amber-400 fill-amber-400" />}
-                </td>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Website</th>
+                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Client</th>
+                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Platform</th>
+                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Deployed</th>
+                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Domain Expiry</th>
+                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Monthly</th>
+                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Portfolio</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {websiteData.map((site) => {
+                const client = clientData.find((c) => c.id === site.clientId);
+                const domainExpiry = new Date(site.domainExpiry);
+                const daysUntilDomain = Math.ceil((domainExpiry.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+                return (
+                  <tr key={site.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors cursor-pointer">
+                    <td className="px-5 py-3">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-foreground">{site.name}</span>
+                        <a href={site.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors"><ExternalLink className="h-3 w-3" /></a>
+                      </div>
+                      <p className="text-xs text-muted-foreground truncate max-w-[200px]">{site.scope}</p>
+                    </td>
+                    <td className="px-5 py-3 text-muted-foreground">{client?.company || "—"}</td>
+                    <td className="px-5 py-3 text-muted-foreground">{site.platform}</td>
+                    <td className="px-5 py-3">
+                      <span className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-md", site.status === "Live" ? "text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10" : "text-amber-500 bg-amber-50 dark:bg-amber-500/10")}>{site.status}</span>
+                    </td>
+                    <td className="px-5 py-3 text-muted-foreground">{site.deployDate}</td>
+                    <td className="px-5 py-3">
+                      <span className={cn("text-xs font-medium flex items-center gap-1", daysUntilDomain < 90 ? "text-amber-500" : "text-muted-foreground")}>
+                        {daysUntilDomain < 90 && <AlertTriangle className="h-3 w-3" />}
+                        {site.domainExpiry}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3 text-foreground font-medium">{site.monthlyFee > 0 ? `\u20B1${site.monthlyFee.toLocaleString()}` : "—"}</td>
+                    <td className="px-5 py-3">{site.isPortfolio && <Star className="h-4 w-4 text-amber-400 fill-amber-400" />}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </motion.div>
     </div>
   );
