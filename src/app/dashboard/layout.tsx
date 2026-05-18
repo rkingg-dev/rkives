@@ -1,5 +1,26 @@
+"use client";
+
 import Sidebar from "@/components/layout/Sidebar";
 import Navbar from "@/components/layout/Navbar";
+import { SidebarProvider, useSidebar } from "@/components/layout/SidebarContext";
+import { motion } from "framer-motion";
+
+function DashboardShell({ children }: { children: React.ReactNode }) {
+  const { collapsed } = useSidebar();
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Sidebar />
+      <motion.div
+        animate={{ marginLeft: collapsed ? 68 : 220 }}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
+      >
+        <Navbar />
+        <main className="p-8">{children}</main>
+      </motion.div>
+    </div>
+  );
+}
 
 export default function DashboardLayout({
   children,
@@ -7,12 +28,8 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-background">
-      <Sidebar />
-      <div className="ml-[220px]">
-        <Navbar />
-        <main className="p-8">{children}</main>
-      </div>
-    </div>
+    <SidebarProvider>
+      <DashboardShell>{children}</DashboardShell>
+    </SidebarProvider>
   );
 }

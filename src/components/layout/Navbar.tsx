@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Search, Bell, User, Settings, LogOut, CreditCard } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Search, Bell, User, Settings, LogOut, CreditCard, PanelLeftClose, PanelLeft } from "lucide-react";
+import { useSidebar } from "./SidebarContext";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const { collapsed, toggle } = useSidebar();
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -18,8 +19,18 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 flex items-center justify-between px-8 py-3 bg-background/80 backdrop-blur-md border-b border-border">
-      <div className="flex-1 max-w-md">
-        <div className="relative flex items-center gap-2.5 bg-muted/60 rounded-full px-2 py-1.5">
+      <div className="flex items-center gap-3 flex-1 max-w-md">
+        <button
+          onClick={toggle}
+          className="h-10 w-10 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors shrink-0"
+        >
+          {collapsed ? (
+            <PanelLeft className="h-4 w-4 text-muted-foreground" />
+          ) : (
+            <PanelLeftClose className="h-4 w-4 text-muted-foreground" />
+          )}
+        </button>
+        <div className="relative flex items-center gap-2.5 bg-muted/60 rounded-full px-2 py-1.5 flex-1">
           <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0">
             <Search className="h-4 w-4 text-muted-foreground" />
           </div>
