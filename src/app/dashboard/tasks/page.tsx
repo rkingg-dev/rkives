@@ -6,6 +6,7 @@ import { taskData, websiteData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { CheckCircle, Clock, AlertCircle, Pause, Repeat } from "lucide-react";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter, ModalClose } from "@/components/ui/modal";
+import { Select } from "@/components/ui/select";
 
 const statusFilters = ["All", "Current Tasks", "Completed"];
 const priorityFilters = ["All", "Urgent", "High", "Medium", "Low"];
@@ -68,11 +69,11 @@ export default function TasksPage() {
               <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Title</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
               <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Description</label><textarea rows={3} className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none" /></div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Website</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>Personal</option>{websiteData.map((w) => <option key={w.id}>{w.name}</option>)}</select></div>
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Type</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>Bug</option><option>Feature</option><option>Maintenance</option><option>Content</option><option>Personal</option></select></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Website</label><Select className="mt-1" options={[{ label: "Personal", value: "personal" }, ...websiteData.map((w) => ({ label: w.name, value: w.id }))]} /></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Type</label><Select className="mt-1" options={[{ label: "Bug", value: "bug" }, { label: "Feature", value: "feature" }, { label: "Maintenance", value: "maintenance" }, { label: "Content", value: "content" }, { label: "Personal", value: "personal" }]} /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Priority</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>Low</option><option>Medium</option><option>High</option><option>Urgent</option></select></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Priority</label><Select className="mt-1" options={[{ label: "Low", value: "low" }, { label: "Medium", value: "medium" }, { label: "High", value: "high" }, { label: "Urgent", value: "urgent" }]} /></div>
                 <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Due Date</label><input type="date" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
               </div>
             </div>

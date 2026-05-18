@@ -5,6 +5,7 @@ import { paymentData, clientData, websiteData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { Receipt, CheckCircle, Clock, CreditCard } from "lucide-react";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter, ModalClose } from "@/components/ui/modal";
+import { Select } from "@/components/ui/select";
 
 export default function PaymentsPage() {
   const totalReceived = paymentData.filter((p) => p.status === "Verified").reduce((sum, p) => sum + p.amount, 0);
@@ -20,15 +21,15 @@ export default function PaymentsPage() {
             <ModalHeader><ModalTitle>Record Payment</ModalTitle><ModalDescription>Log a payment received from a client.</ModalDescription></ModalHeader>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Client</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>Select client</option>{clientData.map((c) => <option key={c.id}>{c.name}</option>)}</select></div>
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Website</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>General</option>{websiteData.map((w) => <option key={w.id}>{w.name}</option>)}</select></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Client</label><Select className="mt-1" options={clientData.map((c) => ({ label: c.name, value: c.id }))} placeholder="Select client" /></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Website</label><Select className="mt-1" options={[{ label: "General", value: "general" }, ...websiteData.map((w) => ({ label: w.name, value: w.id }))]} /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Amount</label><input type="number" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Type</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>Monthly Maintenance</option><option>Project Payment</option><option>Hosting</option><option>Domain</option><option>One-time</option></select></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Type</label><Select className="mt-1" options={[{ label: "Monthly Maintenance", value: "monthly" }, { label: "Project Payment", value: "project" }, { label: "Hosting", value: "hosting" }, { label: "Domain", value: "domain" }, { label: "One-time", value: "onetime" }]} /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Method</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>GCash</option><option>Bank Transfer</option><option>PayPal</option><option>Cash</option></select></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Method</label><Select className="mt-1" options={[{ label: "GCash", value: "gcash" }, { label: "Bank Transfer", value: "bank" }, { label: "PayPal", value: "paypal" }, { label: "Cash", value: "cash" }]} /></div>
                 <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Reference #</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
               </div>
               <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Billing Period</label><input placeholder="Aug 2024" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>

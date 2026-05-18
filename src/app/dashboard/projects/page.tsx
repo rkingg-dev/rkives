@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { projectData, websiteData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter, ModalClose } from "@/components/ui/modal";
+import { Select } from "@/components/ui/select";
 
 export default function ProjectsPage() {
   return (
@@ -17,8 +18,8 @@ export default function ProjectsPage() {
             <div className="space-y-4">
               <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Project Name</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Website</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>Select website</option>{websiteData.map((w) => <option key={w.id}>{w.name}</option>)}</select></div>
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Type</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>Full Build</option><option>Redesign</option><option>Landing Page</option><option>Web App</option><option>SEO</option></select></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Website</label><Select className="mt-1" options={websiteData.map((w) => ({ label: w.name, value: w.id }))} placeholder="Select website" /></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Type</label><Select className="mt-1" options={[{ label: "Full Build", value: "full" }, { label: "Redesign", value: "redesign" }, { label: "Landing Page", value: "landing" }, { label: "Web App", value: "webapp" }, { label: "SEO", value: "seo" }]} /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Deadline</label><input type="date" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>

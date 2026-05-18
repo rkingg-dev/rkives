@@ -5,6 +5,7 @@ import { websiteData, clientData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { ExternalLink, Star, AlertTriangle } from "lucide-react";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter, ModalClose } from "@/components/ui/modal";
+import { Select } from "@/components/ui/select";
 
 export default function WebsitesPage() {
   return (
@@ -20,11 +21,11 @@ export default function WebsitesPage() {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Website Name</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Client</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>Select client</option>{clientData.map((c) => <option key={c.id}>{c.name}</option>)}</select></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Client</label><Select className="mt-1" options={clientData.map((c) => ({ label: c.name, value: c.id }))} placeholder="Select client" /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">URL</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Platform</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>WordPress</option><option>Next.js</option><option>Webflow</option><option>Other</option></select></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Platform</label><Select className="mt-1" options={[{ label: "WordPress", value: "wordpress" }, { label: "Next.js", value: "nextjs" }, { label: "Webflow", value: "webflow" }, { label: "Other", value: "other" }]} /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Hosting Provider</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>

@@ -6,6 +6,7 @@ import { credentialData, websiteData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff, ExternalLink, Shield, Key, Copy, Lock } from "lucide-react";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter, ModalClose } from "@/components/ui/modal";
+import { Select } from "@/components/ui/select";
 
 export default function PasswordsPage() {
   const [visible, setVisible] = useState<string | null>(null);
@@ -32,7 +33,7 @@ export default function PasswordsPage() {
             <ModalHeader><ModalTitle>Add Credential</ModalTitle><ModalDescription>Store a new login credential.</ModalDescription></ModalHeader>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Website</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>Select website</option>{websiteData.map((w) => <option key={w.id}>{w.name}</option>)}</select></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Website</label><Select className="mt-1" options={websiteData.map((w) => ({ label: w.name, value: w.id }))} placeholder="Select website" /></div>
                 <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Label</label><input placeholder="WordPress Admin, Hosting, etc." className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
               </div>
               <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Login URL</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
