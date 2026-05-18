@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: ["class"],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,8 +11,30 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        muted: {
+          DEFAULT: "var(--muted)",
+          foreground: "var(--muted-foreground)",
+        },
+        border: "var(--border)",
+        card: "var(--card)",
+        "card-foreground": "var(--card-foreground)",
+        primary: "var(--primary)",
+        "primary-foreground": "var(--primary-foreground)",
+        accent: "var(--accent)",
+        "accent-foreground": "var(--accent-foreground)",
+        sidebar: "var(--sidebar)",
+        "sidebar-foreground": "var(--sidebar-foreground)",
+        "sidebar-active": "var(--sidebar-active)",
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+      fontFamily: {
+        sans: ["Inter", "system-ui", "sans-serif"],
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 };

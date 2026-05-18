@@ -2,13 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: #f5f6f8;
+    --foreground: #111827;
+    --card: #ffffff;
+    --card-foreground: #111827;
+    --primary: #111827;
+    --primary-foreground: #ffffff;
+    --muted: #f1f3f5;
+    --muted-foreground: #7b8190;
+    --border: #e9ebef;
+    --accent: #f5f6f8;
+    --accent-foreground: #111827;
+    --sidebar: #fafbfc;
+    --sidebar-foreground: #7b8190;
+    --sidebar-active: #f0f1f3;
+    --radius: 1rem;
+  }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
