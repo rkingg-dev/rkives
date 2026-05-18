@@ -23,15 +23,15 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="relative h-6 w-11 rounded-full bg-muted border border-border transition-colors duration-300"
+      className="relative h-7 w-12 rounded-full bg-muted border border-border transition-colors duration-300"
       aria-label="Toggle dark mode"
     >
       <motion.div
-        className="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-card border border-border shadow-sm flex items-center justify-center"
+        className="absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-card border border-border shadow-sm flex items-center justify-center"
         animate={{ x: dark ? 20 : 0 }}
         transition={{ type: "spring", stiffness: 500, damping: 30 }}
       >
-        <span className="text-[10px]">{dark ? "\u263E" : "\u2600"}</span>
+        <span className="text-xs">{dark ? "\u263E" : "\u2600"}</span>
       </motion.div>
     </button>
   );

@@ -148,10 +148,7 @@ function SidebarContent() {
         <div className={cn("flex items-center pt-3 mt-2 border-t border-border", collapsed ? "justify-center" : "justify-between px-3")}>
           <ThemeToggle />
           {!collapsed && (
-            <div className="flex items-center gap-2">
-              <div className="h-6 w-6 rounded-full bg-gradient-to-br from-orange-400 to-pink-500" />
-              <span className="text-[11px] text-muted-foreground">by rkingg</span>
-            </div>
+            <span className="text-[11px] text-muted-foreground">by rkingg</span>
           )}
         </div>
       </div>
