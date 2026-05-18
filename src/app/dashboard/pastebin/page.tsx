@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { pastebinData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { Plus, Globe, Lock, Copy, ExternalLink, Code } from "lucide-react";
+import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter, ModalClose } from "@/components/ui/modal";
 
 const langColors: Record<string, string> = {
   sql: "text-blue-500 bg-blue-50 dark:bg-blue-500/10",
@@ -26,9 +27,22 @@ export default function PastebinPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-foreground">Pastebin</h2>
-        <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2">
-          <Plus className="h-4 w-4" /> New Paste
-        </button>
+        <Modal>
+          <ModalTrigger asChild><button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2"><Plus className="h-4 w-4" /> New Paste</button></ModalTrigger>
+          <ModalContent>
+            <ModalHeader><ModalTitle>New Paste</ModalTitle><ModalDescription>Create a new code snippet or note.</ModalDescription></ModalHeader>
+            <div className="space-y-4">
+              <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Title</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+              <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Language</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>typescript</option><option>javascript</option><option>sql</option><option>css</option><option>html</option><option>python</option><option>bash</option><option>json</option></select></div>
+              <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Content</label><textarea rows={8} className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-ring resize-none" /></div>
+              <div className="flex items-center gap-2"><input type="checkbox" id="public" className="rounded border-border" /><label htmlFor="public" className="text-sm text-foreground">Make public (shareable via URL)</label></div>
+            </div>
+            <ModalFooter>
+              <ModalClose asChild><button className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Cancel</button></ModalClose>
+              <ModalClose asChild><button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">Create Paste</button></ModalClose>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </div>
 
       <div className="relative max-w-md">

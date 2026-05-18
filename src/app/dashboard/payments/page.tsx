@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { paymentData, clientData, websiteData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { Receipt, CheckCircle, Clock, CreditCard } from "lucide-react";
+import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter, ModalClose } from "@/components/ui/modal";
 
 export default function PaymentsPage() {
   const totalReceived = paymentData.filter((p) => p.status === "Verified").reduce((sum, p) => sum + p.amount, 0);
@@ -13,7 +14,32 @@ export default function PaymentsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-foreground">Payments</h2>
-        <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">Record Payment</button>
+        <Modal>
+          <ModalTrigger asChild><button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">Record Payment</button></ModalTrigger>
+          <ModalContent>
+            <ModalHeader><ModalTitle>Record Payment</ModalTitle><ModalDescription>Log a payment received from a client.</ModalDescription></ModalHeader>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Client</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>Select client</option>{clientData.map((c) => <option key={c.id}>{c.name}</option>)}</select></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Website</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>General</option>{websiteData.map((w) => <option key={w.id}>{w.name}</option>)}</select></div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Amount</label><input type="number" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Type</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>Monthly Maintenance</option><option>Project Payment</option><option>Hosting</option><option>Domain</option><option>One-time</option></select></div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Method</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>GCash</option><option>Bank Transfer</option><option>PayPal</option><option>Cash</option></select></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Reference #</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+              </div>
+              <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Billing Period</label><input placeholder="Aug 2024" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+              <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Receipt Photo</label><input type="file" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-muted file:text-foreground" /></div>
+            </div>
+            <ModalFooter>
+              <ModalClose asChild><button className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Cancel</button></ModalClose>
+              <ModalClose asChild><button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">Save Payment</button></ModalClose>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

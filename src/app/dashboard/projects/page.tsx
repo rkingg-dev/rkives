@@ -3,13 +3,34 @@
 import { motion } from "framer-motion";
 import { projectData, websiteData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter, ModalClose } from "@/components/ui/modal";
 
 export default function ProjectsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-foreground">Projects</h2>
-        <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">Add Project</button>
+        <Modal>
+          <ModalTrigger asChild><button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">Add Project</button></ModalTrigger>
+          <ModalContent>
+            <ModalHeader><ModalTitle>Add Project</ModalTitle><ModalDescription>Create a new project.</ModalDescription></ModalHeader>
+            <div className="space-y-4">
+              <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Project Name</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+              <div className="grid grid-cols-2 gap-4">
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Website</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>Select website</option>{websiteData.map((w) => <option key={w.id}>{w.name}</option>)}</select></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Type</label><select className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"><option>Full Build</option><option>Redesign</option><option>Landing Page</option><option>Web App</option><option>SEO</option></select></div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Deadline</label><input type="date" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Progress (%)</label><input type="number" min="0" max="100" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+              </div>
+            </div>
+            <ModalFooter>
+              <ModalClose asChild><button className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Cancel</button></ModalClose>
+              <ModalClose asChild><button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">Create Project</button></ModalClose>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {projectData.map((project, i) => {
