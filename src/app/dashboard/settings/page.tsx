@@ -2,23 +2,25 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { User, Link as LinkIcon, CreditCard, Users, Bell } from "lucide-react";
+import { User, Link as LinkIcon, CreditCard, Users, Bell, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const tabs = [
   { id: "profile", label: "Profile", icon: User },
+  { id: "workspace", label: "Workspace", icon: LinkIcon },
+  { id: "roles", label: "Roles & Permissions", icon: Shield },
+  { id: "team", label: "Team", icon: Users },
   { id: "integrations", label: "Integrations", icon: LinkIcon },
   { id: "billing", label: "Billing", icon: CreditCard },
-  { id: "team", label: "Team", icon: Users },
   { id: "notifications", label: "Notifications", icon: Bell },
 ];
 
 const integrations = [
-  { name: "Google Analytics", connected: true, description: "Track website traffic and user behavior" },
-  { name: "Google Ads", connected: true, description: "Monitor ad campaigns and performance" },
-  { name: "Meta Ads", connected: false, description: "Manage Facebook and Instagram ads" },
-  { name: "Stripe", connected: true, description: "Process payments and track revenue" },
-  { name: "Slack", connected: false, description: "Send notifications to your team" },
+  { name: "Supabase", connected: false, description: "Database and authentication" },
+  { name: "Vercel", connected: true, description: "Deployment and hosting" },
+  { name: "GitHub", connected: true, description: "Version control and repositories" },
+  { name: "Stripe", connected: false, description: "Payment processing" },
+  { name: "Slack", connected: false, description: "Team notifications" },
 ];
 
 export default function SettingsPage() {
@@ -53,24 +55,20 @@ export default function SettingsPage() {
         {/* Settings Content */}
         <div className="flex-1">
           {activeTab === "profile" && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="bg-card rounded-2xl border border-border shadow-sm p-6"
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-2xl border border-border shadow-sm p-6">
               <h3 className="text-sm font-semibold text-foreground mb-4">Profile Settings</h3>
               <div className="space-y-4 max-w-md">
                 <div>
                   <label className="text-[11px] text-muted-foreground uppercase tracking-wider">Name</label>
-                  <input type="text" defaultValue="R King Garcia" className="mt-1 w-full h-9 rounded-lg border border-border bg-transparent px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                  <input type="text" defaultValue="R King Garcia" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
                 </div>
                 <div>
                   <label className="text-[11px] text-muted-foreground uppercase tracking-wider">Email</label>
-                  <input type="email" defaultValue="rking@example.com" className="mt-1 w-full h-9 rounded-lg border border-border bg-transparent px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                  <input type="email" defaultValue="rking@rkives.io" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
                 </div>
                 <div>
                   <label className="text-[11px] text-muted-foreground uppercase tracking-wider">Company</label>
-                  <input type="text" defaultValue="Rkives" className="mt-1 w-full h-9 rounded-lg border border-border bg-transparent px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                  <input type="text" defaultValue="RKives" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
                 </div>
                 <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                   Save Changes
@@ -79,12 +77,41 @@ export default function SettingsPage() {
             </motion.div>
           )}
 
+          {activeTab === "workspace" && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-2xl border border-border shadow-sm p-6">
+              <h3 className="text-sm font-semibold text-foreground mb-4">Workspace Settings</h3>
+              <div className="space-y-4 max-w-md">
+                <div>
+                  <label className="text-[11px] text-muted-foreground uppercase tracking-wider">Workspace Name</label>
+                  <input type="text" defaultValue="RKives Workspace" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                </div>
+                <div>
+                  <label className="text-[11px] text-muted-foreground uppercase tracking-wider">Currency</label>
+                  <input type="text" defaultValue="PHP (\u20B1)" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                </div>
+                <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
+                  Save Changes
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === "roles" && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-2xl border border-border shadow-sm p-6">
+              <h3 className="text-sm font-semibold text-foreground mb-4">Roles & Permissions</h3>
+              <p className="text-sm text-muted-foreground">Manage team roles and access permissions for your workspace.</p>
+            </motion.div>
+          )}
+
+          {activeTab === "team" && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-2xl border border-border shadow-sm p-6">
+              <h3 className="text-sm font-semibold text-foreground mb-4">Team Members</h3>
+              <p className="text-sm text-muted-foreground">Invite team members to collaborate on your projects.</p>
+            </motion.div>
+          )}
+
           {activeTab === "integrations" && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="bg-card rounded-2xl border border-border shadow-sm p-6"
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-2xl border border-border shadow-sm p-6">
               <h3 className="text-sm font-semibold text-foreground mb-4">Integrations</h3>
               <div className="space-y-3">
                 {integrations.map((int) => (
@@ -93,14 +120,12 @@ export default function SettingsPage() {
                       <p className="text-sm font-medium text-foreground">{int.name}</p>
                       <p className="text-xs text-muted-foreground">{int.description}</p>
                     </div>
-                    <button
-                      className={cn(
-                        "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
-                        int.connected
-                          ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
-                          : "bg-muted text-muted-foreground hover:bg-muted/80"
-                      )}
-                    >
+                    <button className={cn(
+                      "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
+                      int.connected
+                        ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80"
+                    )}>
                       {int.connected ? "Connected" : "Connect"}
                     </button>
                   </div>
@@ -110,17 +135,13 @@ export default function SettingsPage() {
           )}
 
           {activeTab === "billing" && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="bg-card rounded-2xl border border-border shadow-sm p-6"
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-2xl border border-border shadow-sm p-6">
               <h3 className="text-sm font-semibold text-foreground mb-4">Billing</h3>
               <div className="rounded-xl border border-border p-4 bg-muted/20">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-foreground">Pro Plan</p>
-                    <p className="text-xs text-muted-foreground">$29/month - Billed monthly</p>
+                    <p className="text-xs text-muted-foreground">Unlimited clients and websites</p>
                   </div>
                   <button className="px-3 py-1.5 rounded-lg text-xs font-medium border border-border hover:bg-muted transition-colors">
                     Manage
@@ -130,30 +151,15 @@ export default function SettingsPage() {
             </motion.div>
           )}
 
-          {activeTab === "team" && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="bg-card rounded-2xl border border-border shadow-sm p-6"
-            >
-              <h3 className="text-sm font-semibold text-foreground mb-4">Team Members</h3>
-              <p className="text-sm text-muted-foreground">No team members yet. Invite people to collaborate on your dashboards.</p>
-            </motion.div>
-          )}
-
           {activeTab === "notifications" && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="bg-card rounded-2xl border border-border shadow-sm p-6"
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-2xl border border-border shadow-sm p-6">
               <h3 className="text-sm font-semibold text-foreground mb-4">Notification Preferences</h3>
               <div className="space-y-3">
-                {["Email notifications", "Push notifications", "Weekly digest", "Alert on anomalies"].map((pref) => (
+                {["Task deadlines", "Maintenance renewals", "Client messages", "Weekly digest"].map((pref) => (
                   <label key={pref} className="flex items-center justify-between py-2">
                     <span className="text-sm text-foreground">{pref}</span>
                     <div className="h-5 w-9 rounded-full bg-muted relative cursor-pointer">
-                      <div className="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-card shadow-sm" />
+                      <div className="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow-sm" />
                     </div>
                   </label>
                 ))}

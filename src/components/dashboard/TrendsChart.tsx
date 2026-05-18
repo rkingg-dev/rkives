@@ -21,7 +21,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         {payload.map((entry: any, index: number) => (
           <p key={index} className="text-muted-foreground">
             <span className="inline-block w-2 h-2 rounded-full mr-1.5" style={{ backgroundColor: entry.color }} />
-            {entry.name}: {entry.value.toLocaleString()}
+            {entry.name}: {entry.value}
           </p>
         ))}
       </div>
@@ -41,33 +41,30 @@ export default function TrendsChart() {
       <div className="flex items-center justify-between px-5 pt-5 pb-3">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold text-foreground">Trends</h3>
+            <h3 className="text-sm font-semibold text-foreground">Workspace Activity</h3>
             <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
           </div>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-orange-400" />
-              Traffic
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              Tasks Completed
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-blue-400" />
-              ROI
+              <span className="w-2 h-2 rounded-full bg-orange-400" />
+              New Tasks
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-gray-300" />
-              Conv.
+              Updates
             </span>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-emerald-500 font-medium px-2.5 py-1 rounded-lg bg-emerald-50">
-            Traffic: +3.2%
+          <span className="text-xs text-emerald-500 font-medium px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-500/10">
+            Completed: +18%
           </span>
-          <span className="text-xs text-emerald-500 font-medium px-2.5 py-1 rounded-lg bg-emerald-50">
-            ROI: +4.1%
-          </span>
-          <span className="text-xs text-red-500 font-medium px-2.5 py-1 rounded-lg bg-red-50">
-            Conv: -2.7%
+          <span className="text-xs text-orange-500 font-medium px-2.5 py-1 rounded-lg bg-orange-50 dark:bg-orange-500/10">
+            New: +8%
           </span>
           <button className="flex items-center gap-1 text-xs text-muted-foreground px-2.5 py-1 rounded-lg hover:bg-muted transition-colors">
             3M <ChevronDown className="h-3 w-3" />
@@ -79,43 +76,42 @@ export default function TrendsChart() {
         <div className="h-[280px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={trendData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f3f5" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
               <XAxis
                 dataKey="month"
-                tick={{ fontSize: 11, fill: "#7b8190" }}
+                tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
-                tick={{ fontSize: 11, fill: "#7b8190" }}
+                tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                 axisLine={false}
                 tickLine={false}
-                tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
               />
               <Tooltip content={<CustomTooltip />} />
               <Line
                 type="monotone"
-                dataKey="traffic"
+                dataKey="tasksCompleted"
+                stroke="#34d399"
+                strokeWidth={2}
+                dot={false}
+                name="Tasks Completed"
+              />
+              <Line
+                type="monotone"
+                dataKey="newTasks"
                 stroke="#fb923c"
                 strokeWidth={2}
                 dot={false}
-                name="Traffic"
+                name="New Tasks"
               />
               <Line
                 type="monotone"
-                dataKey="roi"
-                stroke="#60a5fa"
-                strokeWidth={2}
-                dot={false}
-                name="ROI"
-              />
-              <Line
-                type="monotone"
-                dataKey="conversions"
+                dataKey="websiteUpdates"
                 stroke="#d1d5db"
                 strokeWidth={1.5}
                 dot={false}
-                name="Conv."
+                name="Updates"
               />
             </LineChart>
           </ResponsiveContainer>

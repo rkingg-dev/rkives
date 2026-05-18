@@ -2,9 +2,8 @@
 
 import KpiTabs from "@/components/dashboard/KpiTabs";
 import TrendsChart from "@/components/dashboard/TrendsChart";
-import LeadsTable from "@/components/dashboard/LeadsTable";
-import SocialWidgets from "@/components/dashboard/SocialWidgets";
-import { motion } from "framer-motion";
+import TasksTable from "@/components/dashboard/TasksTable";
+import WorkspaceWidgets from "@/components/dashboard/WorkspaceWidgets";
 
 export default function DashboardPage() {
   return (
@@ -13,11 +12,11 @@ export default function DashboardPage() {
       <div className="flex-1 space-y-4 min-w-0">
         <KpiTabs />
         <TrendsChart />
-        <LeadsTable />
+        <TasksTable />
       </div>
 
       {/* Right Sidebar */}
-      <SocialWidgets />
+      <WorkspaceWidgets />
     </div>
   );
 }
