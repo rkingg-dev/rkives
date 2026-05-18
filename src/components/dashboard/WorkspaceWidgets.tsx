@@ -54,7 +54,7 @@ function PortfolioWidget() {
                   <FileText className="h-4 w-4 text-muted-foreground" />
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-foreground group-hover:text-blue-500 transition-colors">{project.name}</p>
+                  <p className="text-xs font-medium text-foreground group-hover:text-[var(--accent-brand)] transition-colors">{project.name}</p>
                   <p className="text-[10px] text-muted-foreground">{project.type}</p>
                 </div>
               </div>

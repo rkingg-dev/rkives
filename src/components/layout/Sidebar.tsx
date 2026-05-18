@@ -92,10 +92,10 @@ function SidebarContent() {
                 collapsed && "justify-center px-0",
                 isActive
                   ? "bg-sidebar-active text-foreground shadow-sm"
-                  : "text-muted-foreground hover:bg-sidebar-active/50 hover:text-foreground"
+                  : "text-muted-foreground hover:bg-sidebar-active/50 hover:text-[var(--accent-brand)]"
               )}
             >
-              <Icon className="h-4 w-4 shrink-0" />
+              <Icon className={cn("h-4 w-4 shrink-0 transition-colors", isActive && "text-[var(--accent-brand)]")} />
               {!collapsed && (
                 <motion.span
                   initial={{ opacity: 0 }}
@@ -127,10 +127,10 @@ function SidebarContent() {
                 collapsed && "justify-center px-0",
                 isActive
                   ? "bg-sidebar-active text-foreground shadow-sm"
-                  : "text-muted-foreground hover:bg-sidebar-active/50 hover:text-foreground"
+                  : "text-muted-foreground hover:bg-sidebar-active/50 hover:text-[var(--accent-brand)]"
               )}
             >
-              <Icon className="h-4 w-4 shrink-0" />
+              <Icon className={cn("h-4 w-4 shrink-0 transition-colors", isActive && "text-[var(--accent-brand)]")} />
               {!collapsed && (
                 <motion.span
                   initial={{ opacity: 0 }}

@@ -20,6 +20,7 @@
     --sidebar: #fafbfc;
     --sidebar-foreground: #7b8190;
     --sidebar-active: #f0f1f3;
+    --accent-brand: #f97316;
     --radius: 1rem;
   }
 
@@ -38,6 +39,7 @@
     --sidebar: #111111;
     --sidebar-foreground: #888888;
     --sidebar-active: #1f1f1f;
+    --accent-brand: #f97316;
   }
 }
 
