@@ -133,7 +133,7 @@ export default function LeadsTable() {
             className={cn(
               "relative px-5 py-2.5 text-[13px] font-medium rounded-t-xl transition-all duration-200 -mb-[1px]",
               activeTab === i
-                ? "bg-white text-foreground border border-border border-b-white z-10"
+                ? "bg-card text-foreground border border-border border-b-white z-10"
                 : "bg-muted/40 text-muted-foreground hover:bg-muted/60 border border-transparent"
             )}
           >
@@ -148,7 +148,7 @@ export default function LeadsTable() {
       </div>
 
       {/* Table Panel — connected to tabs */}
-      <div className="bg-white rounded-tr-2xl rounded-b-2xl rounded-tl-xl border border-border shadow-sm overflow-hidden -mt-[1px]">
+      <div className="bg-card rounded-tr-2xl rounded-b-2xl rounded-tl-xl border border-border shadow-sm overflow-hidden -mt-[1px]">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

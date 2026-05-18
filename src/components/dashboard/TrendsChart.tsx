@@ -16,7 +16,7 @@ import { ChevronDown, MoreHorizontal } from "lucide-react";
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white rounded-xl border border-border shadow-lg p-3 text-xs">
+      <div className="bg-card rounded-xl border border-border shadow-lg p-3 text-xs">
         <p className="font-medium text-foreground mb-1">{label}</p>
         {payload.map((entry: any, index: number) => (
           <p key={index} className="text-muted-foreground">
@@ -36,7 +36,7 @@ export default function TrendsChart() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
-      className="bg-white rounded-2xl border border-border shadow-sm"
+      className="bg-card rounded-2xl border border-border shadow-sm"
     >
       <div className="flex items-center justify-between px-5 pt-5 pb-3">
         <div className="flex items-center gap-6">

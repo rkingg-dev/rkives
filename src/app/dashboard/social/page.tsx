@@ -47,7 +47,7 @@ export default function SocialPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="bg-white rounded-2xl border border-border p-5 shadow-sm"
+            className="bg-card rounded-2xl border border-border p-5 shadow-sm"
           >
             <div className="flex items-center gap-2 mb-2">
               <kpi.icon className="h-4 w-4 text-muted-foreground" />
@@ -66,7 +66,7 @@ export default function SocialPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-2xl border border-border shadow-sm p-5"
+          className="bg-card rounded-2xl border border-border shadow-sm p-5"
         >
           <h3 className="text-sm font-semibold text-foreground mb-4">Engagement Over Time</h3>
           <div className="h-[250px]">
@@ -86,7 +86,7 @@ export default function SocialPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
-          className="bg-white rounded-2xl border border-border shadow-sm p-5"
+          className="bg-card rounded-2xl border border-border shadow-sm p-5"
         >
           <h3 className="text-sm font-semibold text-foreground mb-4">Platform Overview</h3>
           <div className="space-y-4">
@@ -110,7 +110,7 @@ export default function SocialPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden"
+        className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden"
       >
         <div className="p-5 border-b border-border">
           <h3 className="text-sm font-semibold text-foreground">Top Performing Posts</h3>

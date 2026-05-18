@@ -9,7 +9,7 @@ export default function SocialPlatformsPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-2xl border border-border shadow-sm p-6"
+        className="bg-card rounded-2xl border border-border shadow-sm p-6"
       >
         <p className="text-sm text-muted-foreground">Connect your social media accounts to aggregate engagement data.</p>
       </motion.div>

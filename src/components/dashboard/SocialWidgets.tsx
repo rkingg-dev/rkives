@@ -12,7 +12,7 @@ function InstagramWidget() {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.4 }}
-      className="bg-white rounded-2xl border border-border shadow-sm p-5"
+      className="bg-card rounded-2xl border border-border shadow-sm p-5"
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
@@ -86,7 +86,7 @@ function XWidget() {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.5 }}
-      className="bg-white rounded-2xl border border-border shadow-sm p-5"
+      className="bg-card rounded-2xl border border-border shadow-sm p-5"
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">

@@ -56,7 +56,7 @@ export default function SettingsPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-white rounded-2xl border border-border shadow-sm p-6"
+              className="bg-card rounded-2xl border border-border shadow-sm p-6"
             >
               <h3 className="text-sm font-semibold text-foreground mb-4">Profile Settings</h3>
               <div className="space-y-4 max-w-md">
@@ -83,7 +83,7 @@ export default function SettingsPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-white rounded-2xl border border-border shadow-sm p-6"
+              className="bg-card rounded-2xl border border-border shadow-sm p-6"
             >
               <h3 className="text-sm font-semibold text-foreground mb-4">Integrations</h3>
               <div className="space-y-3">
@@ -113,7 +113,7 @@ export default function SettingsPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-white rounded-2xl border border-border shadow-sm p-6"
+              className="bg-card rounded-2xl border border-border shadow-sm p-6"
             >
               <h3 className="text-sm font-semibold text-foreground mb-4">Billing</h3>
               <div className="rounded-xl border border-border p-4 bg-muted/20">
@@ -134,7 +134,7 @@ export default function SettingsPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-white rounded-2xl border border-border shadow-sm p-6"
+              className="bg-card rounded-2xl border border-border shadow-sm p-6"
             >
               <h3 className="text-sm font-semibold text-foreground mb-4">Team Members</h3>
               <p className="text-sm text-muted-foreground">No team members yet. Invite people to collaborate on your dashboards.</p>
@@ -145,7 +145,7 @@ export default function SettingsPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-white rounded-2xl border border-border shadow-sm p-6"
+              className="bg-card rounded-2xl border border-border shadow-sm p-6"
             >
               <h3 className="text-sm font-semibold text-foreground mb-4">Notification Preferences</h3>
               <div className="space-y-3">
@@ -153,7 +153,7 @@ export default function SettingsPage() {
                   <label key={pref} className="flex items-center justify-between py-2">
                     <span className="text-sm text-foreground">{pref}</span>
                     <div className="h-5 w-9 rounded-full bg-muted relative cursor-pointer">
-                      <div className="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow-sm" />
+                      <div className="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-card shadow-sm" />
                     </div>
                   </label>
                 ))}

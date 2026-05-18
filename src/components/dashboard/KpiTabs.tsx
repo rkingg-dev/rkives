@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 export default function KpiTabs() {
   return (
-    <div className="flex gap-0 bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
+    <div className="flex gap-0 bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
       {kpiData.map((kpi, i) => (
         <motion.div
           key={kpi.label}

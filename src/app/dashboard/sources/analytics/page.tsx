@@ -18,7 +18,7 @@ export default function AnalyticsPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-2xl border border-border shadow-sm p-5"
+        className="bg-card rounded-2xl border border-border shadow-sm p-5"
       >
         <h3 className="text-sm font-semibold text-foreground mb-4">Top Pages</h3>
         <div className="h-[300px]">
