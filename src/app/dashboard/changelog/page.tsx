@@ -54,12 +54,12 @@ export default function ChangelogPage() {
       </div>
 
       {/* Site Filter */}
-      <div className="flex gap-1 bg-muted/50 rounded-lg p-1 w-fit overflow-x-auto">
-        <button onClick={() => setSiteFilter("All")} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap", siteFilter === "All" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>All Sites</button>
+      <div className="flex gap-1 bg-card border border-border rounded-lg p-1 w-fit overflow-x-auto">
+        <button onClick={() => setSiteFilter("All")} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap", siteFilter === "All" ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>All Sites</button>
         {sitesWithChangelog.map((siteId) => {
           const site = websiteData.find((w) => w.id === siteId);
           return (
-            <button key={siteId} onClick={() => setSiteFilter(siteId)} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap", siteFilter === siteId ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>
+            <button key={siteId} onClick={() => setSiteFilter(siteId)} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap", siteFilter === siteId ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>
               {site?.name}
             </button>
           );

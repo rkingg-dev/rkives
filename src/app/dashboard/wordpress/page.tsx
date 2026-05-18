@@ -55,9 +55,9 @@ export default function WordpressPage() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex gap-1 bg-muted/50 rounded-lg p-1 w-fit">
+      <div className="flex gap-1 bg-card border border-border rounded-lg p-1 w-fit">
         {typeFilters.map((f) => (
-          <button key={f} onClick={() => setFilter(f)} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", filter === f ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{f}</button>
+          <button key={f} onClick={() => setFilter(f)} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", filter === f ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{f}</button>
         ))}
       </div>
 
