@@ -72,7 +72,7 @@ export default function SettingsPage() {
                   <label className="text-[11px] text-muted-foreground uppercase tracking-wider">Company</label>
                   <input type="text" defaultValue="Rkives" className="mt-1 w-full h-9 rounded-lg border border-border bg-transparent px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
                 </div>
-                <button className="px-4 py-2 bg-foreground text-white rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors">
+                <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                   Save Changes
                 </button>
               </div>
