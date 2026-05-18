@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Search, Bell, User, Settings, LogOut, CreditCard } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 export default function Navbar() {
@@ -20,23 +19,26 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 flex items-center justify-between px-8 py-3 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="flex-1 max-w-md">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
+        <div className="relative flex items-center gap-2.5 bg-muted/60 rounded-full px-2 py-1.5">
+          <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+            <Search className="h-4 w-4 text-muted-foreground" />
+          </div>
+          <input
+            type="text"
             placeholder="Search..."
-            className="pl-9 bg-muted/50 border-transparent focus:border-border focus:bg-card h-9 placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent text-sm placeholder:text-muted-foreground focus:outline-none"
           />
         </div>
       </div>
-      <div className="flex items-center gap-3">
-        <button className="relative p-2 rounded-lg hover:bg-muted transition-colors">
+      <div className="flex items-center gap-2">
+        <button className="relative h-10 w-10 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors">
           <Bell className="h-4 w-4 text-muted-foreground" />
-          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-orange-500" />
+          <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-orange-500" />
         </button>
         <div ref={ref} className="relative">
           <button
             onClick={() => setOpen(!open)}
-            className="h-8 w-8 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 cursor-pointer ring-2 ring-transparent hover:ring-border transition-all"
+            className="h-10 w-10 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 cursor-pointer hover:opacity-90 transition-opacity"
           />
           {open && (
             <div className="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-lg py-1 z-50">
