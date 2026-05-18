@@ -1,11 +1,18 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { clientData, websiteData } from "@/lib/mock-data";
 import { Mail, Phone } from "lucide-react";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter, ModalClose } from "@/components/ui/modal";
+import { Pagination } from "@/components/ui/pagination";
 
 export default function ClientsPage() {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const totalPages = Math.ceil(clientData.length / pageSize);
+  const paginated = clientData.slice((page - 1) * pageSize, page * pageSize);
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -48,7 +55,7 @@ export default function ClientsPage() {
               <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Status</th>
             </tr></thead>
             <tbody>
-              {clientData.map((client) => {
+              {paginated.map((client) => {
                 const siteCount = websiteData.filter((w) => w.clientId === client.id).length;
                 return (
                   <tr key={client.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors cursor-pointer">
@@ -62,6 +69,7 @@ export default function ClientsPage() {
             </tbody>
           </table>
         </div>
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} totalItems={clientData.length} pageSize={pageSize} onPageSizeChange={(s) => { setPageSize(s); setPage(1); }} />
       </motion.div>
     </div>
   );

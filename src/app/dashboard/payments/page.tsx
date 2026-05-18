@@ -1,13 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { paymentData, clientData, websiteData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { Receipt, CheckCircle, Clock, CreditCard } from "lucide-react";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter, ModalClose } from "@/components/ui/modal";
 import { Select } from "@/components/ui/select";
+import { Pagination } from "@/components/ui/pagination";
 
 export default function PaymentsPage() {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const totalPages = Math.ceil(paymentData.length / pageSize);
+  const paginated = paymentData.slice((page - 1) * pageSize, page * pageSize);
   const totalReceived = paymentData.filter((p) => p.status === "Verified").reduce((sum, p) => sum + p.amount, 0);
   const pending = paymentData.filter((p) => p.status === "Pending").reduce((sum, p) => sum + p.amount, 0);
 
@@ -75,7 +81,7 @@ export default function PaymentsPage() {
               </tr>
             </thead>
             <tbody>
-              {paymentData.map((p) => {
+              {paginated.map((p) => {
                 const client = clientData.find((c) => c.id === p.clientId);
                 const site = websiteData.find((w) => w.id === p.websiteId);
                 return (
@@ -100,6 +106,7 @@ export default function PaymentsPage() {
             </tbody>
           </table>
         </div>
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} totalItems={paymentData.length} pageSize={pageSize} onPageSizeChange={(s) => { setPageSize(s); setPage(1); }} />
       </motion.div>
     </div>
   );

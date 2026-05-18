@@ -1,22 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { credentialData, websiteData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff, ExternalLink, Shield, Key, Copy, Lock } from "lucide-react";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter, ModalClose } from "@/components/ui/modal";
 import { Select } from "@/components/ui/select";
+import { Pagination } from "@/components/ui/pagination";
 
 export default function PasswordsPage() {
   const [visible, setVisible] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  const filtered = credentialData.filter((c) => {
-    const site = websiteData.find((w) => w.id === c.websiteId);
-    const q = search.toLowerCase();
-    return site?.name.toLowerCase().includes(q) || c.label.toLowerCase().includes(q) || c.username.toLowerCase().includes(q);
-  });
+  const filtered = useMemo(() => {
+    return credentialData.filter((c) => {
+      const site = websiteData.find((w) => w.id === c.websiteId);
+      const q = search.toLowerCase();
+      return site?.name.toLowerCase().includes(q) || c.label.toLowerCase().includes(q) || c.username.toLowerCase().includes(q);
+    });
+  }, [search]);
+
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);
 
   return (
     <div className="space-y-6">
@@ -72,7 +80,7 @@ export default function PasswordsPage() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((cred) => {
+              {paginated.map((cred) => {
                 const site = websiteData.find((w) => w.id === cred.websiteId);
                 return (
                   <tr key={cred.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
@@ -107,6 +115,7 @@ export default function PasswordsPage() {
             </tbody>
           </table>
         </div>
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} totalItems={filtered.length} pageSize={pageSize} onPageSizeChange={(s) => { setPageSize(s); setPage(1); }} />
       </motion.div>
     </div>
   );

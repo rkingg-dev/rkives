@@ -1,22 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { wpUpdateData, websiteData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { RefreshCw, AlertTriangle, CheckCircle, ArrowUpCircle } from "lucide-react";
+import { Pagination } from "@/components/ui/pagination";
 
 const typeFilters = ["All", "Core", "Plugin", "Theme"];
 
 export default function WordpressPage() {
   const [filter, setFilter] = useState("All");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const wpSites = Array.from(new Set(wpUpdateData.map((u) => u.websiteId)));
 
-  const filtered = wpUpdateData.filter((u) => {
-    if (filter === "All") return true;
-    return u.itemType === filter;
-  });
+  const filtered = useMemo(() => {
+    return wpUpdateData.filter((u) => {
+      if (filter === "All") return true;
+      return u.itemType === filter;
+    });
+  }, [filter]);
+
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);
 
   const totalUpdates = wpUpdateData.filter((u) => u.status !== "Up-to-date").length;
   const critical = wpUpdateData.filter((u) => u.status === "Critical").length;
@@ -78,7 +86,7 @@ export default function WordpressPage() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((item) => {
+              {paginated.map((item) => {
                 const site = websiteData.find((w) => w.id === item.websiteId);
                 return (
                   <tr key={item.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
@@ -108,6 +116,7 @@ export default function WordpressPage() {
             </tbody>
           </table>
         </div>
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} totalItems={filtered.length} pageSize={pageSize} onPageSizeChange={(s) => { setPageSize(s); setPage(1); }} />
       </motion.div>
     </div>
   );

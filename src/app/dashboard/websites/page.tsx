@@ -1,13 +1,20 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { websiteData, clientData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { ExternalLink, Star, AlertTriangle } from "lucide-react";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter, ModalClose } from "@/components/ui/modal";
 import { Select } from "@/components/ui/select";
+import { Pagination } from "@/components/ui/pagination";
 
 export default function WebsitesPage() {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const totalPages = Math.ceil(websiteData.length / pageSize);
+  const paginated = websiteData.slice((page - 1) * pageSize, page * pageSize);
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -59,7 +66,7 @@ export default function WebsitesPage() {
               <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Portfolio</th>
             </tr></thead>
             <tbody>
-              {websiteData.map((site) => {
+              {paginated.map((site) => {
                 const client = clientData.find((c) => c.id === site.clientId);
                 const daysUntilDomain = Math.ceil((new Date(site.domainExpiry).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
                 return (
@@ -78,6 +85,7 @@ export default function WebsitesPage() {
             </tbody>
           </table>
         </div>
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} totalItems={websiteData.length} pageSize={pageSize} onPageSizeChange={(s) => { setPageSize(s); setPage(1); }} />
       </motion.div>
     </div>
   );
