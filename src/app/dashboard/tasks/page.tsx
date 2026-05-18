@@ -84,19 +84,19 @@ export default function TasksPage() {
         </Modal>
       </div>
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex gap-1 bg-muted/50 rounded-lg p-1">
+        <div className="flex gap-1 bg-card border border-border rounded-lg p-1">
           {statusFilters.map((f) => (
-            <button key={f} onClick={() => setStatus(f)} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", status === f ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{f}</button>
+            <button key={f} onClick={() => setStatus(f)} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", status === f ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{f}</button>
           ))}
         </div>
-        <div className="flex gap-1 bg-muted/50 rounded-lg p-1">
+        <div className="flex gap-1 bg-card border border-border rounded-lg p-1">
           {priorityFilters.map((p) => (
-            <button key={p} onClick={() => setPriority(p)} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", priority === p ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{p}</button>
+            <button key={p} onClick={() => setPriority(p)} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", priority === p ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{p}</button>
           ))}
         </div>
-        <div className="flex gap-1 bg-muted/50 rounded-lg p-1">
+        <div className="flex gap-1 bg-card border border-border rounded-lg p-1">
           {typeFilters.map((t) => (
-            <button key={t} onClick={() => setType(t)} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", type === t ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{t}</button>
+            <button key={t} onClick={() => setType(t)} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", type === t ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{t}</button>
           ))}
         </div>
       </div>
