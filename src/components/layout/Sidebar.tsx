@@ -13,9 +13,8 @@ import {
   Settings,
   ChevronDown,
   BarChart3,
-  Moon,
-  Sun,
 } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 import { motion, AnimatePresence } from "framer-motion";
 
 const iconMap: Record<string, React.ElementType> = {
@@ -55,12 +54,12 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="p-5 pb-4">
         <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-lg bg-foreground flex items-center justify-center">
-            <svg className="h-5 w-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12c0 1.82.49 3.53 1.34 5L2 22l5-1.34C8.47 21.51 10.18 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm-2 15l-1-1 4-4-4-4 1-1 5 5-5 5z"/>
-              <circle cx="9" cy="10" r="1.5"/>
-              <circle cx="15" cy="10" r="1.5"/>
-              <rect x="8" y="13" width="8" height="2" rx="1"/>
+          <div className="h-8 w-8 rounded-lg bg-foreground flex items-center justify-center overflow-hidden">
+            <svg className="h-5 w-5 text-primary-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 10h.01M15 10h.01M12 2a8 8 0 0 0-8 8v4l-2 2h20l-2-2v-4a8 8 0 0 0-8-8z" fill="currentColor" stroke="none"/>
+              <rect x="7" y="13" width="10" height="3" rx="1.5" fill="currentColor" stroke="none"/>
+              <circle cx="9.5" cy="10.5" r="1" fill="currentColor" stroke="none"/>
+              <circle cx="14.5" cy="10.5" r="1" fill="currentColor" stroke="none"/>
             </svg>
           </div>
           <span className="text-sm font-semibold text-foreground tracking-tight">rkives</span>
@@ -158,13 +157,7 @@ export default function Sidebar() {
         })}
 
         <div className="flex items-center justify-between px-3 pt-3 mt-2 border-t border-border">
-          <button
-            onClick={() => document.documentElement.classList.toggle("dark")}
-            className="p-1.5 rounded-lg hover:bg-sidebar-active transition-colors"
-          >
-            <Moon className="h-4 w-4 text-muted-foreground dark:hidden" />
-            <Sun className="h-4 w-4 text-muted-foreground hidden dark:block" />
-          </button>
+          <ThemeToggle />
           <div className="flex items-center gap-2">
             <div className="h-6 w-6 rounded-full bg-gradient-to-br from-orange-400 to-pink-500" />
             <span className="text-[11px] text-muted-foreground">by rkingg</span>
