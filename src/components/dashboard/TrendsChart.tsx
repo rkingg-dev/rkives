@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   LineChart,
   Line,
@@ -11,10 +10,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { trendData } from "@/lib/mock-data";
-import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-
-const tabs = ["Lead Quality", "Day on Day", "Week on Week", "SQR", "Keyword Performance"];
+import { ChevronDown, MoreHorizontal } from "lucide-react";
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
@@ -34,8 +31,6 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export default function TrendsChart() {
-  const [activeTab, setActiveTab] = useState(0);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -44,8 +39,11 @@ export default function TrendsChart() {
       className="bg-white rounded-2xl border border-border shadow-sm"
     >
       <div className="flex items-center justify-between px-5 pt-5 pb-3">
-        <div className="flex items-center gap-3">
-          <h3 className="text-sm font-semibold text-foreground">Trends</h3>
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-foreground">Trends</h3>
+            <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+          </div>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-orange-400" />
@@ -62,19 +60,22 @@ export default function TrendsChart() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground px-3 py-1 rounded-lg bg-muted/50">
+          <span className="text-xs text-emerald-500 font-medium px-2.5 py-1 rounded-lg bg-emerald-50">
             Traffic: +3.2%
           </span>
-          <span className="text-xs text-muted-foreground px-3 py-1 rounded-lg bg-muted/50">
-            ROI: +5.1%
+          <span className="text-xs text-emerald-500 font-medium px-2.5 py-1 rounded-lg bg-emerald-50">
+            ROI: +4.1%
           </span>
-          <span className="text-xs text-muted-foreground px-3 py-1 rounded-lg bg-muted/50">
-            Conv: +2.3%
+          <span className="text-xs text-red-500 font-medium px-2.5 py-1 rounded-lg bg-red-50">
+            Conv: -2.7%
           </span>
+          <button className="flex items-center gap-1 text-xs text-muted-foreground px-2.5 py-1 rounded-lg hover:bg-muted transition-colors">
+            3M <ChevronDown className="h-3 w-3" />
+          </button>
         </div>
       </div>
 
-      <div className="px-5 pb-3">
+      <div className="px-5 pb-5">
         <div className="h-[280px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={trendData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
@@ -119,24 +120,6 @@ export default function TrendsChart() {
             </LineChart>
           </ResponsiveContainer>
         </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex items-center gap-0 px-5 pb-4 border-t border-border pt-3">
-        {tabs.map((tab, i) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(i)}
-            className={cn(
-              "px-4 py-1.5 text-xs font-medium rounded-lg transition-colors",
-              activeTab === i
-                ? "bg-foreground text-white"
-                : "text-muted-foreground hover:bg-muted"
-            )}
-          >
-            {tab}
-          </button>
-        ))}
       </div>
     </motion.div>
   );
