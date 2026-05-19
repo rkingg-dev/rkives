@@ -4,6 +4,7 @@ import { portfolioData, maintenanceData } from "@/lib/mock-data";
 import { motion } from "framer-motion";
 import { MoreHorizontal, ExternalLink, FolderOpen, FileText } from "lucide-react";
 import { BarChart, Bar, ResponsiveContainer, Cell } from "recharts";
+import MiniCalendar from "./MiniCalendar";
 
 function PortfolioWidget() {
   return (
@@ -125,6 +126,7 @@ function MaintenanceWidget() {
 export default function WorkspaceWidgets() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-4">
+      <MiniCalendar />
       <PortfolioWidget />
       <MaintenanceWidget />
     </div>
