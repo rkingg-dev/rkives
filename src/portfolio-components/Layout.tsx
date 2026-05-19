@@ -93,12 +93,11 @@ function MobileHeader({ visible }: { visible: boolean }) {
         visible ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-full opacity-0',
       )}
     >
-      <div className="mx-auto flex h-14 max-w-lg items-center justify-between">
+      <div className="mx-auto flex h-14 max-w-lg items-center justify-center">
         <div className="flex min-w-0 items-center gap-x-2.5">
           <GhostMark className="h-8 w-8 shrink-0" />
           <span className="font-display text-base/6 font-light tracking-[0.08em] text-gray-950 [font-variant-caps:all-small-caps] dark:text-white">rkingg//</span>
         </div>
-        <ThemeToggle className="static -mr-2 m-0 p-2" iconClassName="fill-gray-950 opacity-60 dark:fill-white" />
       </div>
     </header>
   )
