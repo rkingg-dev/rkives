@@ -148,6 +148,7 @@ export default function FinancePage() {
           })}
         </div>
       </motion.div>
+      </div>
 
       {/* Bottom Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
