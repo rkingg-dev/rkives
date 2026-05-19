@@ -15,12 +15,12 @@ const goalIcons: Record<string, React.ElementType> = { shield: Shield, laptop: L
 const iconOptions = Object.entries(goalIcons);
 
 const personalBudget = [
-  { name: "Rent", limit: 12000, color: "bg-foreground" },
-  { name: "Food & Dining", limit: 6000, color: "bg-gray-500" },
-  { name: "Transport", limit: 3000, color: "bg-gray-400" },
-  { name: "Utilities", limit: 2500, color: "bg-gray-300" },
-  { name: "Shopping", limit: 2000, color: "bg-gray-200" },
-  { name: "Other Personal", limit: 1500, color: "bg-gray-100" },
+  { name: "Rent", limit: 12000, color: "bg-orange-600" },
+  { name: "Food & Dining", limit: 6000, color: "bg-orange-500" },
+  { name: "Transport", limit: 3000, color: "bg-orange-400" },
+  { name: "Utilities", limit: 2500, color: "bg-orange-300" },
+  { name: "Shopping", limit: 2000, color: "bg-orange-200" },
+  { name: "Other Personal", limit: 1500, color: "bg-orange-100" },
 ];
 
 export default function FinancePage() {
