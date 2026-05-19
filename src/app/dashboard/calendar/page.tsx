@@ -143,9 +143,8 @@ export default function CalendarPage() {
                   <span className={cn("text-xs font-medium", isToday ? "bg-[var(--accent-brand)] text-white w-6 h-6 rounded-full flex items-center justify-center" : "text-foreground")}>{day}</span>
                   <div className="mt-1 space-y-0.5">
                     {dayEvents.slice(0, 3).map((evt, i) => (
-                      <div key={i} className="flex items-center gap-1">
-                        <span className={cn("w-1.5 h-1.5 rounded-full shrink-0", evt.color)} />
-                        <span className="text-[10px] text-muted-foreground truncate">{evt.title}</span>
+                      <div key={i} className={cn("text-[10px] text-white font-medium px-1.5 py-0.5 rounded truncate", evt.color)}>
+                        {evt.title}
                       </div>
                     ))}
                     {dayEvents.length > 3 && <span className="text-[9px] text-muted-foreground">+{dayEvents.length - 3} more</span>}
