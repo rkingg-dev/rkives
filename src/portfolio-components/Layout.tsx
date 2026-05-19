@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useId, useRef, useState } from 'react'
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import clsx from 'clsx'
 
 import { Intro, IntroFooter } from '@/portfolio-components/Intro'
@@ -35,12 +34,8 @@ function Glow() {
         <rect width="100%" height="100%" fill={`url(#${id}-desktop)`} className="hidden lg:block" />
         <rect width="100%" height="100%" fill={`url(#${id}-mobile)`} className="lg:hidden" />
       </svg>
-      <StarField seed={12} starCount={72} constellationCount={2} ariesCount={3} className="-top-10 -left-60 opacity-65 lg:-top-12 lg:-left-56 lg:w-[68rem]" />
-      <StarField seed={29} starCount={58} constellationCount={1} ariesCount={3} className="top-[24%] -left-72 opacity-48 lg:w-[72rem]" />
-      <StarField seed={47} starCount={54} constellationCount={1} ariesCount={2} className="top-[54%] -left-60 opacity-36 lg:w-[68rem]" />
-      <StarField seed={83} starCount={42} constellationCount={0} ariesCount={1} className="top-[10%] -left-16 opacity-28 lg:w-[56rem]" />
-      <StarField seed={118} starCount={260} constellationCount={0} ariesCount={0} tiny animated={false} className="-top-20 -left-80 opacity-30 lg:w-[88rem]" />
-      <StarField seed={154} starCount={230} constellationCount={0} ariesCount={0} tiny animated={false} className="top-[38%] -left-72 opacity-22 lg:w-[84rem]" />
+      <StarField seed={12} starCount={50} constellationCount={1} ariesCount={1} className="-top-10 -left-60 opacity-65 lg:-top-12 lg:-left-56 lg:w-[68rem]" />
+      <StarField seed={29} starCount={40} constellationCount={0} ariesCount={1} className="top-[24%] -left-72 opacity-48 lg:w-[72rem]" />
       <div className="absolute inset-x-0 right-0 bottom-0 h-px bg-white mix-blend-overlay lg:top-0 lg:left-auto lg:h-auto lg:w-px" />
     </div>
   )
@@ -48,9 +43,9 @@ function Glow() {
 
 function FixedSidebar({ main, footer }: { main: React.ReactNode; footer: React.ReactNode }) {
   return (
-    <div className="relative flex-none overflow-hidden px-6 lg:pointer-events-none lg:fixed lg:inset-0 lg:z-40 lg:flex lg:px-0">
+    <div className="relative flex-none overflow-hidden px-6 lg:fixed lg:inset-0 lg:z-40 lg:flex lg:px-0">
       <Glow />
-      <div className="relative flex w-full lg:pointer-events-auto lg:mr-[calc(max(2rem,50%-38rem)+40rem)] lg:min-w-lg lg:overflow-x-hidden lg:overflow-y-auto lg:pl-[max(4rem,calc(50%-38rem))]">
+      <div className="relative flex w-full lg:mr-[calc(max(2rem,50%-38rem)+40rem)] lg:min-w-lg lg:overflow-x-hidden lg:overflow-y-auto lg:pl-[max(4rem,calc(50%-38rem))]">
         <div className="mx-auto max-w-lg lg:mx-0 lg:flex lg:w-96 lg:max-w-none lg:flex-col lg:before:flex-1 lg:before:pt-6">
           <div className="pt-20 pb-16 sm:pt-32 sm:pb-20 lg:py-20">
             <div className="relative">{main}</div>
@@ -147,13 +142,11 @@ export function Layout({
   scrollKey?: string
   children: React.ReactNode
 }) {
-  let introRef = useRef<HTMLDivElement>(null)
-  let scrollRef = useRef<HTMLDivElement>(null)
   let [showMobileHeader, setShowMobileHeader] = useState(false)
 
   useEffect(() => {
     function updateMobileHeader() {
-      let intro = introRef.current
+      let intro = document.getElementById('portfolio-intro')
       if (!intro || window.innerWidth >= 1024) {
         setShowMobileHeader(false)
         return
@@ -173,26 +166,27 @@ export function Layout({
 
   // Smooth scroll to top on section change
   useEffect(() => {
-    let scrollContainer = scrollRef.current
-    if (!scrollContainer) return
-    scrollContainer.scrollTo({ top: 0, behavior: 'smooth' })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [activeSection, scrollKey])
 
   return (
     <>
-      <div ref={introRef}>
+      {/* Spacer: pushes content below the fixed sidebar */}
+      <div className="hidden lg:block" style={{ height: '50vh', minHeight: '20rem' }} />
+
+      <div id="portfolio-intro">
         <FixedSidebar
           main={<Intro activeSection={activeSection} onSelectSection={onSelectSection} />}
           footer={<IntroFooter activeSection={activeSection} onSelectSection={onSelectSection} />}
         />
       </div>
       <MobileHeader visible={showMobileHeader} />
-      <div
-        ref={scrollRef}
-        className="relative flex-auto pb-24 lg:h-screen lg:overflow-y-auto lg:pb-0"
-      >
+
+      {/* Content scrolls with the window — whileInView works here */}
+      <div className="relative pb-24 lg:pb-0">
         <main>{children}</main>
       </div>
+
       <MobileFooter activeSection={activeSection} onSelectSection={onSelectSection} />
     </>
   )
