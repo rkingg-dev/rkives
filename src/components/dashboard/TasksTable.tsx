@@ -18,6 +18,13 @@ function getStatusColor(status: string) {
     case "To Do": return "text-muted-foreground bg-muted";
     case "Waiting": return "text-amber-500 bg-amber-50 dark:bg-amber-500/10";
     case "On Hold": return "text-red-500 bg-red-50 dark:bg-red-500/10";
+    case "Live": return "text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10";
+    case "Planning": return "text-muted-foreground bg-muted";
+    case "Verified": return "text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10";
+    case "Pending": return "text-amber-500 bg-amber-50 dark:bg-amber-500/10";
+    case "Critical": return "text-red-500 bg-red-50 dark:bg-red-500/10";
+    case "Update Available": return "text-amber-500 bg-amber-50 dark:bg-amber-500/10";
+    case "Up-to-date": return "text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10";
     default: return "text-muted-foreground bg-muted";
   }
 }
@@ -96,6 +103,14 @@ function ExpandedRow({ task, websites, refetch }: { task: any; websites: any[]; 
   );
 }
 
+function EmptyTab({ message }: { message: string }) {
+  return (
+    <div className="py-12 text-center">
+      <p className="text-sm text-muted-foreground">{message}</p>
+    </div>
+  );
+}
+
 export default function TasksTable() {
   const [activeTab, setActiveTab] = useState(0);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -106,8 +121,14 @@ export default function TasksTable() {
     limit: 8,
   });
   const { data: websites } = useSupabaseQuery({ table: "websites" });
+  const { data: projects } = useSupabaseQuery({ table: "projects", orderBy: { column: "created_at", ascending: false }, limit: 8 });
+  const { data: wpUpdates } = useSupabaseQuery({ table: "wp_updates", limit: 8 });
+  const { data: payments } = useSupabaseQuery({ table: "payments", orderBy: { column: "created_at", ascending: false }, limit: 8 });
+  const { data: clients } = useSupabaseQuery({ table: "clients" });
 
-  if (loadingTasks) {
+  const loading = loadingTasks;
+
+  if (loading) {
     return (
       <div className="relative">
         <div className="flex items-end gap-0 overflow-x-auto scrollbar-hide">
@@ -142,11 +163,10 @@ export default function TasksTable() {
 
       {/* Table Panel */}
       <div className="bg-card rounded-tr-2xl rounded-b-2xl border border-border shadow-sm overflow-hidden -mt-[1px]">
-        {tasks.length === 0 ? (
-          <div className="py-12 text-center">
-            <p className="text-sm text-muted-foreground">No tasks to show</p>
-          </div>
-        ) : (
+
+        {/* Tab 0: Task Overview */}
+        {activeTab === 0 && (
+          tasks.length === 0 ? <EmptyTab message="No tasks to show" /> : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -187,7 +207,160 @@ export default function TasksTable() {
               </tbody>
             </table>
           </div>
+          )
         )}
+
+        {/* Tab 1: Project Timeline */}
+        {activeTab === 1 && (
+          projects.length === 0 ? <EmptyTab message="No projects yet" /> : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Project</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Type</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Deadline</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Progress</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {projects.map((project) => (
+                  <tr key={project.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
+                    <td className="px-5 py-3 font-medium text-foreground">{project.name}</td>
+                    <td className="px-5 py-3 text-muted-foreground">{project.project_type}</td>
+                    <td className="px-5 py-3 text-muted-foreground">{project.deadline}</td>
+                    <td className="px-5 py-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 h-1.5 bg-muted rounded-full overflow-hidden">
+                          <div className="h-full bg-foreground rounded-full" style={{ width: `${project.progress}%` }} />
+                        </div>
+                        <span className="text-xs text-muted-foreground">{project.progress}%</span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-3">
+                      <span className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-md", getStatusColor(project.status))}>{project.status}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          )
+        )}
+
+        {/* Tab 2: Maintenance */}
+        {activeTab === 2 && (
+          wpUpdates.length === 0 ? <EmptyTab message="No maintenance items" /> : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Website</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Item</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Type</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Current</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Latest</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {wpUpdates.map((update) => {
+                  const site = websites.find((w) => w.id === update.website_id);
+                  return (
+                    <tr key={update.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
+                      <td className="px-5 py-3 text-foreground">{site?.name || "—"}</td>
+                      <td className="px-5 py-3 font-medium text-foreground">{update.item_name}</td>
+                      <td className="px-5 py-3 text-muted-foreground">{update.item_type}</td>
+                      <td className="px-5 py-3 text-muted-foreground font-mono text-xs">{update.current_version}</td>
+                      <td className="px-5 py-3 text-muted-foreground font-mono text-xs">{update.latest_version}</td>
+                      <td className="px-5 py-3">
+                        <span className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-md", getStatusColor(update.status))}>{update.status}</span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          )
+        )}
+
+        {/* Tab 3: Revenue */}
+        {activeTab === 3 && (
+          payments.length === 0 ? <EmptyTab message="No payments yet" /> : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Client</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Type</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Amount</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Method</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Period</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {payments.map((p) => {
+                  const client = clients.find((c) => c.id === p.client_id);
+                  return (
+                    <tr key={p.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
+                      <td className="px-5 py-3 font-medium text-foreground">{client?.name || "—"}</td>
+                      <td className="px-5 py-3 text-muted-foreground">{p.payment_type}</td>
+                      <td className="px-5 py-3 font-medium text-foreground">₱{p.amount?.toLocaleString()}</td>
+                      <td className="px-5 py-3 text-muted-foreground">{p.method}</td>
+                      <td className="px-5 py-3 text-muted-foreground">{p.billing_period}</td>
+                      <td className="px-5 py-3">
+                        <span className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-md", getStatusColor(p.status))}>{p.status}</span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          )
+        )}
+
+        {/* Tab 4: Portfolio */}
+        {activeTab === 4 && (
+          (() => {
+            const portfolioSites = websites.filter((w) => w.is_portfolio);
+            return portfolioSites.length === 0 ? <EmptyTab message="No portfolio sites yet" /> : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Website</th>
+                    <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Platform</th>
+                    <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Client</th>
+                    <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                    <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Monthly</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {portfolioSites.map((site) => {
+                    const client = clients.find((c) => c.id === site.client_id);
+                    return (
+                      <tr key={site.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
+                        <td className="px-5 py-3 font-medium text-foreground">{site.name}</td>
+                        <td className="px-5 py-3 text-muted-foreground">{site.platform}</td>
+                        <td className="px-5 py-3 text-muted-foreground">{client?.name || "—"}</td>
+                        <td className="px-5 py-3">
+                          <span className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-md", getStatusColor(site.status))}>{site.status}</span>
+                        </td>
+                        <td className="px-5 py-3 text-muted-foreground">₱{(site.monthly_maintenance_fee || 0).toLocaleString()}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            );
+          })()
+        )}
+
       </div>
     </motion.div>
   );
