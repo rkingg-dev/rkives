@@ -550,35 +550,43 @@ function ThumbnailStrip({
   items: PortfolioItem[]
   activeIndex: number
 }) {
+  let thumbHeight = 52 // h-13 = 52px
+  let gap = 8 // gap-2 = 8px
+  let frameSize = thumbHeight + 8 // slightly bigger than thumb
+  let offset = -(activeIndex * (thumbHeight + gap))
+
   return (
-    <div className="fixed right-6 top-1/2 -translate-y-1/2 z-30 hidden lg:flex flex-col gap-2">
-      {items.map((item, i) => (
+    <div className="fixed right-8 top-1/2 -translate-y-1/2 z-30 hidden lg:block" style={{ height: frameSize }}>
+      {/* Camera frame — fixed, never moves */}
+      <div className="absolute inset-0 pointer-events-none z-10">
+        <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-orange-400" />
+        <span className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-orange-400" />
+        <span className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-orange-400" />
+        <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-orange-400" />
+      </div>
+
+      {/* Scrolling thumbnails — moves through the frame */}
+      <div className="overflow-hidden h-full">
         <div
-          key={item.slug}
-          className={clsx(
-            "relative w-16 h-12 rounded-md overflow-hidden transition-all duration-300",
-            i === activeIndex
-              ? "ring-2 ring-orange-400 scale-110 opacity-100"
-              : "ring-1 ring-white/10 opacity-40 hover:opacity-70"
-          )}
+          className="flex flex-col gap-2 transition-transform duration-500 ease-out"
+          style={{ transform: `translateY(${offset}px)` }}
         >
-          <Image
-            src={item.thumbnail}
-            alt=""
-            fill
-            className="object-cover"
-            sizes="64px"
-          />
-          {i === activeIndex && (
-            <>
-              <span className="absolute top-0.5 left-0.5 w-2 h-2 border-t border-l border-orange-400" />
-              <span className="absolute top-0.5 right-0.5 w-2 h-2 border-t border-r border-orange-400" />
-              <span className="absolute bottom-0.5 left-0.5 w-2 h-2 border-b border-l border-orange-400" />
-              <span className="absolute bottom-0.5 right-0.5 w-2 h-2 border-b border-r border-orange-400" />
-            </>
-          )}
+          {items.map((item) => (
+            <div
+              key={item.slug}
+              className="relative w-14 h-13 rounded overflow-hidden shrink-0 opacity-50 transition-opacity duration-300"
+            >
+              <Image
+                src={item.thumbnail}
+                alt=""
+                fill
+                className="object-cover"
+                sizes="56px"
+              />
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
     </div>
   )
 }
