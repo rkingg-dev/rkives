@@ -103,18 +103,24 @@ export function SignUpForm() {
 
   return (
     <>
-      {/* Message Button */}
-      <button
-        type="button"
-        onClick={() => setIsOpen(true)}
-        className="group mt-8 inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-orange-400/10 px-5 py-2.5 text-sm font-medium text-orange-300 transition-all duration-300 hover:border-orange-400/50 hover:bg-orange-400/20 hover:text-orange-200 hover:shadow-lg hover:shadow-orange-500/10"
-      >
-        <svg viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4 transition-transform duration-300 group-hover:scale-110">
-          <path d="M2.75 2A1.75 1.75 0 0 0 1 3.75v8.5C1 13.216 1.784 14 2.75 14h10.5A1.75 1.75 0 0 0 15 12.25v-8.5A1.75 1.75 0 0 0 13.25 2H2.75Zm0 1.5h10.5a.25.25 0 0 1 .25.25v.586L8 7.486 2.5 4.336V3.75a.25.25 0 0 1 .25-.25Zm-.25 2.564 5.128 2.934a.75.75 0 0 0 .744 0L13.5 6.064v6.186a.25.25 0 0 1-.25.25H2.75a.25.25 0 0 1-.25-.25V6.064Z" />
-        </svg>
-        Message me
-        <span className="inline-block transition-transform duration-300 group-hover:translate-x-0.5">&rarr;</span>
-      </button>
+      {/* Original text-field style message input */}
+      <form onSubmit={openRequestForm} className="group relative mt-8">
+        <input
+          type="email"
+          required
+          autoComplete="email"
+          placeholder="Message me..."
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full rounded-full border border-white/10 bg-white/5 py-2.5 pl-4 pr-24 text-sm text-white placeholder:text-gray-500 transition focus:border-orange-400/40 focus:ring-1 focus:ring-orange-400/20 focus:outline-none lg:border-white/10 lg:bg-white/5 lg:dark:border-white/10 lg:dark:bg-white/5"
+        />
+        <button
+          type="submit"
+          className="absolute right-1 top-1 bottom-1 rounded-full bg-white/10 px-4 text-xs font-medium text-white transition hover:bg-white/20"
+        >
+          Send &rarr;
+        </button>
+      </form>
 
       {/* Modal */}
       <AnimatePresence>
@@ -124,7 +130,7 @@ export function SignUpForm() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-gray-950/70 px-4 py-8 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm"
           >
             <button
               type="button"
@@ -137,13 +143,13 @@ export function SignUpForm() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-white/10 bg-gray-950 shadow-2xl shadow-orange-950/30"
+              className="relative w-full max-w-lg mx-4 overflow-hidden rounded-2xl border border-white/10 bg-gray-900 shadow-2xl shadow-orange-950/30"
             >
               <form onSubmit={sendRequest}>
                 <input type="text" name="companyWebsite" tabIndex={-1} autoComplete="off" value={companyWebsite} onChange={(e) => setCompanyWebsite(e.target.value)} className="hidden" aria-hidden="true" />
 
                 {/* Header */}
-                <div className="flex items-center justify-between border-b border-white/10 bg-gray-900/80 px-5 py-4">
+                <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
                   <div className="flex min-w-0 items-center gap-x-3">
                     <div className="h-8 w-8 rounded-full bg-orange-400/10 flex items-center justify-center">
                       <svg viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4 text-orange-300">
@@ -224,7 +230,7 @@ export function SignUpForm() {
                 </div>
 
                 {/* Footer */}
-                <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 bg-gray-900/80 px-5 py-4 text-sm/6">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 px-5 py-4 text-sm/6">
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-400">
                     <span>Reply within 24h</span>
                     <span className="text-emerald-300">scope check</span>

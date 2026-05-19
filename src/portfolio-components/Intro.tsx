@@ -140,7 +140,9 @@ export function IntroFooter({
   return (
     <div className="flex items-center gap-x-3 text-[0.6875rem]/5 font-medium text-white/30">
       <ThemeToggle className="static -m-0 p-0 text-orange-300 transition hover:text-orange-200">
-        Dark mode
+        <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+          <path d="M12 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm-5 8a5 5 0 0 0 5 5V7a5 5 0 0 0-5 5Z" />
+        </svg>
       </ThemeToggle>
       <span>Version v2.3.1</span>
     </div>

@@ -14,7 +14,7 @@ function Glow() {
   let id = useId()
 
   return (
-    <div className="absolute inset-0 -z-10 overflow-hidden bg-gray-950 lg:right-[calc(max(2rem,50%-38rem)+40rem)] lg:min-w-lg">
+    <div className="absolute inset-0 -z-10 overflow-hidden bg-background lg:right-[calc(max(2rem,50%-38rem)+40rem)] lg:min-w-lg">
       <svg
         className="absolute -bottom-48 left-[-40%] h-320 w-[180%] lg:top-[-40%] lg:-right-40 lg:bottom-auto lg:left-auto lg:h-[180%] lg:w-7xl"
         aria-hidden="true"
