@@ -22,6 +22,7 @@ import {
   RefreshCw,
   X,
   Wallet,
+  Calendar,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
@@ -45,6 +46,7 @@ const iconMap: Record<string, React.ElementType> = {
   clipboard: Clipboard,
   refresh: RefreshCw,
   wallet: Wallet,
+  calendar: Calendar,
 };
 
 const mainNav = [
@@ -53,6 +55,7 @@ const mainNav = [
   { label: "Websites", icon: "globe", href: "/dashboard/websites" },
   { label: "Projects", icon: "folder", href: "/dashboard/projects" },
   { label: "Tasks", icon: "tasks", href: "/dashboard/tasks" },
+  { label: "Calendar", icon: "calendar", href: "/dashboard/calendar" },
   { label: "WordPress", icon: "refresh", href: "/dashboard/wordpress" },
   { label: "Passwords", icon: "shield", href: "/dashboard/passwords" },
   { label: "Payments", icon: "credit", href: "/dashboard/payments" },

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 function getDaysInMonth(year: number, month: number) {
   return new Date(year, month + 1, 0).getDate();
@@ -48,7 +49,7 @@ export default function MiniCalendar() {
   }
 
   return (
-    <div className="bg-card rounded-xl border border-border p-4">
+    <Link href="/dashboard/calendar" className="block bg-card rounded-xl border border-border p-4 hover:border-[var(--accent-brand)] transition-colors cursor-pointer">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-semibold text-foreground">{months[month]} {year}</h3>
         <div className="flex items-center gap-1">
@@ -100,6 +101,6 @@ export default function MiniCalendar() {
             <span className="text-foreground truncate">{evts[0].label}</span>
           </div>
         ))}
-    </div>
+    </Link>
   );
 }
