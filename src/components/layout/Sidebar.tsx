@@ -78,11 +78,11 @@ function SidebarContent() {
     <>
       <div className="p-5 pb-4 flex items-center gap-2.5">
         <div className="h-8 w-8 rounded-lg bg-foreground flex items-center justify-center overflow-hidden shrink-0">
-          <svg className="h-5 w-5 text-primary-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 10h.01M15 10h.01M12 2a8 8 0 0 0-8 8v4l-2 2h20l-2-2v-4a8 8 0 0 0-8-8z" fill="currentColor" stroke="none"/>
-            <rect x="7" y="13" width="10" height="3" rx="1.5" fill="currentColor" stroke="none"/>
-            <circle cx="9.5" cy="10.5" r="1" fill="currentColor" stroke="none"/>
-            <circle cx="14.5" cy="10.5" r="1" fill="currentColor" stroke="none"/>
+          <svg className="h-5 w-5" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <path d="M16 54V25.5C16 14.6 22.7 7 32 7s16 7.6 16 18.5V54l-4.6-3.4L38.8 54l-4.6-3.4L29.6 54 25 50.6 20.4 54 16 50.6Z" fill="currentColor" className="text-muted-foreground" />
+            <path d="M21.5 29.2c3.1-2.5 7.4-2.9 11-.9l-1.2 5.2c-3.4-1-6.8-.7-10.1.9l.3-5.2Zm15.9-.9c3.7-2 8-1.6 11.1.9l.3 5.2c-3.3-1.6-6.7-1.9-10.1-.9l-1.3-5.2Z" fill="#f97316" />
+            <path d="M34 30.6c1.5-.5 3.1-.5 4.6 0" stroke="#f97316" strokeWidth="2" strokeLinecap="round" />
+            <path d="M31 41.5c2.2 1.1 4.6 1.1 6.8 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-muted-foreground" />
           </svg>
         </div>
         {!collapsed && (
