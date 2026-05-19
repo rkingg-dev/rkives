@@ -550,49 +550,54 @@ function ThumbnailStrip({
   items: PortfolioItem[]
   activeIndex: number
 }) {
-  let thumbW = 64
-  let thumbH = 80
-  let gap = 10
-  let pad = 6
+  let thumbW = 56
+  let thumbH = 72
+  let gap = 6
+  let pad = 5
   let frameW = thumbW + pad * 2
   let frameH = thumbH + pad * 2
-  let frameTop = activeIndex * (thumbH + gap)
+  let visibleCount = 5
+  let containerH = visibleCount * (thumbH + gap) - gap
+  let offset = -(activeIndex * (thumbH + gap)) + (containerH / 2) - (thumbH / 2)
 
   return (
-    <div className="fixed right-8 top-1/2 -translate-y-1/2 z-30 hidden lg:flex flex-col items-center" style={{ gap }}>
-      {items.map((item, i) => (
-        <div key={item.slug} className="relative" style={{ width: frameW, height: frameH }}>
-          {/* Camera frame — only on active item */}
-          {i === activeIndex && (
-            <div className="absolute inset-0 pointer-events-none z-10">
-              <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-orange-400" />
-              <span className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-orange-400" />
-              <span className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-orange-400" />
-              <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-orange-400" />
+    <div className="fixed right-8 top-1/2 -translate-y-1/2 z-30 hidden lg:block" style={{ height: containerH }}>
+      {/* Camera frame — fixed at center, never moves */}
+      <div className="absolute left-1/2 -translate-x-1/2 pointer-events-none z-10" style={{ width: frameW, height: frameH, top: (containerH - frameH) / 2 }}>
+        <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-orange-400" />
+        <span className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-orange-400" />
+        <span className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-orange-400" />
+        <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-orange-400" />
+      </div>
+
+      {/* Thumbnails — scroll through the frame */}
+      <div className="relative w-full h-full" style={{ overflow: "visible" }}>
+        <div
+          className="absolute left-1/2 -translate-x-1/2 flex flex-col transition-transform duration-500 ease-out"
+          style={{ transform: `translateX(-50%) translateY(${offset}px)`, gap, width: thumbW }}
+        >
+          {items.map((item, i) => (
+            <div
+              key={item.slug}
+              className="relative rounded overflow-hidden shrink-0 transition-all duration-300"
+              style={{
+                width: thumbW,
+                height: thumbH,
+                opacity: i === activeIndex ? 1 : 0.3,
+                filter: i === activeIndex ? "none" : "grayscale(0.6)",
+              }}
+            >
+              <Image
+                src={item.thumbnail}
+                alt=""
+                fill
+                className="object-cover"
+                sizes={`${thumbW}px`}
+              />
             </div>
-          )}
-          {/* Thumbnail */}
-          <div
-            className="absolute rounded overflow-hidden transition-all duration-300"
-            style={{
-              width: thumbW,
-              height: thumbH,
-              top: pad,
-              left: pad,
-              opacity: i === activeIndex ? 1 : 0.35,
-              filter: i === activeIndex ? "none" : "grayscale(0.5)",
-            }}
-          >
-            <Image
-              src={item.thumbnail}
-              alt=""
-              fill
-              className="object-cover"
-              sizes={`${thumbW}px`}
-            />
-          </div>
+          ))}
         </div>
-      ))}
+      </div>
     </div>
   )
 }
