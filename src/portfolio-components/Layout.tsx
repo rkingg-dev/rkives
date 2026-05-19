@@ -50,7 +50,7 @@ function FixedSidebar({ main, footer }: { main: React.ReactNode; footer: React.R
           <div className="pt-20 pb-16 sm:pt-32 sm:pb-20 lg:py-20">
             <div className="relative">{main}</div>
           </div>
-          <div className="hidden flex-1 items-end justify-center pb-4 lg:flex lg:justify-start lg:pb-6">{footer}</div>
+          <div className="hidden flex-1 items-end justify-center pb-4 lg:flex lg:pb-6">{footer}</div>
         </div>
       </div>
     </div>
