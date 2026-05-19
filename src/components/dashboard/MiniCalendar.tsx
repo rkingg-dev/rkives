@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { useSupabaseQuery } from "@/hooks/use-supabase-query";
 
 function getDaysInMonth(year: number, month: number) {
   return new Date(year, month + 1, 0).getDate();
@@ -15,18 +16,17 @@ function getFirstDayOfMonth(year: number, month: number) {
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-// Simulated events
-const events: Record<string, { label: string; color: string }[]> = {
-  "2024-08-01": [{ label: "Send invoices", color: "bg-emerald-500" }],
-  "2024-08-05": [{ label: "BrightPath invoicing", color: "bg-emerald-500" }],
-  "2024-08-08": [{ label: "GreenLeaf thumbnails due", color: "bg-amber-500" }],
-  "2024-08-12": [{ label: "Harbor staging deploy", color: "bg-blue-500" }],
-  "2024-08-15": [{ label: "CloudSync pricing modal", color: "bg-[var(--accent-brand)]" }, { label: "Savings transfer", color: "bg-blue-500" }, { label: "Domain renewal", color: "bg-amber-500" }],
-  "2024-08-20": [{ label: "RK case study publish", color: "bg-purple-500" }],
+const typeColors: Record<string, string> = {
+  "Bug": "bg-red-500",
+  "Feature": "bg-[var(--accent-brand)]",
+  "Maintenance": "bg-amber-500",
+  "Content": "bg-blue-500",
+  "Personal": "bg-purple-500",
 };
 
 export default function MiniCalendar() {
-  const [currentDate, setCurrentDate] = useState(new Date(2024, 7, 1)); // August 2024
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const { data: tasks } = useSupabaseQuery({ table: "tasks" });
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -38,6 +38,23 @@ export default function MiniCalendar() {
 
   const blanks = Array.from({ length: firstDay }, (_, i) => i);
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+  const events = useMemo(() => {
+    const map: Record<string, { label: string; color: string }[]> = {};
+    tasks.forEach((task) => {
+      if (!task.due_date) return;
+      const due = new Date(task.due_date);
+      if (due.getFullYear() === year && due.getMonth() === month) {
+        const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(due.getDate()).padStart(2, "0")}`;
+        if (!map[key]) map[key] = [];
+        map[key].push({
+          label: task.title,
+          color: typeColors[task.task_type] || "bg-gray-400",
+        });
+      }
+    });
+    return map;
+  }, [tasks, year, month]);
 
   function prevMonth() {
     setCurrentDate(new Date(year, month - 1, 1));

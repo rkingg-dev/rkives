@@ -2,6 +2,7 @@
 
 import Sidebar from "@/components/layout/Sidebar";
 import Navbar from "@/components/layout/Navbar";
+import CommandPalette from "@/components/layout/CommandPalette";
 import { SidebarProvider, useSidebar } from "@/components/layout/SidebarContext";
 import { motion } from "framer-motion";
 
@@ -17,6 +18,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
         className="md:ml-[220px] min-w-0"
       >
         <Navbar />
+        <CommandPalette />
         <main className="p-4 md:p-8">{children}</main>
       </motion.div>
     </div>

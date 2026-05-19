@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { paymentData, clientData, websiteData } from "@/lib/mock-data";
+import { useSupabaseQuery } from "@/hooks/use-supabase-query";
+import { PageSkeleton } from "@/components/ui/loading-skeleton";
+import { ErrorState } from "@/components/ui/error-state";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, Copy, Pencil, Send, Download, User, Calendar, CreditCard, CheckCircle } from "lucide-react";
 import Link from "next/link";
@@ -21,16 +23,25 @@ const activity = [
 ];
 
 export default function InvoicePage() {
-  const [payment, setPayment] = useState<any>(null);
+  const [paymentId, setPaymentId] = useState<string | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-    if (id) {
-      const found = paymentData.find((p) => p.id === id);
-      setPayment(found || null);
-    }
+    setPaymentId(params.get("id"));
   }, []);
+
+  const { data: payments, loading, error, refetch } = useSupabaseQuery({
+    table: "payments",
+    filters: paymentId ? { id: paymentId } : undefined,
+    enabled: !!paymentId,
+  });
+  const { data: clients } = useSupabaseQuery({ table: "clients" });
+
+  const payment = payments[0] || null;
+  const client = payment ? clients.find((c) => c.id === payment.client_id) : null;
+
+  if (loading && paymentId) return <PageSkeleton />;
+  if (error) return <ErrorState message={error} onRetry={refetch} />;
 
   if (!payment) {
     return (
@@ -41,8 +52,6 @@ export default function InvoicePage() {
     );
   }
 
-  const client = clientData.find((c) => c.id === payment.clientId);
-
   return (
     <div className="space-y-6">
       {/* Top Bar */}
@@ -52,7 +61,7 @@ export default function InvoicePage() {
             <ArrowLeft className="h-5 w-5 text-muted-foreground" />
           </Link>
           <div>
-            <p className="text-xs text-muted-foreground">Invoice #{payment.referenceNumber}</p>
+            <p className="text-xs text-muted-foreground">Invoice #{payment.reference_number}</p>
             <h2 className="text-xl font-bold text-foreground">{client?.name || "Unknown"}</h2>
           </div>
         </div>
@@ -77,11 +86,11 @@ export default function InvoicePage() {
             <div className="flex items-center gap-8 text-sm">
               <div>
                 <span className="text-muted-foreground">Issued on </span>
-                <span className="text-foreground font-medium">{payment.paidAt || "Aug 1, 2024"}</span>
+                <span className="text-foreground font-medium">{payment.paid_at || payment.created_at?.split("T")[0] || "N/A"}</span>
               </div>
               <div>
                 <span className="text-muted-foreground">Due on </span>
-                <span className="text-foreground font-medium">Aug 15, 2024</span>
+                <span className="text-foreground font-medium">{payment.billing_period}</span>
               </div>
             </div>
           </div>
@@ -153,10 +162,10 @@ export default function InvoicePage() {
             <p className="text-2xl font-bold text-foreground mb-4">{"\u20B1"}{payment.amount.toLocaleString()}</p>
             <div className="space-y-3 text-sm">
               <div className="flex items-center gap-2 text-muted-foreground">
-                <User className="h-4 w-4" /> {client?.name}
+                <User className="h-4 w-4" /> {client?.name || "Unknown"}
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
-                <Calendar className="h-4 w-4" /> {payment.paidAt || "Aug 1, 2024"}
+                <Calendar className="h-4 w-4" /> {payment.paid_at || payment.created_at?.split("T")[0] || "N/A"}
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <CreditCard className="h-4 w-4" /> Paid with {payment.method}

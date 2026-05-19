@@ -2,10 +2,32 @@
 
 import { useState } from "react";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signIn } from "@/lib/supabase/auth";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const { error: authError } = await signIn(email, password);
+
+    if (authError) {
+      setError(authError.message);
+      setLoading(false);
+      return;
+    }
+
+    router.push("/dashboard");
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-6">
@@ -23,12 +45,21 @@ export default function LoginPage() {
           <p className="text-sm text-muted-foreground mt-1">Sign in to your workspace</p>
         </div>
 
-        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          {error && (
+            <div className="p-3 rounded-md bg-red-500/10 border border-red-500/20 text-sm text-red-500">
+              {error}
+            </div>
+          )}
+
           <div>
             <label className="text-xs text-muted-foreground uppercase tracking-wider">Email</label>
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="rking@rkives.io"
+              required
               className="mt-1.5 w-full h-11 rounded-md border border-border bg-card px-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[var(--accent-brand)] focus:border-transparent transition-all"
             />
           </div>
@@ -38,7 +69,10 @@ export default function LoginPage() {
             <div className="relative mt-1.5">
               <input
                 type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
+                required
                 className="w-full h-11 rounded-md border border-border bg-card px-4 pr-11 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[var(--accent-brand)] focus:border-transparent transition-all"
               />
               <button
@@ -61,12 +95,13 @@ export default function LoginPage() {
             </button>
           </div>
 
-          <Link
-            href="/dashboard"
-            className="flex items-center justify-center gap-2 w-full h-11 bg-foreground text-primary-foreground rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors"
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex items-center justify-center gap-2 w-full h-11 bg-foreground text-primary-foreground rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors disabled:opacity-50"
           >
-            Sign in <ArrowRight className="h-4 w-4" />
-          </Link>
+            {loading ? "Signing in..." : "Sign in"} <ArrowRight className="h-4 w-4" />
+          </button>
         </form>
 
         <p className="text-center text-xs text-muted-foreground mt-8">

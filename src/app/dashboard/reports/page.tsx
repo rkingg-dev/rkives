@@ -1,7 +1,10 @@
 "use client";
 
+import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { reportData } from "@/lib/mock-data";
+import { useSupabaseQuery } from "@/hooks/use-supabase-query";
+import { PageSkeleton } from "@/components/ui/loading-skeleton";
+import { ErrorState } from "@/components/ui/error-state";
 import { Download, FileText, CheckCircle, Clock } from "lucide-react";
 
 const scheduled = [
@@ -11,6 +14,20 @@ const scheduled = [
 ];
 
 export default function ReportsPage() {
+  const { data: reports, loading: reportsLoading, error: reportsError, refetch: refetchReports } = useSupabaseQuery({ table: "reports", orderBy: { column: "created_at", ascending: false } });
+  const { data: clients, loading: clientsLoading, error: clientsError, refetch: refetchClients } = useSupabaseQuery({ table: "clients" });
+
+  const loading = reportsLoading || clientsLoading;
+  const error = reportsError || clientsError;
+  const refetch = () => { refetchReports(); refetchClients(); };
+
+  const clientMap = useMemo(() => {
+    return Object.fromEntries(clients.map((c) => [c.id, c.name]));
+  }, [clients]);
+
+  if (loading) return <PageSkeleton />;
+  if (error) return <ErrorState message={error} onRetry={refetch} />;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -40,11 +57,11 @@ export default function ReportsPage() {
             </tr>
           </thead>
           <tbody>
-            {reportData.map((r) => (
+            {reports.map((r) => (
               <tr key={r.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
                 <td className="px-5 py-3 font-medium text-foreground">{r.title}</td>
-                <td className="px-5 py-3 text-muted-foreground">{r.client}</td>
-                <td className="px-5 py-3 text-muted-foreground">{r.type}</td>
+                <td className="px-5 py-3 text-muted-foreground">{clientMap[r.client_id] || "—"}</td>
+                <td className="px-5 py-3 text-muted-foreground">{r.report_type}</td>
                 <td className="px-5 py-3 text-muted-foreground">{r.date}</td>
                 <td className="px-5 py-3">
                   <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 w-fit">

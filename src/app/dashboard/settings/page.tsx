@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { User, Link as LinkIcon, CreditCard, Users, Bell, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSupabaseQuery } from "@/hooks/use-supabase-query";
+import { useSupabaseMutation } from "@/hooks/use-supabase-mutation";
+import { toast } from "sonner";
 
 const tabs = [
   { id: "profile", label: "Profile", icon: User },
@@ -25,6 +28,36 @@ const integrations = [
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");
+
+  // Profile data
+  const { data: users } = useSupabaseQuery({ table: "users", limit: 1 });
+  const user = users[0];
+  const { update, loading } = useSupabaseMutation("users");
+
+  const [profileName, setProfileName] = useState("");
+  const [profileEmail, setProfileEmail] = useState("");
+  const [profileCompany, setProfileCompany] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      setProfileName(`${user.first_name} ${user.last_name}`.trim());
+      setProfileEmail(user.email);
+      setProfileCompany(user.company_name);
+    }
+  }, [user]);
+
+  async function handleSaveProfile() {
+    if (!user) return;
+    const [first, ...rest] = profileName.split(" ");
+    const result = await update(user.id, {
+      first_name: first || "",
+      last_name: rest.join(" "),
+      email: profileEmail,
+      company_name: profileCompany,
+    });
+    if (result) toast.success("Profile updated");
+    else toast.error("Failed to update");
+  }
 
   return (
     <div className="space-y-6">
@@ -60,18 +93,37 @@ export default function SettingsPage() {
               <div className="space-y-4 max-w-md">
                 <div>
                   <label className="text-xs text-muted-foreground uppercase tracking-wider">Name</label>
-                  <input type="text" defaultValue="R King Garcia" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                  <input
+                    type="text"
+                    value={profileName}
+                    onChange={(e) => setProfileName(e.target.value)}
+                    className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                  />
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground uppercase tracking-wider">Email</label>
-                  <input type="email" defaultValue="rking@rkives.io" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                  <input
+                    type="email"
+                    value={profileEmail}
+                    onChange={(e) => setProfileEmail(e.target.value)}
+                    className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                  />
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground uppercase tracking-wider">Company</label>
-                  <input type="text" defaultValue="RKives" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                  <input
+                    type="text"
+                    value={profileCompany}
+                    onChange={(e) => setProfileCompany(e.target.value)}
+                    className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                  />
                 </div>
-                <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
-                  Save Changes
+                <button
+                  onClick={handleSaveProfile}
+                  disabled={loading}
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+                >
+                  {loading ? "Saving..." : "Save Changes"}
                 </button>
               </div>
             </motion.div>

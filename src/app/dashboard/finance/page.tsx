@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { monthlyRevenue, expenseBreakdown, personalExpenses, recentTransactions, upcomingCosts, clientMRR, savingsGoals } from "@/lib/finance-data";
+import { monthlyRevenue, expenseBreakdown, personalExpenses, recentTransactions, upcomingCosts, savingsGoals } from "@/lib/finance-data";
+import { useSupabaseQuery } from "@/hooks/use-supabase-query";
 import { cn } from "@/lib/utils";
 import { TrendingUp, Wallet, ArrowUpRight, ArrowDownRight, Shield, Laptop, Plane, PiggyBank } from "lucide-react";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
@@ -15,6 +16,17 @@ export default function FinancePage() {
   const [page, setPage] = useState(1);
   const [tab, setTab] = useState<"all" | "business" | "personal">("all");
   const pageSize = 8;
+
+  const { data: websites } = useSupabaseQuery({ table: "websites" });
+  const { data: clients } = useSupabaseQuery({ table: "clients" });
+
+  const computedMRR = useMemo(() => {
+    return clients.map((c: any) => {
+      const clientWebsites = websites.filter((w: any) => w.client_id === c.id);
+      const monthly = clientWebsites.reduce((sum: number, w: any) => sum + (w.monthly_maintenance_fee || 0), 0);
+      return { client: c.company || c.name, monthly, websites: clientWebsites.length };
+    }).filter((c: any) => c.monthly > 0).sort((a: any, b: any) => b.monthly - a.monthly);
+  }, [clients, websites]);
 
   const filtered = recentTransactions.filter((t) => {
     if (tab === "all") return true;
@@ -202,7 +214,7 @@ export default function FinancePage() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="bg-card rounded-xl border border-border p-5">
             <h3 className="text-sm font-semibold text-foreground mb-3">Client MRR</h3>
             <div className="space-y-2 max-h-[240px] overflow-y-auto scrollbar-hide">
-              {clientMRR.map((c) => (
+              {computedMRR.map((c: any) => (
                 <div key={c.client} className="flex items-center justify-between">
                   <div>
                     <span className="text-sm text-foreground">{c.client}</span>

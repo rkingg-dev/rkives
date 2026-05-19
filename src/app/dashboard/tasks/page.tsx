@@ -2,12 +2,16 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { taskData, websiteData } from "@/lib/mock-data";
+import { useSupabaseQuery } from "@/hooks/use-supabase-query";
+import { useSupabaseMutation } from "@/hooks/use-supabase-mutation";
+import { toast } from "sonner";
+import { PageSkeleton } from "@/components/ui/loading-skeleton";
+import { ErrorState } from "@/components/ui/error-state";
 import { cn } from "@/lib/utils";
-import { CheckCircle, Clock, AlertCircle, Pause, Repeat } from "lucide-react";
-import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerBody, DrawerFooter, DrawerClose } from "@/components/ui/drawer";
-import { Select } from "@/components/ui/select";
+import { CheckCircle, Clock, AlertCircle, Pause, Repeat, Pencil, Trash2 } from "lucide-react";
+import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerBody } from "@/components/ui/drawer";
 import { Pagination } from "@/components/ui/pagination";
+import { TaskForm } from "@/components/forms/TaskForm";
 
 const statusFilters = ["All", "Current Tasks", "Completed"];
 const priorityFilters = ["All", "Urgent", "High", "Medium", "Low"];
@@ -46,6 +50,10 @@ function getPriorityColor(p: string) {
 }
 
 export default function TasksPage() {
+  const { data: tasks, loading, error, refetch } = useSupabaseQuery({ table: "tasks", orderBy: { column: "created_at", ascending: false } });
+  const { data: websites } = useSupabaseQuery({ table: "websites" });
+  const { update, remove } = useSupabaseMutation("tasks");
+
   const [status, setStatus] = useState("All");
   const [priority, setPriority] = useState("All");
   const [type, setType] = useState("All");
@@ -53,15 +61,19 @@ export default function TasksPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [editItem, setEditItem] = useState<any>(null);
+  const [editOpen, setEditOpen] = useState(false);
+
   const filtered = useMemo(() => {
-    return taskData.filter((t) => {
+    return tasks.filter((t) => {
       if (status === "Current Tasks" && t.status === "Done") return false;
       if (status === "Completed" && t.status !== "Done") return false;
       if (priority !== "All" && t.priority !== priority) return false;
-      if (type !== "All" && t.type !== type) return false;
+      if (type !== "All" && t.task_type !== type) return false;
       return true;
     });
-  }, [status, priority, type]);
+  }, [tasks, status, priority, type]);
 
   const totalPages = Math.ceil(filtered.length / pageSize);
   const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);
@@ -81,64 +93,51 @@ export default function TasksPage() {
 
   const allSelected = paginated.length > 0 && paginated.every((t) => selected.includes(t.id));
 
+  async function handleDelete(id: string) {
+    if (!confirm("Are you sure you want to delete this task?")) return;
+    const success = await remove(id);
+    if (success) {
+      toast.success("Task deleted");
+      refetch();
+    } else {
+      toast.error("Failed to delete task");
+    }
+  }
+
+  if (loading) return <PageSkeleton />;
+  if (error) return <ErrorState message={error} onRetry={refetch} />;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-foreground">Tasks</h2>
-        <Drawer>
-          <DrawerTrigger asChild><button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">New Task</button></DrawerTrigger>
+        <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+          <DrawerTrigger asChild>
+            <button onClick={() => setDrawerOpen(true)} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">New Task</button>
+          </DrawerTrigger>
           <DrawerContent>
             <DrawerHeader>
               <DrawerTitle>New Task</DrawerTitle>
               <DrawerDescription>Create a new task for your workflow.</DrawerDescription>
             </DrawerHeader>
             <DrawerBody>
-              <div className="space-y-5">
-                <div>
-                  <label className="text-xs text-muted-foreground uppercase tracking-wider">Title</label>
-                  <input className="mt-1.5 w-full h-10 rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)] focus:border-[var(--accent-brand)]" />
-                </div>
-                <div>
-                  <label className="text-xs text-muted-foreground uppercase tracking-wider">Description</label>
-                  <textarea rows={4} className="mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)] focus:border-[var(--accent-brand)] resize-none" />
-                </div>
-                <div>
-                  <label className="text-xs text-muted-foreground uppercase tracking-wider">Website</label>
-                  <Select className="mt-1.5" options={[{ label: "Personal", value: "personal" }, ...websiteData.map((w) => ({ label: w.name, value: w.id }))]} />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs text-muted-foreground uppercase tracking-wider">Type</label>
-                    <Select className="mt-1.5" options={[{ label: "Bug", value: "bug" }, { label: "Feature", value: "feature" }, { label: "Maintenance", value: "maintenance" }, { label: "Content", value: "content" }, { label: "Personal", value: "personal" }]} />
-                  </div>
-                  <div>
-                    <label className="text-xs text-muted-foreground uppercase tracking-wider">Priority</label>
-                    <Select className="mt-1.5" options={[{ label: "Low", value: "low" }, { label: "Medium", value: "medium" }, { label: "High", value: "high" }, { label: "Urgent", value: "urgent" }]} />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs text-muted-foreground uppercase tracking-wider">Due Date</label>
-                    <input type="date" className="mt-1.5 w-full h-10 rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)] focus:border-[var(--accent-brand)]" />
-                  </div>
-                  <div>
-                    <label className="text-xs text-muted-foreground uppercase tracking-wider">Assigned To</label>
-                    <input defaultValue="R King" className="mt-1.5 w-full h-10 rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)] focus:border-[var(--accent-brand)]" />
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <input type="checkbox" id="recurring" className="rounded" />
-                  <label htmlFor="recurring" className="text-sm text-foreground">Recurring task</label>
-                </div>
-              </div>
+              <TaskForm onSuccess={() => { setDrawerOpen(false); refetch(); }} />
             </DrawerBody>
-            <DrawerFooter>
-              <DrawerClose asChild><button className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Cancel</button></DrawerClose>
-              <DrawerClose asChild><button className="px-5 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">Create Task</button></DrawerClose>
-            </DrawerFooter>
           </DrawerContent>
         </Drawer>
       </div>
+
+      <Drawer open={editOpen} onOpenChange={setEditOpen}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Edit Task</DrawerTitle>
+          </DrawerHeader>
+          <DrawerBody>
+            {editItem && <TaskForm defaultValues={editItem} onSuccess={() => { setEditOpen(false); setEditItem(null); refetch(); }} />}
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex gap-1 bg-card border border-border rounded-lg p-1">
           {statusFilters.map((f) => (
@@ -155,10 +154,44 @@ export default function TasksPage() {
             <button key={t} onClick={() => { setType(t); setPage(1); }} className={cn("px-3 py-1.5 text-sm font-medium rounded-md transition-colors", type === t ? "text-[var(--accent-brand)] font-semibold" : "text-muted-foreground hover:text-foreground")}>{t}</button>
           ))}
         </div>
-        {selected.length > 0 && (
-          <span className="text-xs text-muted-foreground">{selected.length} selected</span>
-        )}
       </div>
+      {selected.length > 0 && (
+        <div className="flex items-center gap-3 px-4 py-2.5 bg-card border border-border rounded-lg">
+          <span className="text-sm text-muted-foreground">{selected.length} selected</span>
+          <div className="flex gap-1">
+            {["To Do", "In Progress", "Done"].map((s) => (
+              <button
+                key={s}
+                onClick={async () => {
+                  for (const id of selected) {
+                    await update(id, { status: s });
+                  }
+                  toast.success(`Updated ${selected.length} tasks to ${s}`);
+                  setSelected([]);
+                  refetch();
+                }}
+                className="px-3 py-1 text-xs font-medium rounded-md bg-muted hover:bg-muted/80 transition-colors"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={async () => {
+              if (!confirm(`Delete ${selected.length} tasks?`)) return;
+              for (const id of selected) {
+                await remove(id);
+              }
+              toast.success(`Deleted ${selected.length} tasks`);
+              setSelected([]);
+              refetch();
+            }}
+            className="px-3 py-1 text-xs font-medium rounded-md text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+          >
+            Delete
+          </button>
+        </div>
+      )}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -174,11 +207,12 @@ export default function TasksPage() {
                 <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
                 <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Due</th>
                 <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider"></th>
+                <th className="px-5 py-3"></th>
               </tr>
             </thead>
             <tbody>
               {paginated.map((task) => {
-                const site = websiteData.find((w) => w.id === task.websiteId);
+                const site = websites.find((w) => w.id === task.website_id);
                 return (
                   <tr key={task.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
                     <td className="px-5 py-3">
@@ -189,15 +223,25 @@ export default function TasksPage() {
                       <div className="text-xs text-muted-foreground truncate max-w-[250px]">{task.description}</div>
                     </td>
                     <td className="px-5 py-3 text-muted-foreground">{site?.name || "Personal"}</td>
-                    <td className="px-5 py-3 text-muted-foreground">{task.type}</td>
+                    <td className="px-5 py-3 text-muted-foreground">{task.task_type}</td>
                     <td className="px-5 py-3"><span className={cn("text-xs font-medium", getPriorityColor(task.priority))}>{task.priority}</span></td>
                     <td className="px-5 py-3">
                       <span className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-md flex items-center gap-1 w-fit", getStatusColor(task.status))}>
                         {getStatusIcon(task.status)} {task.status}
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-muted-foreground">{task.dueDate}</td>
-                    <td className="px-5 py-3">{task.isRecurring && <Repeat className="h-3.5 w-3.5 text-muted-foreground" />}</td>
+                    <td className="px-5 py-3 text-muted-foreground">{task.due_date}</td>
+                    <td className="px-5 py-3">{task.is_recurring && <Repeat className="h-3.5 w-3.5 text-muted-foreground" />}</td>
+                    <td className="px-5 py-3">
+                      <div className="flex items-center gap-2">
+                        <button onClick={() => { setEditItem(task); setEditOpen(true); }} className="p-1.5 rounded-md hover:bg-muted transition-colors">
+                          <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
+                        </button>
+                        <button onClick={() => handleDelete(task.id)} className="p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors">
+                          <Trash2 className="h-3.5 w-3.5 text-red-500" />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 );
               })}

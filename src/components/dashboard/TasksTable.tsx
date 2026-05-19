@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { taskData, websiteData } from "@/lib/mock-data";
+import { useSupabaseQuery } from "@/hooks/use-supabase-query";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { ExternalLink, UserPlus, CheckCircle, Link as LinkIcon, SlidersHorizontal, Paperclip, StickyNote, Repeat } from "lucide-react";
+import { ExternalLink, UserPlus, CheckCircle, SlidersHorizontal, Repeat } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { TableSkeleton } from "@/components/ui/loading-skeleton";
 
 const tabs = ["Task Overview", "Project Timeline", "Maintenance", "Revenue", "Portfolio"];
 
@@ -30,8 +30,8 @@ function getPriorityColor(priority: string) {
   }
 }
 
-function ExpandedRow({ task }: { task: any }) {
-  const site = websiteData.find((w) => w.id === task.websiteId);
+function ExpandedRow({ task, websites }: { task: any; websites: any[] }) {
+  const site = websites.find((w) => w.id === task.website_id);
   return (
     <motion.tr initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="bg-muted/10">
       <td colSpan={7} className="p-0">
@@ -53,15 +53,15 @@ function ExpandedRow({ task }: { task: any }) {
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5">Due Date</p>
-                  <p className="text-sm text-foreground">{task.dueDate}</p>
+                  <p className="text-sm text-foreground">{task.due_date}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5">Type</p>
-                  <p className="text-sm text-foreground">{task.type}</p>
+                  <p className="text-sm text-foreground">{task.task_type}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5">Assigned To</p>
-                  <p className="text-sm text-foreground">{task.assignedTo}</p>
+                  <p className="text-sm text-foreground">{task.assigned_to}</p>
                 </div>
               </div>
             </div>
@@ -85,7 +85,31 @@ function ExpandedRow({ task }: { task: any }) {
 
 export default function TasksTable() {
   const [activeTab, setActiveTab] = useState(0);
-  const [expandedId, setExpandedId] = useState<string | null>("5");
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  const { data: tasks, loading: loadingTasks } = useSupabaseQuery({
+    table: "tasks",
+    orderBy: { column: "created_at", ascending: false },
+    limit: 8,
+  });
+  const { data: websites } = useSupabaseQuery({ table: "websites" });
+
+  if (loadingTasks) {
+    return (
+      <div className="relative">
+        <div className="flex items-end gap-0 overflow-x-auto scrollbar-hide">
+          {tabs.map((tab, i) => (
+            <button key={tab} className={cn("relative px-5 py-2.5 text-[13px] font-medium rounded-t-xl transition-all duration-200 -mb-[1px] whitespace-nowrap", i === 0 ? "bg-card text-foreground border border-border border-b-white dark:border-b-card z-10" : "bg-muted/40 text-muted-foreground border border-transparent")}>
+              {tab}
+            </button>
+          ))}
+        </div>
+        <div className="-mt-[1px]">
+          <TableSkeleton rows={5} columns={6} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="relative">
@@ -119,25 +143,25 @@ export default function TasksTable() {
               </tr>
             </thead>
             <tbody>
-              {taskData.slice(0, 8).map((task) => {
-                const site = websiteData.find((w) => w.id === task.websiteId);
+              {tasks.map((task) => {
+                const site = websites.find((w) => w.id === task.website_id);
                 return (
                   <>
                     <tr key={task.id} className={cn("border-b border-border/50 cursor-pointer transition-colors hover:bg-muted/20", expandedId === task.id && "bg-muted/20")} onClick={() => setExpandedId(expandedId === task.id ? null : task.id)}>
-                      <td className="px-5 py-3 text-foreground font-medium">{task.createdAt}</td>
+                      <td className="px-5 py-3 text-foreground font-medium">{task.created_at?.split("T")[0]}</td>
                       <td className="px-5 py-3 text-foreground">{site?.name || "Personal"}</td>
                       <td className="px-5 py-3 text-muted-foreground">{task.title}</td>
-                      <td className="px-5 py-3 text-foreground">{task.assignedTo}</td>
+                      <td className="px-5 py-3 text-foreground">{task.assigned_to}</td>
                       <td className="px-5 py-3">
                         <span className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-md", getStatusColor(task.status))}>{task.status}</span>
                       </td>
                       <td className="px-5 py-3">
                         <span className={cn("text-xs font-medium", getPriorityColor(task.priority))}>{task.priority}</span>
                       </td>
-                      <td className="px-5 py-3">{task.isRecurring && <Repeat className="h-3.5 w-3.5 text-muted-foreground" />}</td>
+                      <td className="px-5 py-3">{task.is_recurring && <Repeat className="h-3.5 w-3.5 text-muted-foreground" />}</td>
                     </tr>
                     <AnimatePresence>
-                      {expandedId === task.id && <ExpandedRow key={`expanded-${task.id}`} task={task} />}
+                      {expandedId === task.id && <ExpandedRow key={`expanded-${task.id}`} task={task} websites={websites} />}
                     </AnimatePresence>
                   </>
                 );

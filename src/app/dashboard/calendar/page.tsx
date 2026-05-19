@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, Plus, Clock, MapPin, Tag } from "lucide-react";
-import { taskData, websiteData } from "@/lib/mock-data";
+import { ChevronLeft, ChevronRight, Plus, Tag } from "lucide-react";
+import { useSupabaseQuery } from "@/hooks/use-supabase-query";
+import { PageSkeleton } from "@/components/ui/loading-skeleton";
+import { ErrorState } from "@/components/ui/error-state";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter, ModalClose } from "@/components/ui/modal";
 import { Select } from "@/components/ui/select";
 
@@ -20,43 +22,23 @@ function getFirstDayOfMonth(year: number, month: number) {
   return new Date(year, month, 1).getDay();
 }
 
-// Events from tasks
-function getEvents(year: number, month: number) {
-  const events: Record<string, { title: string; website: string; type: string; color: string }[]> = {};
-
-  taskData.forEach((task) => {
-    const dueDate = new Date(task.dueDate);
-    if (dueDate.getFullYear() === year && dueDate.getMonth() === month) {
-      const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(dueDate.getDate()).padStart(2, "0")}`;
-      const site = websiteData.find((w) => w.id === task.websiteId);
-      const colors: Record<string, string> = {
-        "Bug": "bg-red-500",
-        "Feature": "bg-[var(--accent-brand)]",
-        "Maintenance": "bg-amber-500",
-        "Content": "bg-blue-500",
-        "Personal": "bg-purple-500",
-      };
-      if (!events[key]) events[key] = [];
-      events[key].push({
-        title: task.title,
-        website: site?.name || "Personal",
-        type: task.type,
-        color: colors[task.type] || "bg-gray-400",
-      });
-    }
-  });
-
-  // Add recurring invoice on 1st
-  const invoiceKey = `${year}-${String(month + 1).padStart(2, "0")}-01`;
-  if (!events[invoiceKey]) events[invoiceKey] = [];
-  events[invoiceKey].push({ title: "Send monthly invoices", website: "All Clients", type: "Personal", color: "bg-emerald-500" });
-
-  return events;
-}
+const typeColors: Record<string, string> = {
+  "Bug": "bg-red-500",
+  "Feature": "bg-[var(--accent-brand)]",
+  "Maintenance": "bg-amber-500",
+  "Content": "bg-blue-500",
+  "Personal": "bg-purple-500",
+};
 
 export default function CalendarPage() {
-  const [currentDate, setCurrentDate] = useState(new Date(2024, 7, 1));
-  const [selectedDate, setSelectedDate] = useState<string | null>("2024-08-05");
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  const { data: tasks, loading: loadingTasks, error: errorTasks, refetch: refetchTasks } = useSupabaseQuery({
+    table: "tasks",
+    orderBy: { column: "due_date", ascending: true },
+  });
+  const { data: websites } = useSupabaseQuery({ table: "websites" });
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -64,7 +46,26 @@ export default function CalendarPage() {
   const firstDay = getFirstDayOfMonth(year, month);
   const today = new Date();
   const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
-  const events = getEvents(year, month);
+
+  const events = useMemo(() => {
+    const map: Record<string, { title: string; website: string; type: string; color: string }[]> = {};
+    tasks.forEach((task) => {
+      if (!task.due_date) return;
+      const dueDate = new Date(task.due_date);
+      if (dueDate.getFullYear() === year && dueDate.getMonth() === month) {
+        const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(dueDate.getDate()).padStart(2, "0")}`;
+        const site = websites.find((w) => w.id === task.website_id);
+        if (!map[key]) map[key] = [];
+        map[key].push({
+          title: task.title,
+          website: site?.name || "Personal",
+          type: task.task_type,
+          color: typeColors[task.task_type] || "bg-gray-400",
+        });
+      }
+    });
+    return map;
+  }, [tasks, websites, year, month]);
 
   const blanks = Array.from({ length: firstDay }, (_, i) => i);
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
@@ -73,6 +74,9 @@ export default function CalendarPage() {
   function nextMonth() { setCurrentDate(new Date(year, month + 1, 1)); }
 
   const selectedEvents = selectedDate ? events[selectedDate] || [] : [];
+
+  if (loadingTasks) return <PageSkeleton />;
+  if (errorTasks) return <ErrorState message={errorTasks} onRetry={refetchTasks} />;
 
   return (
     <div className="space-y-6">
@@ -88,7 +92,7 @@ export default function CalendarPage() {
                 <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Date</label><input type="date" className="mt-1.5 w-full h-10 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)]" /></div>
                 <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Time</label><input type="time" className="mt-1.5 w-full h-10 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)]" /></div>
               </div>
-              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Website</label><Select className="mt-1.5" options={[{ label: "Personal", value: "personal" }, ...websiteData.map((w) => ({ label: w.name, value: w.id }))]} /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Website</label><Select className="mt-1.5" options={[{ label: "Personal", value: "personal" }, ...websites.map((w) => ({ label: w.name, value: w.id }))]} /></div>
               <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Type</label><Select className="mt-1.5" options={[{ label: "Task", value: "task" }, { label: "Meeting", value: "meeting" }, { label: "Deadline", value: "deadline" }, { label: "Invoice", value: "invoice" }, { label: "Personal", value: "personal" }]} /></div>
               <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Notes</label><textarea rows={3} className="mt-1.5 w-full rounded-md border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)] resize-none" /></div>
             </div>

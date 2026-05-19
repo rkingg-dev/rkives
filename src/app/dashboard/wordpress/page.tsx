@@ -2,7 +2,9 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { wpUpdateData, websiteData } from "@/lib/mock-data";
+import { useSupabaseQuery } from "@/hooks/use-supabase-query";
+import { PageSkeleton } from "@/components/ui/loading-skeleton";
+import { ErrorState } from "@/components/ui/error-state";
 import { cn } from "@/lib/utils";
 import { RefreshCw, AlertTriangle, ArrowUpCircle } from "lucide-react";
 import { Pagination } from "@/components/ui/pagination";
@@ -16,22 +18,32 @@ export default function WordpressPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const wpSites = Array.from(new Set(wpUpdateData.map((u) => u.websiteId)));
-  const siteOptions = [{ label: "All Websites", value: "all" }, ...wpSites.map((id) => ({ label: websiteData.find((w) => w.id === id)?.name || id, value: id }))];
+  const { data: wpUpdates, loading: updatesLoading, error: updatesError, refetch: refetchUpdates } = useSupabaseQuery({ table: "wp_updates", orderBy: { column: "last_checked", ascending: false } });
+  const { data: websites, loading: websitesLoading, error: websitesError, refetch: refetchWebsites } = useSupabaseQuery({ table: "websites" });
+
+  const loading = updatesLoading || websitesLoading;
+  const error = updatesError || websitesError;
+  const refetch = () => { refetchUpdates(); refetchWebsites(); };
+
+  const wpSiteIds = useMemo(() => Array.from(new Set(wpUpdates.map((u) => u.website_id))), [wpUpdates]);
+  const siteOptions = useMemo(() => [{ label: "All Websites", value: "all" }, ...wpSiteIds.map((id) => ({ label: websites.find((w) => w.id === id)?.name || id, value: id }))], [wpSiteIds, websites]);
 
   const filtered = useMemo(() => {
-    return wpUpdateData.filter((u) => {
-      if (siteFilter !== "all" && u.websiteId !== siteFilter) return false;
+    return wpUpdates.filter((u) => {
+      if (siteFilter !== "all" && u.website_id !== siteFilter) return false;
       if (filter === "All") return true;
-      return u.itemType === filter;
+      return u.item_type === filter;
     });
-  }, [filter, siteFilter]);
+  }, [wpUpdates, filter, siteFilter]);
 
   const totalPages = Math.ceil(filtered.length / pageSize);
   const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);
 
-  const totalUpdates = wpUpdateData.filter((u) => u.status !== "Up-to-date").length;
-  const critical = wpUpdateData.filter((u) => u.status === "Critical").length;
+  const totalUpdates = wpUpdates.filter((u) => u.status !== "Up-to-date").length;
+  const critical = wpUpdates.filter((u) => u.status === "Critical").length;
+
+  if (loading) return <PageSkeleton />;
+  if (error) return <ErrorState message={error} onRetry={refetch} />;
 
   return (
     <div className="space-y-6">
@@ -52,9 +64,9 @@ export default function WordpressPage() {
 
       {/* Site Summary */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-        {wpSites.map((siteId) => {
-          const site = websiteData.find((w) => w.id === siteId);
-          const updates = wpUpdateData.filter((u) => u.websiteId === siteId);
+        {wpSiteIds.map((siteId) => {
+          const site = websites.find((w) => w.id === siteId);
+          const updates = wpUpdates.filter((u) => u.website_id === siteId);
           const hasUpdates = updates.some((u) => u.status !== "Up-to-date");
           return (
             <div key={siteId} className={cn("bg-card rounded-xl border p-4 cursor-pointer transition-colors hover:border-[var(--accent-brand)]", hasUpdates ? "border-amber-300 dark:border-amber-500/30" : "border-border")}>
@@ -94,21 +106,21 @@ export default function WordpressPage() {
             </thead>
             <tbody>
               {paginated.map((item) => {
-                const site = websiteData.find((w) => w.id === item.websiteId);
+                const site = websites.find((w) => w.id === item.website_id);
                 return (
                   <tr key={item.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
                     <td className="px-5 py-3 text-foreground font-medium">{site?.name}</td>
-                    <td className="px-5 py-3 text-muted-foreground">{item.itemType}</td>
-                    <td className="px-5 py-3 text-foreground">{item.itemName}</td>
-                    <td className="px-5 py-3 text-muted-foreground font-mono text-xs">{item.currentVersion}</td>
-                    <td className="px-5 py-3 text-foreground font-mono text-xs">{item.latestVersion}</td>
+                    <td className="px-5 py-3 text-muted-foreground">{item.item_type}</td>
+                    <td className="px-5 py-3 text-foreground">{item.item_name}</td>
+                    <td className="px-5 py-3 text-muted-foreground font-mono text-xs">{item.current_version}</td>
+                    <td className="px-5 py-3 text-foreground font-mono text-xs">{item.latest_version}</td>
                     <td className="px-5 py-3">
                       <span className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-md", item.status === "Up-to-date" ? "text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10" : item.status === "Critical" ? "text-red-500 bg-red-50 dark:bg-red-500/10" : "text-amber-500 bg-amber-50 dark:bg-amber-500/10")}>
                         {item.status}
                       </span>
                     </td>
                     <td className="px-5 py-3">
-                      <span className={cn("text-xs", item.autoUpdate ? "text-emerald-500" : "text-muted-foreground")}>{item.autoUpdate ? "On" : "Off"}</span>
+                      <span className={cn("text-xs", item.auto_update ? "text-emerald-500" : "text-muted-foreground")}>{item.auto_update ? "On" : "Off"}</span>
                     </td>
                     <td className="px-5 py-3">
                       {item.status !== "Up-to-date" && (
