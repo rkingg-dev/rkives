@@ -6,12 +6,13 @@ import { monthlyRevenue, expenseBreakdown, personalExpenses, savingsGoals as def
 import { useSupabaseQuery } from "@/hooks/use-supabase-query";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { Wallet, TrendingUp, PiggyBank, Plus, Pencil, Trash2 } from "lucide-react";
+import { Wallet, TrendingUp, PiggyBank, Plus, Pencil, Trash2, Plane, Laptop, Shield, Car, GraduationCap, Home, Gift, Heart, Zap } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Pagination } from "@/components/ui/pagination";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription } from "@/components/ui/modal";
 
-const goalIcons: Record<string, React.ElementType> = { shield: Wallet, laptop: TrendingUp, plane: PiggyBank };
+const goalIcons: Record<string, React.ElementType> = { shield: Shield, laptop: Laptop, plane: Plane, car: Car, graduation: GraduationCap, home: Home, gift: Gift, heart: Heart, zap: Zap, wallet: Wallet, piggybank: PiggyBank, trending: TrendingUp };
+const iconOptions = Object.entries(goalIcons);
 
 const personalBudget = [
   { name: "Rent", limit: 12000, color: "bg-foreground" },
@@ -30,7 +31,7 @@ export default function FinancePage() {
   const [goals, setGoals] = useState(defaultSavingsGoals);
   const [goalsModalOpen, setGoalsModalOpen] = useState(false);
   const [editingGoal, setEditingGoal] = useState<number | null>(null);
-  const [goalForm, setGoalForm] = useState({ name: "", target: "", current: "" });
+  const [goalForm, setGoalForm] = useState({ name: "", target: "", current: "", icon: "shield" });
   const pageSize = 10;
 
   const { data: websites } = useSupabaseQuery({ table: "websites" });
@@ -329,7 +330,9 @@ export default function FinancePage() {
               <h3 className="text-sm font-semibold text-foreground">Savings Goals</h3>
               <Modal open={goalsModalOpen} onOpenChange={setGoalsModalOpen}>
                 <ModalTrigger asChild>
-                  <button onClick={() => { setEditingGoal(null); setGoalForm({ name: "", target: "", current: "" }); }} className="text-xs text-muted-foreground hover:text-foreground transition-colors">Edit Goals</button>
+                  <button onClick={() => { setEditingGoal(null); setGoalForm({ name: "", target: "", current: "", icon: "shield" }); }} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-muted rounded-lg hover:bg-muted/80 transition-colors">
+                    <Plus className="h-3 w-3" /> Edit Goals
+                  </button>
                 </ModalTrigger>
                 <ModalContent>
                   <ModalHeader>
@@ -338,13 +341,31 @@ export default function FinancePage() {
                   </ModalHeader>
                   <div className="space-y-4">
                     {/* Goal form */}
-                    <div className="flex gap-2">
-                      <input type="text" placeholder="Goal name" value={goalForm.name} onChange={(e) => setGoalForm({ ...goalForm, name: e.target.value })} className="flex-1 h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
-                      <input type="number" placeholder="Target" value={goalForm.target} onChange={(e) => setGoalForm({ ...goalForm, target: e.target.value })} className="w-24 h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
-                      <input type="number" placeholder="Current" value={goalForm.current} onChange={(e) => setGoalForm({ ...goalForm, current: e.target.value })} className="w-24 h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                    <div className="space-y-3">
+                      <div className="flex gap-2">
+                        <input type="text" placeholder="Goal name" value={goalForm.name} onChange={(e) => setGoalForm({ ...goalForm, name: e.target.value })} className="flex-1 h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                        <input type="number" placeholder="Target" value={goalForm.target} onChange={(e) => setGoalForm({ ...goalForm, target: e.target.value })} className="w-24 h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                        <input type="number" placeholder="Current" value={goalForm.current} onChange={(e) => setGoalForm({ ...goalForm, current: e.target.value })} className="w-24 h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                      </div>
+                      {/* Icon picker */}
+                      <div>
+                        <label className="text-xs text-muted-foreground uppercase tracking-wider">Icon</label>
+                        <div className="flex flex-wrap gap-1.5 mt-1">
+                          {iconOptions.map(([key, Icon]) => (
+                            <button
+                              key={key}
+                              type="button"
+                              onClick={() => setGoalForm({ ...goalForm, icon: key })}
+                              className={cn("p-2 rounded-md border transition-colors", goalForm.icon === key ? "border-foreground bg-muted" : "border-border hover:bg-muted/50")}
+                            >
+                              <Icon className="h-4 w-4 text-foreground" />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                       <button onClick={() => {
                         if (!goalForm.name || !goalForm.target) { toast.error("Fill in name and target"); return; }
-                        const newGoal = { name: goalForm.name, target: Number(goalForm.target), current: Number(goalForm.current) || 0, icon: "shield" };
+                        const newGoal = { name: goalForm.name, target: Number(goalForm.target), current: Number(goalForm.current) || 0, icon: goalForm.icon || "shield" };
                         if (editingGoal !== null) {
                           const updated = [...goals];
                           updated[editingGoal] = newGoal;
@@ -354,10 +375,10 @@ export default function FinancePage() {
                           setGoals([...goals, newGoal]);
                           toast.success("Goal added");
                         }
-                        setGoalForm({ name: "", target: "", current: "" });
+                        setGoalForm({ name: "", target: "", current: "", icon: "shield" });
                         setEditingGoal(null);
-                      }} className="px-3 h-9 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors shrink-0">
-                        {editingGoal !== null ? "Update" : "Add"}
+                      }} className="w-full px-3 h-9 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors">
+                        {editingGoal !== null ? "Update Goal" : "Add Goal"}
                       </button>
                     </div>
                     {/* Goals table */}
@@ -385,7 +406,7 @@ export default function FinancePage() {
                                 <td className="px-3 py-2 text-right text-muted-foreground">{pct}%</td>
                                 <td className="px-3 py-2 text-right">
                                   <div className="flex items-center justify-end gap-1">
-                                    <button onClick={() => { setEditingGoal(i); setGoalForm({ name: g.name, target: String(g.target), current: String(g.current) }); }} className="p-1 rounded hover:bg-muted transition-colors"><Pencil className="h-3 w-3 text-muted-foreground" /></button>
+                                    <button onClick={() => { setEditingGoal(i); setGoalForm({ name: g.name, target: String(g.target), current: String(g.current), icon: g.icon || "shield" }); }} className="p-1 rounded hover:bg-muted transition-colors"><Pencil className="h-3 w-3 text-muted-foreground" /></button>
                                     <button onClick={() => { setGoals(goals.filter((_, j) => j !== i)); toast.success("Goal removed"); }} className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"><Trash2 className="h-3 w-3 text-red-500" /></button>
                                   </div>
                                 </td>
