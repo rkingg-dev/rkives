@@ -21,6 +21,7 @@ import {
   Clipboard,
   RefreshCw,
   X,
+  Wallet,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
@@ -43,6 +44,7 @@ const iconMap: Record<string, React.ElementType> = {
   scroll: ScrollText,
   clipboard: Clipboard,
   refresh: RefreshCw,
+  wallet: Wallet,
 };
 
 const mainNav = [
@@ -54,6 +56,7 @@ const mainNav = [
   { label: "WordPress", icon: "refresh", href: "/dashboard/wordpress" },
   { label: "Passwords", icon: "shield", href: "/dashboard/passwords" },
   { label: "Payments", icon: "credit", href: "/dashboard/payments" },
+  { label: "Finance", icon: "wallet", href: "/dashboard/finance" },
   { label: "Changelog", icon: "scroll", href: "/dashboard/changelog" },
   { label: "Notes", icon: "note", href: "/dashboard/notes" },
   { label: "Pastebin", icon: "code", href: "/dashboard/pastebin" },
