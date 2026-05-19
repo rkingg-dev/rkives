@@ -14,7 +14,7 @@ const maintenanceBarData = [
   { month: "Sep", value: 3 },
 ];
 
-function MaintenanceWidget() {
+export function MaintenanceWidget() {
   const { data: websites, loading } = useSupabaseQuery({ table: "websites" });
 
   const thirtyDaysFromNow = new Date();

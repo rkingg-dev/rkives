@@ -5,7 +5,8 @@ import { CheckSquare, CreditCard } from "lucide-react";
 import KpiTabs from "@/components/dashboard/KpiTabs";
 import TrendsChart from "@/components/dashboard/TrendsChart";
 import TasksTable from "@/components/dashboard/TasksTable";
-import WorkspaceWidgets from "@/components/dashboard/WorkspaceWidgets";
+import MiniCalendar from "@/components/dashboard/MiniCalendar";
+import { MaintenanceWidget } from "@/components/dashboard/WorkspaceWidgets";
 
 export default function DashboardPage() {
   const { data: recentTasks } = useSupabaseQuery({ table: "tasks", orderBy: { column: "created_at", ascending: false }, limit: 5 });
@@ -43,7 +44,7 @@ export default function DashboardPage() {
 
       {/* Right Sidebar */}
       <div className="w-full xl:w-[280px] shrink-0 space-y-4">
-        <WorkspaceWidgets />
+        <MiniCalendar />
         <div className="bg-card rounded-xl border border-border shadow-sm p-5">
           <h3 className="text-sm font-semibold text-foreground mb-4">Recent Activity</h3>
           {activity.length === 0 ? (
@@ -65,6 +66,7 @@ export default function DashboardPage() {
           </div>
           )}
         </div>
+        <MaintenanceWidget />
       </div>
     </div>
   );
