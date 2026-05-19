@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSupabaseQuery } from "@/hooks/use-supabase-query";
 import { CheckSquare, CreditCard } from "lucide-react";
+import { toast } from "sonner";
 import KpiTabs from "@/components/dashboard/KpiTabs";
 import TrendsChart from "@/components/dashboard/TrendsChart";
 import TasksTable from "@/components/dashboard/TasksTable";
