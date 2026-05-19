@@ -1,20 +1,16 @@
 "use client";
 
-import { use } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { clientData, websiteData } from "@/lib/mock-data";
-import { paymentData } from "@/lib/mock-data";
+import { paymentData, clientData, websiteData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
-import { ArrowLeft, Copy, Pencil, Send, Download, MessageCircle, User, Calendar, CreditCard, CheckCircle } from "lucide-react";
+import { ArrowLeft, Copy, Pencil, Send, Download, User, Calendar, CreditCard, CheckCircle } from "lucide-react";
 import Link from "next/link";
 
-// Merge payments for lookup
-const allPayments = [...paymentData];
-
 const invoiceItems = [
-  { description: "Monthly maintenance — Website hosting management, security updates, and content changes", hours: 1, rate: 12000, amount: 12000 },
-  { description: "SEO optimization — Blog content, meta tags, and performance improvements", hours: 1, rate: 0, amount: 0 },
-  { description: "SSL certificate renewal and DNS management", hours: 1, rate: 0, amount: 0 },
+  { description: "Monthly maintenance — Website hosting management, security updates, and content changes", qty: 1, rate: 12000, amount: 12000 },
+  { description: "SEO optimization — Blog content, meta tags, and performance improvements", qty: 1, rate: 0, amount: 0 },
+  { description: "SSL certificate renewal and DNS management", qty: 1, rate: 0, amount: 0 },
 ];
 
 const activity = [
@@ -24,9 +20,17 @@ const activity = [
   { user: "Client", action: "paid the invoice.", time: "Aug 3, 2024", avatar: "", paid: true },
 ];
 
-export default function InvoicePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
-  const payment = allPayments.find((p) => p.id === id);
+export default function InvoicePage() {
+  const [payment, setPayment] = useState<any>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    if (id) {
+      const found = paymentData.find((p) => p.id === id);
+      setPayment(found || null);
+    }
+  }, []);
 
   if (!payment) {
     return (
@@ -38,7 +42,6 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
   }
 
   const client = clientData.find((c) => c.id === payment.clientId);
-  const site = websiteData.find((w) => w.id === payment.websiteId);
 
   return (
     <div className="space-y-6">
@@ -111,9 +114,9 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
                 <div className="col-span-6">
                   <p className="text-sm text-foreground">{item.description}</p>
                 </div>
-                <div className="col-span-2 text-right text-sm text-muted-foreground">{item.hours}</div>
-                <div className="col-span-2 text-right text-sm text-muted-foreground">{item.rate > 0 ? `₱${item.rate.toLocaleString()}` : "Included"}</div>
-                <div className="col-span-2 text-right text-sm font-medium text-foreground">{item.amount > 0 ? `₱${item.amount.toLocaleString()}` : "—"}</div>
+                <div className="col-span-2 text-right text-sm text-muted-foreground">{item.qty}</div>
+                <div className="col-span-2 text-right text-sm text-muted-foreground">{item.rate > 0 ? `{"\u20B1"}${item.rate.toLocaleString()}` : "Included"}</div>
+                <div className="col-span-2 text-right text-sm font-medium text-foreground">{item.amount > 0 ? `{"\u20B1"}${item.amount.toLocaleString()}` : "\u2014"}</div>
               </div>
             ))}
           </div>
@@ -123,15 +126,15 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
             <div className="w-64 space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span className="text-foreground">₱{payment.amount.toLocaleString()}</span>
+                <span className="text-foreground">{"\u20B1"}{payment.amount.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Tax (0%)</span>
-                <span className="text-foreground">₱0</span>
+                <span className="text-foreground">{"\u20B1"}0</span>
               </div>
               <div className="flex justify-between text-sm font-bold pt-2 border-t border-border">
                 <span className="text-foreground">Total</span>
-                <span className="text-foreground">₱{payment.amount.toLocaleString()}</span>
+                <span className="text-foreground">{"\u20B1"}{payment.amount.toLocaleString()}</span>
               </div>
             </div>
           </div>
@@ -147,7 +150,7 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
                 {payment.status}
               </span>
             </div>
-            <p className="text-2xl font-bold text-foreground mb-4">₱{payment.amount.toLocaleString()}</p>
+            <p className="text-2xl font-bold text-foreground mb-4">{"\u20B1"}{payment.amount.toLocaleString()}</p>
             <div className="space-y-3 text-sm">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <User className="h-4 w-4" /> {client?.name}
