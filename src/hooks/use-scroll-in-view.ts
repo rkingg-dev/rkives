@@ -7,7 +7,7 @@ export function useScrollInView(
   options?: { amount?: number }
 ) {
   const itemRef = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(false);
+  const [distToCenter, setDistToCenter] = useState(Infinity);
 
   useEffect(() => {
     const container = scrollRef?.current;
@@ -18,21 +18,13 @@ export function useScrollInView(
 
     function check() {
       if (!container || !item) return;
-      const containerRect = container!.getBoundingClientRect();
-      const itemRect = item!.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const itemRect = item.getBoundingClientRect();
 
-      // Item top relative to the scroll container's visible area
-      const itemTop = itemRect.top - containerRect.top;
-      const itemBottom = itemRect.bottom - containerRect.top;
-      const containerHeight = containerRect.height;
+      const containerCenter = containerRect.top + containerRect.height / 2;
+      const itemCenter = itemRect.top + itemRect.height / 2;
 
-      // Consider "in view" when the item's center is within the visible area
-      const itemCenter = (itemTop + itemBottom) / 2;
-      const threshold = containerHeight * (options?.amount ?? 0.3);
-
-      setIsInView(
-        itemCenter > threshold && itemCenter < containerHeight - threshold
-      );
+      setDistToCenter(Math.abs(itemCenter - containerCenter));
     }
 
     check();
@@ -45,7 +37,7 @@ export function useScrollInView(
       container.removeEventListener("scroll", check);
       window.removeEventListener("resize", check);
     };
-  }, [scrollRef, options?.amount]);
+  }, [scrollRef]);
 
-  return { ref: itemRef, isInView };
+  return { ref: itemRef, distToCenter };
 }

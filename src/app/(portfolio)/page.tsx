@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -438,30 +438,29 @@ function formatDate(date: string) {
 function FocusItem({
   children,
   index,
-  focusOnly = true,
-  onActive,
+  onDist,
 }: {
   children: React.ReactNode
   index: number
-  focusOnly?: boolean
-  onActive?: (index: number) => void
+  onDist?: (index: number, dist: number) => void
 }) {
   let scrollRef = useScrollContainer()
-  let { ref, isInView } = useScrollInView(scrollRef, { amount: 0.2 })
+  let { ref, distToCenter } = useScrollInView(scrollRef)
 
   useEffect(() => {
-    if (isInView) onActive?.(index)
-  }, [isInView, index, onActive])
+    onDist?.(index, distToCenter)
+  }, [distToCenter, index, onDist])
+
+  let isActive = distToCenter < 300
 
   return (
     <div
       ref={ref}
       className="transition-all duration-500 ease-out group"
       style={{
-        opacity: isInView ? 1 : 0.2,
-        transform: isInView ? "translateY(0)" : "translateY(20px)",
-        filter: isInView ? "blur(0px)" : "blur(4px)",
-        transitionDelay: `${Math.min(index, 5) * 50}ms`,
+        opacity: isActive ? 1 : 0.25,
+        transform: isActive ? "translateY(0)" : "translateY(12px)",
+        filter: isActive ? "blur(0px)" : "blur(3px)",
       }}
     >
       {children}
@@ -616,14 +615,23 @@ function PortfolioList({
   onPageChange: (page: number) => void
 }) {
   let [activeIndex, setActiveIndex] = useState(0)
-  let handleActive = useCallback((i: number) => setActiveIndex(i), [])
+  let dists = useRef<number[]>(new Array(items.length).fill(Infinity))
+
+  let handleDist = useCallback((index: number, dist: number) => {
+    dists.current[index] = dist
+    let minIdx = 0
+    for (let i = 1; i < dists.current.length; i++) {
+      if (dists.current[i] < dists.current[minIdx]) minIdx = i
+    }
+    setActiveIndex(minIdx)
+  }, [])
 
   return (
     <ContentShell>
       <ThumbnailStrip items={items} activeIndex={activeIndex} />
       <div className="space-y-14 lg:pt-[18vh] lg:pb-[38vh]">
         {items.map((item, index) => (
-          <FocusItem key={item.slug} index={index} onActive={handleActive}>
+          <FocusItem key={item.slug} index={index} onDist={handleDist}>
             <button
               type="button"
               onClick={() => onOpen(item.slug)}
