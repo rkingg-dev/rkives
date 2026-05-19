@@ -2,15 +2,14 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { monthlyRevenue, expenseBreakdown, personalExpenses, savingsGoals } from "@/lib/finance-data";
+import { monthlyRevenue, expenseBreakdown, personalExpenses, savingsGoals as defaultSavingsGoals } from "@/lib/finance-data";
 import { useSupabaseQuery } from "@/hooks/use-supabase-query";
-import { useSupabaseMutation } from "@/hooks/use-supabase-mutation";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { Wallet, TrendingUp, ArrowDownRight, PiggyBank, Plus } from "lucide-react";
+import { Wallet, TrendingUp, PiggyBank, Plus, Pencil, Trash2 } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Pagination } from "@/components/ui/pagination";
-import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalClose } from "@/components/ui/modal";
+import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription } from "@/components/ui/modal";
 
 const goalIcons: Record<string, React.ElementType> = { shield: Wallet, laptop: TrendingUp, plane: PiggyBank };
 
@@ -28,6 +27,10 @@ export default function FinancePage() {
   const [tab, setTab] = useState<"all" | "business" | "personal">("all");
   const [expenseModalOpen, setExpenseModalOpen] = useState(false);
   const [expenseForm, setExpenseForm] = useState({ description: "", amount: "", category: "Other Business", type: "business" as "business" | "personal", receipt: null as File | null });
+  const [goals, setGoals] = useState(defaultSavingsGoals);
+  const [goalsModalOpen, setGoalsModalOpen] = useState(false);
+  const [editingGoal, setEditingGoal] = useState<number | null>(null);
+  const [goalForm, setGoalForm] = useState({ name: "", target: "", current: "" });
   const pageSize = 10;
 
   const { data: websites } = useSupabaseQuery({ table: "websites" });
@@ -322,13 +325,86 @@ export default function FinancePage() {
         <div className="space-y-4">
           {/* Savings Goals */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-card rounded-xl border border-border p-5">
-            <h3 className="text-sm font-semibold text-foreground mb-3">Savings Goals</h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-foreground">Savings Goals</h3>
+              <Modal open={goalsModalOpen} onOpenChange={setGoalsModalOpen}>
+                <ModalTrigger asChild>
+                  <button onClick={() => { setEditingGoal(null); setGoalForm({ name: "", target: "", current: "" }); }} className="text-xs text-muted-foreground hover:text-foreground transition-colors">Edit Goals</button>
+                </ModalTrigger>
+                <ModalContent>
+                  <ModalHeader>
+                    <ModalTitle>Savings Goals</ModalTitle>
+                    <ModalDescription>Add, edit, or remove savings goals.</ModalDescription>
+                  </ModalHeader>
+                  <div className="space-y-4">
+                    {/* Goal form */}
+                    <div className="flex gap-2">
+                      <input type="text" placeholder="Goal name" value={goalForm.name} onChange={(e) => setGoalForm({ ...goalForm, name: e.target.value })} className="flex-1 h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                      <input type="number" placeholder="Target" value={goalForm.target} onChange={(e) => setGoalForm({ ...goalForm, target: e.target.value })} className="w-24 h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                      <input type="number" placeholder="Current" value={goalForm.current} onChange={(e) => setGoalForm({ ...goalForm, current: e.target.value })} className="w-24 h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                      <button onClick={() => {
+                        if (!goalForm.name || !goalForm.target) { toast.error("Fill in name and target"); return; }
+                        const newGoal = { name: goalForm.name, target: Number(goalForm.target), current: Number(goalForm.current) || 0, icon: "shield" };
+                        if (editingGoal !== null) {
+                          const updated = [...goals];
+                          updated[editingGoal] = newGoal;
+                          setGoals(updated);
+                          toast.success("Goal updated");
+                        } else {
+                          setGoals([...goals, newGoal]);
+                          toast.success("Goal added");
+                        }
+                        setGoalForm({ name: "", target: "", current: "" });
+                        setEditingGoal(null);
+                      }} className="px-3 h-9 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors shrink-0">
+                        {editingGoal !== null ? "Update" : "Add"}
+                      </button>
+                    </div>
+                    {/* Goals table */}
+                    <div className="border border-border rounded-lg overflow-hidden">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-border bg-muted/50">
+                            <th className="text-left px-3 py-2 text-xs font-medium text-muted-foreground">Goal</th>
+                            <th className="text-right px-3 py-2 text-xs font-medium text-muted-foreground">Target</th>
+                            <th className="text-right px-3 py-2 text-xs font-medium text-muted-foreground">Current</th>
+                            <th className="text-right px-3 py-2 text-xs font-medium text-muted-foreground">Progress</th>
+                            <th className="text-right px-3 py-2 text-xs font-medium text-muted-foreground"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {goals.length === 0 ? (
+                            <tr><td colSpan={5} className="px-3 py-4 text-center text-xs text-muted-foreground">No goals yet</td></tr>
+                          ) : goals.map((g, i) => {
+                            const pct = g.target > 0 ? ((g.current / g.target) * 100).toFixed(0) : "0";
+                            return (
+                              <tr key={i} className="border-b border-border/50 last:border-0">
+                                <td className="px-3 py-2 font-medium text-foreground">{g.name}</td>
+                                <td className="px-3 py-2 text-right text-muted-foreground">₱{g.target.toLocaleString()}</td>
+                                <td className="px-3 py-2 text-right text-muted-foreground">₱{g.current.toLocaleString()}</td>
+                                <td className="px-3 py-2 text-right text-muted-foreground">{pct}%</td>
+                                <td className="px-3 py-2 text-right">
+                                  <div className="flex items-center justify-end gap-1">
+                                    <button onClick={() => { setEditingGoal(i); setGoalForm({ name: g.name, target: String(g.target), current: String(g.current) }); }} className="p-1 rounded hover:bg-muted transition-colors"><Pencil className="h-3 w-3 text-muted-foreground" /></button>
+                                    <button onClick={() => { setGoals(goals.filter((_, j) => j !== i)); toast.success("Goal removed"); }} className="p-1 rounded hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"><Trash2 className="h-3 w-3 text-red-500" /></button>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </ModalContent>
+              </Modal>
+            </div>
             <div className="space-y-4">
-              {savingsGoals.map((g) => {
+              {goals.map((g, i) => {
                 const Icon = goalIcons[g.icon] || Wallet;
                 const progress = Math.min((g.current / g.target * 100), 100).toFixed(0);
                 return (
-                  <div key={g.name}>
+                  <div key={i}>
                     <div className="flex items-center justify-between mb-1.5">
                       <div className="flex items-center gap-2">
                         <Icon className="h-4 w-4 text-muted-foreground" />
