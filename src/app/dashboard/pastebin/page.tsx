@@ -33,9 +33,9 @@ export default function PastebinPage() {
           <ModalContent>
             <ModalHeader><ModalTitle>New Paste</ModalTitle><ModalDescription>Create a new code snippet or note.</ModalDescription></ModalHeader>
             <div className="space-y-4">
-              <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Title</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
-              <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Language</label><Select className="mt-1" options={[{ label: "TypeScript", value: "typescript" }, { label: "JavaScript", value: "javascript" }, { label: "SQL", value: "sql" }, { label: "CSS", value: "css" }, { label: "HTML", value: "html" }, { label: "Python", value: "python" }, { label: "Bash", value: "bash" }, { label: "JSON", value: "json" }]} /></div>
-              <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Content</label><textarea rows={8} className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-ring resize-none" /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Title</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Language</label><Select className="mt-1" options={[{ label: "TypeScript", value: "typescript" }, { label: "JavaScript", value: "javascript" }, { label: "SQL", value: "sql" }, { label: "CSS", value: "css" }, { label: "HTML", value: "html" }, { label: "Python", value: "python" }, { label: "Bash", value: "bash" }, { label: "JSON", value: "json" }]} /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Content</label><textarea rows={8} className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-ring resize-none" /></div>
               <div className="flex items-center gap-2"><input type="checkbox" id="public" className="rounded border-border" /><label htmlFor="public" className="text-sm text-foreground">Make public (shareable via URL)</label></div>
             </div>
             <ModalFooter>

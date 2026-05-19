@@ -25,7 +25,7 @@ function PortfolioWidget() {
 
       <div className="space-y-4">
         <div>
-          <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-1">Selected Works</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Selected Works</p>
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-semibold text-foreground">{portfolioData.selectedWorks}</span>
             <span className="text-xs font-medium text-muted-foreground">projects</span>
@@ -34,18 +34,18 @@ function PortfolioWidget() {
 
         <div className="grid grid-cols-2 gap-3 pt-2 border-t border-border">
           <div>
-            <p className="text-[11px] text-muted-foreground">Published</p>
+            <p className="text-xs text-muted-foreground">Published</p>
             <p className="text-sm font-semibold text-foreground">{portfolioData.publishedCaseStudies}</p>
           </div>
           <div>
-            <p className="text-[11px] text-muted-foreground">Drafts</p>
+            <p className="text-xs text-muted-foreground">Drafts</p>
             <p className="text-sm font-semibold text-foreground">{portfolioData.draftCaseStudies}</p>
           </div>
         </div>
       </div>
 
       <div className="mt-4 pt-4 border-t border-border">
-        <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-3">Top Projects</p>
+        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3">Top Projects</p>
         <div className="space-y-2">
           {portfolioData.topProjects.map((project, i) => (
             <div key={i} className="flex items-center justify-between py-1.5 group cursor-pointer">
@@ -89,7 +89,7 @@ function MaintenanceWidget() {
 
       <div className="space-y-4">
         <div>
-          <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-1">Renewals This Month</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Renewals This Month</p>
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-semibold text-foreground">{maintenanceData.renewalsThisMonth}</span>
           </div>
@@ -109,11 +109,11 @@ function MaintenanceWidget() {
 
         <div className="grid grid-cols-2 gap-3 pt-2 border-t border-border">
           <div>
-            <p className="text-[11px] text-muted-foreground">Hosting</p>
+            <p className="text-xs text-muted-foreground">Hosting</p>
             <p className="text-sm font-semibold text-foreground">{maintenanceData.hostingRenewals}</p>
           </div>
           <div>
-            <p className="text-[11px] text-muted-foreground">Domains</p>
+            <p className="text-xs text-muted-foreground">Domains</p>
             <p className="text-sm font-semibold text-foreground">{maintenanceData.domainRenewals}</p>
           </div>
         </div>

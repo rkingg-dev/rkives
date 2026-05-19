@@ -18,7 +18,7 @@ export default function KpiTabs() {
             i === 0 && "bg-muted/20"
           )}
         >
-          <p className="text-[10px] md:text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-1">
+          <p className="text-[10px] md:text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
             {kpi.label}
           </p>
           <div className="flex items-baseline gap-1.5 md:gap-2">

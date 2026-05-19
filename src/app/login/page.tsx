@@ -25,7 +25,7 @@ export default function LoginPage() {
 
         <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
           <div>
-            <label className="text-[11px] text-muted-foreground uppercase tracking-wider">Email</label>
+            <label className="text-xs text-muted-foreground uppercase tracking-wider">Email</label>
             <input
               type="email"
               placeholder="rking@rkives.io"
@@ -34,7 +34,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="text-[11px] text-muted-foreground uppercase tracking-wider">Password</label>
+            <label className="text-xs text-muted-foreground uppercase tracking-wider">Password</label>
             <div className="relative mt-1.5">
               <input
                 type={showPassword ? "text" : "password"}

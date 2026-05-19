@@ -71,7 +71,7 @@ export default function WordpressPage() {
         <Select options={siteOptions} value={siteFilter} onValueChange={(v) => { setSiteFilter(v); setPage(1); }} className="w-[200px]" />
         <div className="flex gap-1 bg-card border border-border rounded-lg p-1 w-fit">
           {typeFilters.map((f) => (
-            <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", filter === f ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{f}</button>
+            <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={cn("px-3 py-1.5 text-sm font-medium rounded-md transition-colors", filter === f ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{f}</button>
           ))}
         </div>
       </div>
@@ -82,14 +82,14 @@ export default function WordpressPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Website</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Type</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Item</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Current</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Latest</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Status</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Auto</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider"></th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Website</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Type</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Item</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Current</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Latest</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Auto</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider"></th>
               </tr>
             </thead>
             <tbody>

@@ -39,12 +39,12 @@ function ExpandedRow({ task }: { task: any }) {
           <div className="flex flex-col md:flex-row items-start gap-4 md:gap-8">
             <div className="flex-1 space-y-3">
               <div>
-                <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-1.5">Description</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5">Description</p>
                 <p className="text-sm text-foreground">{task.description}</p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-1.5">Website</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5">Website</p>
                   {site ? (
                     <a href={site.url} target="_blank" rel="noopener noreferrer" className="text-sm text-[var(--accent-brand)] hover:underline flex items-center gap-1">
                       {site.name} <ExternalLink className="h-3 w-3" />
@@ -52,15 +52,15 @@ function ExpandedRow({ task }: { task: any }) {
                   ) : <p className="text-sm text-muted-foreground">Personal</p>}
                 </div>
                 <div>
-                  <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-1.5">Due Date</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5">Due Date</p>
                   <p className="text-sm text-foreground">{task.dueDate}</p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-1.5">Type</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5">Type</p>
                   <p className="text-sm text-foreground">{task.type}</p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-1.5">Assigned To</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5">Assigned To</p>
                   <p className="text-sm text-foreground">{task.assignedTo}</p>
                 </div>
               </div>
@@ -109,13 +109,13 @@ export default function TasksTable() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Date</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Website</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Task</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Assigned To</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Status</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Priority</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider"></th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Date</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Website</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Task</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Assigned To</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Priority</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider"></th>
               </tr>
             </thead>
             <tbody>

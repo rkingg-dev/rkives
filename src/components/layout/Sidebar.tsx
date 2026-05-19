@@ -96,7 +96,7 @@ function SidebarContent() {
               href={item.href}
               title={collapsed ? item.label : undefined}
               className={cn(
-                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-200",
+                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                 collapsed && "justify-center px-0",
                 isActive
                   ? "bg-sidebar-active text-foreground shadow-sm"
@@ -120,7 +120,7 @@ function SidebarContent() {
               href={item.href}
               title={collapsed ? item.label : undefined}
               className={cn(
-                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-200",
+                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                 collapsed && "justify-center px-0",
                 isActive
                   ? "bg-sidebar-active text-foreground shadow-sm"
@@ -134,7 +134,7 @@ function SidebarContent() {
         })}
         <div className={cn("flex items-center pt-3 mt-2 border-t border-border", collapsed ? "justify-center" : "justify-between px-3")}>
           <ThemeToggle />
-          {!collapsed && <span className="text-[11px] text-muted-foreground">by rkingg</span>}
+          {!collapsed && <span className="text-xs text-muted-foreground">by rkingg</span>}
         </div>
       </div>
     </>

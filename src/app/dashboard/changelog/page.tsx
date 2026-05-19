@@ -36,14 +36,14 @@ export default function ChangelogPage() {
             <ModalHeader><ModalTitle>New Changelog Entry</ModalTitle><ModalDescription>Add a changelog entry for a website.</ModalDescription></ModalHeader>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Website</label><Select className="mt-1" options={websiteData.map((w) => ({ label: w.name, value: w.id }))} placeholder="Select website" /></div>
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Type</label><Select className="mt-1" options={[{ label: "Feature", value: "feature" }, { label: "Fix", value: "fix" }, { label: "Update", value: "update" }, { label: "Security", value: "security" }, { label: "Maintenance", value: "maintenance" }]} /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Website</label><Select className="mt-1" options={websiteData.map((w) => ({ label: w.name, value: w.id }))} placeholder="Select website" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Type</label><Select className="mt-1" options={[{ label: "Feature", value: "feature" }, { label: "Fix", value: "fix" }, { label: "Update", value: "update" }, { label: "Security", value: "security" }, { label: "Maintenance", value: "maintenance" }]} /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Title</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Version</label><input placeholder="v1.0.0" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Title</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Version</label><input placeholder="v1.0.0" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
               </div>
-              <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Content</label><textarea rows={4} className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none" /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Content</label><textarea rows={4} className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none" /></div>
             </div>
             <ModalFooter>
               <ModalClose asChild><button className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Cancel</button></ModalClose>
@@ -55,11 +55,11 @@ export default function ChangelogPage() {
 
       {/* Site Filter */}
       <div className="flex gap-1 bg-card border border-border rounded-lg p-1 w-fit overflow-x-auto">
-        <button onClick={() => setSiteFilter("All")} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap", siteFilter === "All" ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>All Sites</button>
+        <button onClick={() => setSiteFilter("All")} className={cn("px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", siteFilter === "All" ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>All Sites</button>
         {sitesWithChangelog.map((siteId) => {
           const site = websiteData.find((w) => w.id === siteId);
           return (
-            <button key={siteId} onClick={() => setSiteFilter(siteId)} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap", siteFilter === siteId ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>
+            <button key={siteId} onClick={() => setSiteFilter(siteId)} className={cn("px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", siteFilter === siteId ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>
               {site?.name}
             </button>
           );

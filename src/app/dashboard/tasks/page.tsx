@@ -95,34 +95,34 @@ export default function TasksPage() {
             <DrawerBody>
               <div className="space-y-5">
                 <div>
-                  <label className="text-[11px] text-muted-foreground uppercase tracking-wider">Title</label>
+                  <label className="text-xs text-muted-foreground uppercase tracking-wider">Title</label>
                   <input className="mt-1.5 w-full h-10 rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)] focus:border-[var(--accent-brand)]" />
                 </div>
                 <div>
-                  <label className="text-[11px] text-muted-foreground uppercase tracking-wider">Description</label>
+                  <label className="text-xs text-muted-foreground uppercase tracking-wider">Description</label>
                   <textarea rows={4} className="mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)] focus:border-[var(--accent-brand)] resize-none" />
                 </div>
                 <div>
-                  <label className="text-[11px] text-muted-foreground uppercase tracking-wider">Website</label>
+                  <label className="text-xs text-muted-foreground uppercase tracking-wider">Website</label>
                   <Select className="mt-1.5" options={[{ label: "Personal", value: "personal" }, ...websiteData.map((w) => ({ label: w.name, value: w.id }))]} />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[11px] text-muted-foreground uppercase tracking-wider">Type</label>
+                    <label className="text-xs text-muted-foreground uppercase tracking-wider">Type</label>
                     <Select className="mt-1.5" options={[{ label: "Bug", value: "bug" }, { label: "Feature", value: "feature" }, { label: "Maintenance", value: "maintenance" }, { label: "Content", value: "content" }, { label: "Personal", value: "personal" }]} />
                   </div>
                   <div>
-                    <label className="text-[11px] text-muted-foreground uppercase tracking-wider">Priority</label>
+                    <label className="text-xs text-muted-foreground uppercase tracking-wider">Priority</label>
                     <Select className="mt-1.5" options={[{ label: "Low", value: "low" }, { label: "Medium", value: "medium" }, { label: "High", value: "high" }, { label: "Urgent", value: "urgent" }]} />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[11px] text-muted-foreground uppercase tracking-wider">Due Date</label>
+                    <label className="text-xs text-muted-foreground uppercase tracking-wider">Due Date</label>
                     <input type="date" className="mt-1.5 w-full h-10 rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)] focus:border-[var(--accent-brand)]" />
                   </div>
                   <div>
-                    <label className="text-[11px] text-muted-foreground uppercase tracking-wider">Assigned To</label>
+                    <label className="text-xs text-muted-foreground uppercase tracking-wider">Assigned To</label>
                     <input defaultValue="R King" className="mt-1.5 w-full h-10 rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)] focus:border-[var(--accent-brand)]" />
                   </div>
                 </div>
@@ -142,17 +142,17 @@ export default function TasksPage() {
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex gap-1 bg-card border border-border rounded-lg p-1">
           {statusFilters.map((f) => (
-            <button key={f} onClick={() => { setStatus(f); setPage(1); }} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", status === f ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{f}</button>
+            <button key={f} onClick={() => { setStatus(f); setPage(1); }} className={cn("px-3 py-1.5 text-sm font-medium rounded-md transition-colors", status === f ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{f}</button>
           ))}
         </div>
         <div className="flex gap-1 bg-card border border-border rounded-lg p-1">
           {priorityFilters.map((p) => (
-            <button key={p} onClick={() => { setPriority(p); setPage(1); }} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", priority === p ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{p}</button>
+            <button key={p} onClick={() => { setPriority(p); setPage(1); }} className={cn("px-3 py-1.5 text-sm font-medium rounded-md transition-colors", priority === p ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{p}</button>
           ))}
         </div>
         <div className="flex gap-1 bg-card border border-border rounded-lg p-1">
           {typeFilters.map((t) => (
-            <button key={t} onClick={() => { setType(t); setPage(1); }} className={cn("px-3 py-1.5 text-xs font-medium rounded-md transition-colors", type === t ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{t}</button>
+            <button key={t} onClick={() => { setType(t); setPage(1); }} className={cn("px-3 py-1.5 text-sm font-medium rounded-md transition-colors", type === t ? "bg-muted text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{t}</button>
           ))}
         </div>
         {selected.length > 0 && (
@@ -167,13 +167,13 @@ export default function TasksPage() {
                 <th className="w-12 px-5 py-3">
                   <input type="checkbox" checked={allSelected} onChange={toggleAll} className="rounded border-border" />
                 </th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Task</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Website</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Type</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Priority</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Status</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Due</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider"></th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Task</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Website</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Type</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Priority</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Due</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider"></th>
               </tr>
             </thead>
             <tbody>

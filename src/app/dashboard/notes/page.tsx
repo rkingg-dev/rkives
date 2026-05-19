@@ -24,13 +24,13 @@ export default function NotesPage() {
           <ModalContent>
             <ModalHeader><ModalTitle>New Note</ModalTitle><ModalDescription>Create a new note or blog post.</ModalDescription></ModalHeader>
             <div className="space-y-4">
-              <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Title</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
-              <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Content</label><textarea rows={5} className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none" /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Title</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Content</label><textarea rows={5} className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none" /></div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Website</label><Select className="mt-1" options={[{ label: "General", value: "general" }, ...websiteData.map((w) => ({ label: w.name, value: w.id }))]} /></div>
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Tags</label><input placeholder="comma separated" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Website</label><Select className="mt-1" options={[{ label: "General", value: "general" }, ...websiteData.map((w) => ({ label: w.name, value: w.id }))]} /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Tags</label><input placeholder="comma separated" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
               </div>
-              <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Thumbnail</label><input type="file" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-muted file:text-foreground" /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Thumbnail</label><input type="file" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-muted file:text-foreground" /></div>
               <div className="flex items-center gap-2"><input type="checkbox" id="public" className="rounded border-border" /><label htmlFor="public" className="text-sm text-foreground">Make public</label></div>
             </div>
             <ModalFooter>

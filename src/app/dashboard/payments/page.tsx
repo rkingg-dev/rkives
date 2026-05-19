@@ -27,19 +27,19 @@ export default function PaymentsPage() {
             <ModalHeader><ModalTitle>Record Payment</ModalTitle><ModalDescription>Log a payment received from a client.</ModalDescription></ModalHeader>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Client</label><Select className="mt-1" options={clientData.map((c) => ({ label: c.name, value: c.id }))} placeholder="Select client" /></div>
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Website</label><Select className="mt-1" options={[{ label: "General", value: "general" }, ...websiteData.map((w) => ({ label: w.name, value: w.id }))]} /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Client</label><Select className="mt-1" options={clientData.map((c) => ({ label: c.name, value: c.id }))} placeholder="Select client" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Website</label><Select className="mt-1" options={[{ label: "General", value: "general" }, ...websiteData.map((w) => ({ label: w.name, value: w.id }))]} /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Amount</label><input type="number" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Type</label><Select className="mt-1" options={[{ label: "Monthly Maintenance", value: "monthly" }, { label: "Project Payment", value: "project" }, { label: "Hosting", value: "hosting" }, { label: "Domain", value: "domain" }, { label: "One-time", value: "onetime" }]} /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Amount</label><input type="number" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Type</label><Select className="mt-1" options={[{ label: "Monthly Maintenance", value: "monthly" }, { label: "Project Payment", value: "project" }, { label: "Hosting", value: "hosting" }, { label: "Domain", value: "domain" }, { label: "One-time", value: "onetime" }]} /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Method</label><Select className="mt-1" options={[{ label: "GCash", value: "gcash" }, { label: "Bank Transfer", value: "bank" }, { label: "PayPal", value: "paypal" }, { label: "Cash", value: "cash" }]} /></div>
-                <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Reference #</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Method</label><Select className="mt-1" options={[{ label: "GCash", value: "gcash" }, { label: "Bank Transfer", value: "bank" }, { label: "PayPal", value: "paypal" }, { label: "Cash", value: "cash" }]} /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Reference #</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
               </div>
-              <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Billing Period</label><input placeholder="Aug 2024" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
-              <div><label className="text-[11px] text-muted-foreground uppercase tracking-wider">Receipt Photo</label><input type="file" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-muted file:text-foreground" /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Billing Period</label><input placeholder="Aug 2024" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Receipt Photo</label><input type="file" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-muted file:text-foreground" /></div>
             </div>
             <ModalFooter>
               <ModalClose asChild><button className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Cancel</button></ModalClose>
@@ -51,15 +51,15 @@ export default function PaymentsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl border border-border shadow-sm p-5">
-          <div className="flex items-center gap-2 mb-2"><CreditCard className="h-4 w-4 text-muted-foreground" /><p className="text-[11px] text-muted-foreground uppercase tracking-wider">Total Received</p></div>
+          <div className="flex items-center gap-2 mb-2"><CreditCard className="h-4 w-4 text-muted-foreground" /><p className="text-xs text-muted-foreground uppercase tracking-wider">Total Received</p></div>
           <p className="text-2xl font-semibold text-foreground">{"\u20B1"}{totalReceived.toLocaleString()}</p>
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="bg-card rounded-xl border border-border shadow-sm p-5">
-          <div className="flex items-center gap-2 mb-2"><Clock className="h-4 w-4 text-muted-foreground" /><p className="text-[11px] text-muted-foreground uppercase tracking-wider">Pending</p></div>
+          <div className="flex items-center gap-2 mb-2"><Clock className="h-4 w-4 text-muted-foreground" /><p className="text-xs text-muted-foreground uppercase tracking-wider">Pending</p></div>
           <p className="text-2xl font-semibold text-foreground">{"\u20B1"}{pending.toLocaleString()}</p>
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-card rounded-xl border border-border shadow-sm p-5">
-          <div className="flex items-center gap-2 mb-2"><Receipt className="h-4 w-4 text-muted-foreground" /><p className="text-[11px] text-muted-foreground uppercase tracking-wider">This Month</p></div>
+          <div className="flex items-center gap-2 mb-2"><Receipt className="h-4 w-4 text-muted-foreground" /><p className="text-xs text-muted-foreground uppercase tracking-wider">This Month</p></div>
           <p className="text-2xl font-semibold text-foreground">{paymentData.length} payments</p>
         </motion.div>
       </div>
@@ -69,15 +69,15 @@ export default function PaymentsPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Client</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Website</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Type</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Amount</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Method</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Ref #</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Period</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Status</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Date</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Client</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Website</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Type</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Amount</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Method</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Ref #</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Period</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Date</th>
               </tr>
             </thead>
             <tbody>
