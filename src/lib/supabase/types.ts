@@ -124,6 +124,7 @@ export interface Note {
   is_public: boolean;
   tags: string[];
   website_id: string | null;
+  password_hash: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -135,6 +136,7 @@ export interface PastebinEntry {
   language: string;
   is_public: boolean;
   share_token: string | null;
+  password_hash: string | null;
   expires_at: string | null;
   created_at: string;
 }

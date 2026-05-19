@@ -9,6 +9,7 @@ import {
   pastebinSchema,
   type PastebinFormData,
 } from "@/lib/validations/pastebin";
+import { hashPassword, generateRandomSlug, generatePassword } from "@/lib/crypto";
 
 interface PastebinFormProps {
   onSuccess?: () => void;
@@ -35,6 +36,7 @@ export function PastebinForm({ onSuccess, defaultValues }: PastebinFormProps) {
     formState: { errors },
     reset,
     control,
+    setValue,
   } = useForm<PastebinFormData>({
     resolver: zodResolver(pastebinSchema),
     defaultValues: defaultValues || {
@@ -46,6 +48,15 @@ export function PastebinForm({ onSuccess, defaultValues }: PastebinFormProps) {
   });
 
   async function onSubmit(data: PastebinFormData) {
+    if (data.password_hash) {
+      data.password_hash = await hashPassword(data.password_hash);
+    } else {
+      data.password_hash = null;
+    }
+    if (data.is_public && !data.share_token) {
+      data.share_token = generateRandomSlug(12);
+    }
+
     if (defaultValues?.id) {
       const result = await update(defaultValues.id, data as any);
       if (result) {
@@ -121,6 +132,25 @@ export function PastebinForm({ onSuccess, defaultValues }: PastebinFormProps) {
             {errors.content.message}
           </p>
         )}
+      </div>
+
+      <div>
+        <label className="text-xs text-muted-foreground uppercase tracking-wider">Password (optional)</label>
+        <div className="flex items-center gap-2 mt-1">
+          <input
+            type="password"
+            {...register("password_hash")}
+            placeholder="Leave empty for no password"
+            className="flex-1 h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+          />
+          <button
+            type="button"
+            onClick={() => setValue("password_hash", generatePassword(16))}
+            className="px-3 h-9 bg-muted rounded-md text-xs font-medium hover:bg-muted/80 transition-colors shrink-0"
+          >
+            Generate
+          </button>
+        </div>
       </div>
 
       <div className="flex items-center gap-2">

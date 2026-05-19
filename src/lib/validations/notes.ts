@@ -8,6 +8,7 @@ export const noteSchema = z.object({
   is_public: z.boolean().optional().default(false),
   slug: z.string().optional().default(""),
   thumbnail_url: z.string().optional().default(""),
+  password_hash: z.string().optional().nullable().default(null),
 });
 
 export type NoteFormData = z.infer<typeof noteSchema>;

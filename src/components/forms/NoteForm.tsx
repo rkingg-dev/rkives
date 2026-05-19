@@ -8,6 +8,7 @@ import { useSupabaseQuery } from "@/hooks/use-supabase-query";
 import { Select } from "@/components/ui/select";
 import { FileUpload } from "@/components/ui/file-upload";
 import { noteSchema, type NoteFormData } from "@/lib/validations/notes";
+import { hashPassword, generateRandomSlug, generatePassword } from "@/lib/crypto";
 
 interface NoteFormProps {
   onSuccess?: () => void;
@@ -24,6 +25,7 @@ export function NoteForm({ onSuccess, defaultValues }: NoteFormProps) {
     formState: { errors },
     reset,
     control,
+    setValue,
   } = useForm<NoteFormData>({
     resolver: zodResolver(noteSchema),
     defaultValues: defaultValues || {
@@ -38,10 +40,13 @@ export function NoteForm({ onSuccess, defaultValues }: NoteFormProps) {
   });
 
   async function onSubmit(data: NoteFormData) {
-    data.slug = data.title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
+    data.slug = generateRandomSlug(8);
+
+    if (data.password_hash) {
+      data.password_hash = await hashPassword(data.password_hash);
+    } else {
+      data.password_hash = null;
+    }
 
     const tags = data.tags
       ? data.tags
@@ -146,6 +151,25 @@ export function NoteForm({ onSuccess, defaultValues }: NoteFormProps) {
           className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           placeholder="comma separated"
         />
+      </div>
+
+      <div>
+        <label className="text-xs text-muted-foreground uppercase tracking-wider">Password (optional)</label>
+        <div className="flex items-center gap-2 mt-1">
+          <input
+            type="password"
+            {...register("password_hash")}
+            placeholder="Leave empty for no password"
+            className="flex-1 h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+          />
+          <button
+            type="button"
+            onClick={() => setValue("password_hash", generatePassword(16))}
+            className="px-3 h-9 bg-muted rounded-md text-xs font-medium hover:bg-muted/80 transition-colors shrink-0"
+          >
+            Generate
+          </button>
+        </div>
       </div>
 
       <div className="flex items-center gap-2">

@@ -6,7 +6,7 @@ import { useSupabaseQuery } from "@/hooks/use-supabase-query";
 import { useSupabaseMutation } from "@/hooks/use-supabase-mutation";
 import { PageSkeleton } from "@/components/ui/loading-skeleton";
 import { ErrorState } from "@/components/ui/error-state";
-import { Search, Lock, Globe, Plus, Tag, Pencil, Trash2 } from "lucide-react";
+import { Search, Lock, Globe, Plus, Tag, Pencil, Trash2, Share2 } from "lucide-react";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription } from "@/components/ui/modal";
 import { NoteForm } from "@/components/forms/NoteForm";
 import { toast } from "sonner";
@@ -94,6 +94,12 @@ export default function NotesPage() {
                 <span>{note.created_at}</span>
               </div>
               <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border/50">
+                <button onClick={() => {
+                  navigator.clipboard.writeText(`${window.location.origin}/notes/${note.slug}`);
+                  toast.success("Note URL copied");
+                }} className="p-1.5 rounded-md hover:bg-muted transition-colors">
+                  <Share2 className="h-3.5 w-3.5 text-muted-foreground" />
+                </button>
                 <button onClick={() => { setEditItem(note); setEditOpen(true); }} className="p-1.5 rounded-md hover:bg-muted transition-colors">
                   <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
                 </button>
