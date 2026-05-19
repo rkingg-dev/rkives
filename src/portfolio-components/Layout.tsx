@@ -174,7 +174,7 @@ export function Layout({
   return (
     <>
       {/* Spacer: pushes content below the fixed sidebar */}
-      <div className="hidden lg:block" style={{ height: '50vh', minHeight: '20rem' }} />
+      <div className="hidden lg:block" style={{ height: '30vh', minHeight: '12rem' }} />
 
       <div id="portfolio-intro">
         <FixedSidebar

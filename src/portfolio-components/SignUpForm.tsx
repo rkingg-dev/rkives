@@ -1,7 +1,6 @@
 'use client'
 
 import { useId, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 
 const CONTACT_ERROR_MESSAGE = 'Message could not be sent right now.'
 const CONTACT_REQUEST_TIMEOUT_MS = 12000
@@ -123,13 +122,8 @@ export function SignUpForm() {
       </form>
 
       {/* Modal */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+      {isOpen && (
+          <div
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm"
           >
             <button
@@ -138,11 +132,7 @@ export function SignUpForm() {
               className="absolute inset-0 cursor-default"
               onClick={() => setIsOpen(false)}
             />
-            <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            <div
               className="relative w-full max-w-lg mx-4 overflow-hidden rounded-2xl border border-white/10 bg-gray-900 shadow-2xl shadow-orange-950/30"
             >
               <form onSubmit={sendRequest}>
@@ -176,13 +166,8 @@ export function SignUpForm() {
                       {selectedRequestType.label}
                       <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 text-gray-500"><path fill="currentColor" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" /></svg>
                     </button>
-                    <AnimatePresence>
-                      {isRequestTypeOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -5, scale: 0.95 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: -5, scale: 0.95 }}
-                          transition={{ duration: 0.15 }}
+                    {isRequestTypeOpen && (
+                        <div
                           role="listbox"
                           className="absolute top-full right-0 z-10 mt-2 w-52 overflow-hidden rounded-lg border border-white/10 bg-gray-950/95 p-1 shadow-2xl shadow-black/30 backdrop-blur-xl"
                         >
@@ -203,9 +188,8 @@ export function SignUpForm() {
                               {requestType === value && <span className="h-1.5 w-1.5 rounded-full bg-orange-300" />}
                             </button>
                           ))}
-                        </motion.div>
+                        </div>
                       )}
-                    </AnimatePresence>
                   </div>
                 </div>
 
@@ -259,10 +243,9 @@ export function SignUpForm() {
                   )}
                 </div>
               </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </div>
+          </div>
+      )}
     </>
   )
 }

@@ -5,7 +5,7 @@ import { flushSync } from 'react-dom'
 import Image from 'next/image'
 import Link from 'next/link'
 import clsx from 'clsx'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 import { Layout } from '@/portfolio-components/Layout'
 
@@ -464,17 +464,15 @@ function ContentTransition({
   children: React.ReactNode
 }) {
   return (
-    <AnimatePresence mode="wait">
+    <div key={transitionKey}>
       <motion.div
-        key={transitionKey}
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -12 }}
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
       >
         {children}
       </motion.div>
-    </AnimatePresence>
+    </div>
   )
 }
 
