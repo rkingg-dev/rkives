@@ -138,9 +138,9 @@ export function IntroFooter({
   void onSelectSection
 
   return (
-    <div className="flex items-center justify-center gap-x-3 text-[0.6875rem]/5 font-medium text-white/30">
+    <div className="flex items-center justify-center gap-x-2 text-[0.6875rem]/5 font-medium text-white/30">
       <ThemeToggle className="static -m-0 p-0 text-orange-300 transition hover:text-orange-200">
-        <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+        <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
           <path d="M12 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm-5 8a5 5 0 0 0 5 5V7a5 5 0 0 0-5 5Z" />
         </svg>
       </ThemeToggle>
