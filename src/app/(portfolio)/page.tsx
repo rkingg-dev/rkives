@@ -5,6 +5,7 @@ import { flushSync } from 'react-dom'
 import Image from 'next/image'
 import Link from 'next/link'
 import clsx from 'clsx'
+import { motion, useInView, AnimatePresence } from 'framer-motion'
 
 import { Layout } from '@/portfolio-components/Layout'
 
@@ -433,22 +434,6 @@ function formatDate(date: string) {
   return dateFormatter.format(new Date(`${date}T00:00:00Z`))
 }
 
-function getScrollParent(element: HTMLElement) {
-  let parent = element.parentElement
-
-  while (parent) {
-    let style = window.getComputedStyle(parent)
-
-    if (/(auto|scroll)/.test(style.overflowY)) {
-      return parent
-    }
-
-    parent = parent.parentElement
-  }
-
-  return null
-}
-
 function FocusItem({
   children,
   index,
@@ -458,90 +443,19 @@ function FocusItem({
   index: number
   focusOnly?: boolean
 }) {
-  let itemRef = useRef<HTMLElement>(null)
-  let [isFocused, setIsFocused] = useState(false)
-
-  useEffect(() => {
-    let item = itemRef.current
-
-    if (!item) {
-      return
-    }
-
-    let element = item
-    let scrollParent = getScrollParent(element)
-    let animationFrame = 0
-
-    function updateFocus() {
-      if (window.innerWidth < 1024) {
-        setIsFocused(true)
-        return
-      }
-
-      let parentRect = scrollParent?.getBoundingClientRect()
-      let viewportCenter = parentRect
-        ? parentRect.top + parentRect.height / 2
-        : window.innerHeight / 2
-      let selectorItems = Array.from(
-        scrollParent?.querySelectorAll<HTMLElement>('[data-selector-item]') ??
-          [element],
-      )
-      let nearestItem = selectorItems.reduce<HTMLElement | null>(
-        (closestItem, selectorItem) => {
-          if (!closestItem) {
-            return selectorItem
-          }
-
-          let itemRect = selectorItem.getBoundingClientRect()
-          let itemCenter = itemRect.top + itemRect.height / 2
-          let closestRect = closestItem.getBoundingClientRect()
-          let closestCenter = closestRect.top + closestRect.height / 2
-
-          return Math.abs(itemCenter - viewportCenter) <
-            Math.abs(closestCenter - viewportCenter)
-            ? selectorItem
-            : closestItem
-        },
-        null,
-      )
-
-      setIsFocused(nearestItem === element)
-    }
-
-    updateFocus()
-    animationFrame = window.requestAnimationFrame(updateFocus)
-    scrollParent?.addEventListener('scroll', updateFocus, { passive: true })
-    window.addEventListener('resize', updateFocus)
-
-    return () => {
-      window.cancelAnimationFrame(animationFrame)
-      scrollParent?.removeEventListener('scroll', updateFocus)
-      window.removeEventListener('resize', updateFocus)
-    }
-  }, [])
+  let ref = useRef(null)
+  let isInView = useInView(ref, { amount: 0.4, margin: "-10% 0px -10% 0px" })
 
   return (
-    <article
-      ref={itemRef}
-      data-selector-item=""
-      data-focused={isFocused ? 'true' : undefined}
-      className={clsx(
-        'group transition duration-700 lg:snap-center',
-        isFocused
-          ? 'lg:pointer-events-auto lg:scale-100 lg:opacity-100 lg:blur-0'
-          : clsx(
-              'lg:scale-[0.94] lg:opacity-35 lg:blur-[3px] lg:saturate-50',
-              focusOnly ? 'lg:pointer-events-none' : 'lg:pointer-events-auto',
-            ),
-      )}
+    <motion.article
+      ref={ref}
+      initial={{ opacity: 0, y: 30, scale: 0.96 }}
+      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0.35, y: 10, scale: 0.96 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: Math.min(index, 5) * 0.05 }}
+      className="group"
     >
-      <div
-        className="selector-enter"
-        style={{ animationDelay: `${Math.min(index, 5) * 70}ms` }}
-      >
-        {children}
-      </div>
-    </article>
+      {children}
+    </motion.article>
   )
 }
 
@@ -553,9 +467,17 @@ function ContentTransition({
   children: React.ReactNode
 }) {
   return (
-    <div key={transitionKey} className="content-enter">
-      {children}
-    </div>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={transitionKey}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -12 }}
+        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
   )
 }
 

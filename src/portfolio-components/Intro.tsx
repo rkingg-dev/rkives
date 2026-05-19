@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import clsx from 'clsx'
 import Link from 'next/link'
 
@@ -26,13 +27,7 @@ function NotesIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 function DevIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
     <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" {...props}>
-      <path
-        d="M5.75 4.25 2 8l3.75 3.75M10.25 4.25 14 8l-3.75 3.75"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
+      <path d="M5.75 4.25 2 8l3.75 3.75M10.25 4.25 14 8l-3.75 3.75" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
     </svg>
   )
 }
@@ -42,6 +37,20 @@ const navItems = [
   { section: 'notes' as const, label: 'Notes', icon: NotesIcon },
   { section: 'about' as const, label: 'R KINGG', icon: DevIcon },
 ]
+
+const container = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+}
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20, filter: 'blur(8px)' },
+  show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+}
 
 function MenuButton({
   active,
@@ -66,9 +75,7 @@ function MenuButton({
       <span
         className={clsx(
           'absolute inset-0 -z-10 rounded-lg bg-white/5 transition',
-          active
-            ? 'scale-100 opacity-100'
-            : 'scale-75 opacity-0 group-hover:scale-100 group-hover:opacity-100',
+          active ? 'scale-100 opacity-100' : 'scale-75 opacity-0 group-hover:scale-100 group-hover:opacity-100',
         )}
       />
       <Icon className="h-4 w-4 flex-none" />
@@ -85,24 +92,26 @@ export function Intro({
   onSelectSection?: (section: Section) => void
 }) {
   return (
-    <>
-      <div>
+    <motion.div variants={container} initial="hidden" animate="show">
+      <motion.div variants={fadeUp}>
         <Link href="/">
           <Logo className="inline-flex items-center gap-x-3" />
         </Link>
-      </div>
-      <h1 className="mt-14 font-display text-4xl/tight font-light text-white">
+      </motion.div>
+
+      <motion.h1 variants={fadeUp} className="mt-14 font-display text-4xl/tight font-light text-white">
         More than visuals. <span className="text-orange-300">Designed to work.</span>
-      </h1>
-      <p className="mt-4 text-sm/6 text-gray-300">
-Modern web experiences designed with clarity, built with structure, and focused on how people use products. Creating polished interfaces, seamless interactions, and reliable systems that stay clean after launch.
-      </p>
-      <p className="mt-4 text-xs/5 font-medium italic text-orange-300">
-        Featured projects are currently placeholder content. For real project
-        inquiries, please use the contact form below.
-      </p>
-      <SignUpForm />
-      <div className="mt-8 hidden flex-wrap justify-center gap-x-1 gap-y-3 sm:gap-x-2 lg:flex lg:justify-start">
+      </motion.h1>
+
+      <motion.p variants={fadeUp} className="mt-4 text-sm/6 text-gray-300">
+        Modern web experiences designed with clarity, built with structure, and focused on how people use products. Creating polished interfaces, seamless interactions, and reliable systems that stay clean after launch.
+      </motion.p>
+
+      <motion.div variants={fadeUp}>
+        <SignUpForm />
+      </motion.div>
+
+      <motion.div variants={fadeUp} className="mt-8 hidden flex-wrap justify-center gap-x-1 gap-y-3 sm:gap-x-2 lg:flex lg:justify-start">
         {navItems.map((item) => (
           <MenuButton
             key={item.section}
@@ -113,8 +122,8 @@ Modern web experiences designed with clarity, built with structure, and focused 
             {item.label}
           </MenuButton>
         ))}
-      </div>
-    </>
+      </motion.div>
+    </motion.div>
   )
 }
 
