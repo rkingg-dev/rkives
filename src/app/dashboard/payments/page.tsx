@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useSupabaseQuery } from "@/hooks/use-supabase-query";
 import { useSupabaseMutation } from "@/hooks/use-supabase-mutation";
+import { supabase } from "@/lib/supabase";
 import { PageSkeleton } from "@/components/ui/loading-skeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { cn } from "@/lib/utils";
@@ -132,6 +133,21 @@ export default function PaymentsPage() {
                     <td className="px-5 py-3 text-muted-foreground">{p.paid_at || "\u2014"}</td>
                     <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center gap-2">
+                        {p.status === "Pending" && (
+                          <button
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              const { error } = await (supabase as any).from("payments").update({ status: "Verified" }).eq("id", p.id);
+                              if (!error) {
+                                toast.success("Payment verified");
+                                refetch();
+                              }
+                            }}
+                            className="px-2 py-1 text-[10px] font-semibold rounded-md text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-colors"
+                          >
+                            Verify
+                          </button>
+                        )}
                         <button onClick={() => { setEditItem(p); setEditOpen(true); }} className="p-1.5 rounded-md hover:bg-muted transition-colors">
                           <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
                         </button>

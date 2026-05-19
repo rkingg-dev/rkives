@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { useSupabaseQuery } from "@/hooks/use-supabase-query";
+import { useSupabaseMutation } from "@/hooks/use-supabase-mutation";
 import { PageSkeleton } from "@/components/ui/loading-skeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { Download, FileText, CheckCircle, Clock } from "lucide-react";
@@ -14,13 +15,42 @@ const scheduled = [
   { name: "Maintenance Log", frequency: "Monthly", nextRun: "Sep 1, 2024", recipients: 1 },
 ];
 
+function downloadCSV(data: Record<string, string>[], filename: string) {
+  const headers = Object.keys(data[0] || {});
+  const csv = [
+    headers.join(","),
+    ...data.map((row) => headers.map((h) => `"${String(row[h] || "")}"`).join(","))
+  ].join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function ReportsPage() {
   const { data: reports, loading: reportsLoading, error: reportsError, refetch: refetchReports } = useSupabaseQuery({ table: "reports", orderBy: { column: "created_at", ascending: false } });
   const { data: clients, loading: clientsLoading, error: clientsError, refetch: refetchClients } = useSupabaseQuery({ table: "clients" });
+  const { insert } = useSupabaseMutation("reports");
 
   const loading = reportsLoading || clientsLoading;
   const error = reportsError || clientsError;
   const refetch = () => { refetchReports(); refetchClients(); };
+
+  async function handleGenerateReport() {
+    const result = await insert({
+      title: `Report \u2014 ${new Date().toLocaleDateString()}`,
+      report_type: "Client Report",
+      date: new Date().toLocaleDateString(),
+      status: "Ready",
+    });
+    if (result) {
+      toast.success("Report generated");
+      refetch();
+    }
+  }
 
   const clientMap = useMemo(() => {
     return Object.fromEntries(clients.map((c) => [c.id, c.name]));
@@ -33,7 +63,7 @@ export default function ReportsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-foreground">Reports</h2>
-        <button onClick={() => toast.info("Report generation coming soon")} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2">
+        <button onClick={handleGenerateReport} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2">
           <FileText className="h-4 w-4" /> Generate Report
         </button>
       </div>
@@ -70,7 +100,7 @@ export default function ReportsPage() {
                   </span>
                 </td>
                 <td className="px-5 py-3">
-                  <button onClick={() => toast.info("Download coming soon")} className="p-1.5 rounded-md hover:bg-muted transition-colors">
+                  <button onClick={() => downloadCSV([r] as unknown as Record<string, string>[], `${r.title.replace(/\s+/g, "-").toLowerCase()}.csv`)} className="p-1.5 rounded-md hover:bg-muted transition-colors">
                     <Download className="h-3.5 w-3.5 text-muted-foreground" />
                   </button>
                 </td>

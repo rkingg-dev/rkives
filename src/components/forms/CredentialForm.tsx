@@ -8,6 +8,17 @@ import { useSupabaseQuery } from "@/hooks/use-supabase-query";
 import { Select } from "@/components/ui/select";
 import { credentialSchema, type CredentialFormData } from "@/lib/validations/credentials";
 
+function generatePassword(length = 16) {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+  let password = "";
+  const array = new Uint8Array(length);
+  crypto.getRandomValues(array);
+  for (let i = 0; i < length; i++) {
+    password += chars[array[i] % chars.length];
+  }
+  return password;
+}
+
 interface CredentialFormProps {
   onSuccess?: () => void;
   defaultValues?: Partial<CredentialFormData> & { id?: string };
@@ -28,6 +39,7 @@ export function CredentialForm({ onSuccess, defaultValues }: CredentialFormProps
     formState: { errors },
     reset,
     control,
+    setValue,
   } = useForm<CredentialFormData>({
     resolver: zodResolver(credentialSchema),
     defaultValues: defaultValues || {
@@ -140,11 +152,20 @@ export function CredentialForm({ onSuccess, defaultValues }: CredentialFormProps
         <label className="text-xs text-muted-foreground uppercase tracking-wider">
           Password
         </label>
-        <input
-          type="password"
-          {...register("password_value")}
-          className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-        />
+        <div className="flex items-center gap-2">
+          <input
+            type="password"
+            {...register("password_value")}
+            className="mt-1 flex-1 h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+          />
+          <button
+            type="button"
+            onClick={() => setValue("password_value", generatePassword())}
+            className="mt-1 px-3 h-9 bg-muted rounded-md text-xs font-medium hover:bg-muted/80 transition-colors shrink-0"
+          >
+            Generate
+          </button>
+        </div>
       </div>
 
       <div>

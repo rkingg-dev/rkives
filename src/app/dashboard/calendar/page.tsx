@@ -7,8 +7,8 @@ import { ChevronLeft, ChevronRight, Plus, Tag } from "lucide-react";
 import { useSupabaseQuery } from "@/hooks/use-supabase-query";
 import { PageSkeleton } from "@/components/ui/loading-skeleton";
 import { ErrorState } from "@/components/ui/error-state";
-import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter, ModalClose } from "@/components/ui/modal";
-import { Select } from "@/components/ui/select";
+import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription } from "@/components/ui/modal";
+import { CalendarEventForm } from "@/components/forms/CalendarEventForm";
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -33,6 +33,7 @@ const typeColors: Record<string, string> = {
 export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const { data: tasks, loading: loadingTasks, error: errorTasks, refetch: refetchTasks } = useSupabaseQuery({
     table: "tasks",
@@ -82,24 +83,18 @@ export default function CalendarPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-foreground">Calendar</h2>
-        <Modal>
-          <ModalTrigger asChild><button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2"><Plus className="h-4 w-4" /> New Event</button></ModalTrigger>
+        <Modal open={modalOpen} onOpenChange={setModalOpen}>
+          <ModalTrigger asChild>
+            <button onClick={() => setModalOpen(true)} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
+              <Plus className="h-4 w-4" /> New Event
+            </button>
+          </ModalTrigger>
           <ModalContent>
-            <ModalHeader><ModalTitle>New Event</ModalTitle><ModalDescription>Schedule a new event or task.</ModalDescription></ModalHeader>
-            <div className="space-y-4">
-              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Title</label><input className="mt-1.5 w-full h-10 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)]" /></div>
-              <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Date</label><input type="date" className="mt-1.5 w-full h-10 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)]" /></div>
-                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Time</label><input type="time" className="mt-1.5 w-full h-10 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)]" /></div>
-              </div>
-              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Website</label><Select className="mt-1.5" options={[{ label: "Personal", value: "personal" }, ...websites.map((w) => ({ label: w.name, value: w.id }))]} /></div>
-              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Type</label><Select className="mt-1.5" options={[{ label: "Task", value: "task" }, { label: "Meeting", value: "meeting" }, { label: "Deadline", value: "deadline" }, { label: "Invoice", value: "invoice" }, { label: "Personal", value: "personal" }]} /></div>
-              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Notes</label><textarea rows={3} className="mt-1.5 w-full rounded-md border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)] resize-none" /></div>
-            </div>
-            <ModalFooter>
-              <ModalClose asChild><button className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Cancel</button></ModalClose>
-              <ModalClose asChild><button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">Create Event</button></ModalClose>
-            </ModalFooter>
+            <ModalHeader>
+              <ModalTitle>New Event</ModalTitle>
+              <ModalDescription>Add a new event to the calendar.</ModalDescription>
+            </ModalHeader>
+            <CalendarEventForm onSuccess={() => { setModalOpen(false); refetchTasks(); }} />
           </ModalContent>
         </Modal>
       </div>

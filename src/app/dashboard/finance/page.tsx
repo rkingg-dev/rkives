@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { monthlyRevenue, expenseBreakdown, personalExpenses, recentTransactions, upcomingCosts, savingsGoals } from "@/lib/finance-data";
+import { monthlyRevenue, expenseBreakdown, personalExpenses, upcomingCosts, savingsGoals } from "@/lib/finance-data";
 import { useSupabaseQuery } from "@/hooks/use-supabase-query";
 import { cn } from "@/lib/utils";
 import { TrendingUp, Wallet, ArrowUpRight, ArrowDownRight, Shield, Laptop, Plane, PiggyBank } from "lucide-react";
@@ -19,6 +19,20 @@ export default function FinancePage() {
 
   const { data: websites } = useSupabaseQuery({ table: "websites" });
   const { data: clients } = useSupabaseQuery({ table: "clients" });
+  const { data: payments } = useSupabaseQuery({ table: "payments", orderBy: { column: "created_at", ascending: false } });
+
+  const transactions = useMemo(() => {
+    return payments.map((p) => ({
+      id: p.id,
+      date: p.created_at,
+      client: clients.find((c) => c.id === p.client_id)?.company || "Unknown",
+      type: "Income",
+      category: "Business",
+      description: `${p.payment_type} \u2014 ${p.method}`,
+      amount: p.amount || 0,
+      status: p.status,
+    }));
+  }, [payments, clients]);
 
   const computedMRR = useMemo(() => {
     return clients.map((c: any) => {
@@ -28,7 +42,7 @@ export default function FinancePage() {
     }).filter((c: any) => c.monthly > 0).sort((a: any, b: any) => b.monthly - a.monthly);
   }, [clients, websites]);
 
-  const filtered = recentTransactions.filter((t) => {
+  const filtered = transactions.filter((t) => {
     if (tab === "all") return true;
     if (tab === "business") return t.category === "Business";
     return t.category === "Personal";

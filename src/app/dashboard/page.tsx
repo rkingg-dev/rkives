@@ -46,6 +46,11 @@ export default function DashboardPage() {
         <WorkspaceWidgets />
         <div className="bg-card rounded-xl border border-border shadow-sm p-5">
           <h3 className="text-sm font-semibold text-foreground mb-4">Recent Activity</h3>
+          {activity.length === 0 ? (
+            <div className="py-8 text-center">
+              <p className="text-sm text-muted-foreground">No recent activity</p>
+            </div>
+          ) : (
           <div className="space-y-3">
             {activity.map((item) => (
               <div key={item.id} className="flex items-start gap-3">
@@ -58,6 +63,7 @@ export default function DashboardPage() {
               </div>
             ))}
           </div>
+          )}
         </div>
       </div>
     </div>

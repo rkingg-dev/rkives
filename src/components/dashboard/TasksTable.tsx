@@ -142,46 +142,52 @@ export default function TasksTable() {
 
       {/* Table Panel */}
       <div className="bg-card rounded-tr-2xl rounded-b-2xl border border-border shadow-sm overflow-hidden -mt-[1px]">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Date</th>
-                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Website</th>
-                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Task</th>
-                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Assigned To</th>
-                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
-                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Priority</th>
-                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {tasks.map((task) => {
-                const site = websites.find((w) => w.id === task.website_id);
-                return (
-                  <>
-                    <tr key={task.id} className={cn("border-b border-border/50 cursor-pointer transition-colors hover:bg-muted/20", expandedId === task.id && "bg-muted/20")} onClick={() => setExpandedId(expandedId === task.id ? null : task.id)}>
-                      <td className="px-5 py-3 text-foreground font-medium">{task.created_at?.split("T")[0]}</td>
-                      <td className="px-5 py-3 text-foreground">{site?.name || "Personal"}</td>
-                      <td className="px-5 py-3 text-muted-foreground">{task.title}</td>
-                      <td className="px-5 py-3 text-foreground">{task.assigned_to}</td>
-                      <td className="px-5 py-3">
-                        <span className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-md", getStatusColor(task.status))}>{task.status}</span>
-                      </td>
-                      <td className="px-5 py-3">
-                        <span className={cn("text-xs font-medium", getPriorityColor(task.priority))}>{task.priority}</span>
-                      </td>
-                      <td className="px-5 py-3">{task.is_recurring && <Repeat className="h-3.5 w-3.5 text-muted-foreground" />}</td>
-                    </tr>
-                    <AnimatePresence>
-                      {expandedId === task.id && <ExpandedRow key={`expanded-${task.id}`} task={task} websites={websites} refetch={refetch} />}
-                    </AnimatePresence>
-                  </>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        {tasks.length === 0 ? (
+          <div className="py-12 text-center">
+            <p className="text-sm text-muted-foreground">No tasks to show</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Date</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Website</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Task</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Assigned To</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Priority</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {tasks.map((task) => {
+                  const site = websites.find((w) => w.id === task.website_id);
+                  return (
+                    <>
+                      <tr key={task.id} className={cn("border-b border-border/50 cursor-pointer transition-colors hover:bg-muted/20", expandedId === task.id && "bg-muted/20")} onClick={() => setExpandedId(expandedId === task.id ? null : task.id)}>
+                        <td className="px-5 py-3 text-foreground font-medium">{task.created_at?.split("T")[0]}</td>
+                        <td className="px-5 py-3 text-foreground">{site?.name || "Personal"}</td>
+                        <td className="px-5 py-3 text-muted-foreground">{task.title}</td>
+                        <td className="px-5 py-3 text-foreground">{task.assigned_to}</td>
+                        <td className="px-5 py-3">
+                          <span className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-md", getStatusColor(task.status))}>{task.status}</span>
+                        </td>
+                        <td className="px-5 py-3">
+                          <span className={cn("text-xs font-medium", getPriorityColor(task.priority))}>{task.priority}</span>
+                        </td>
+                        <td className="px-5 py-3">{task.is_recurring && <Repeat className="h-3.5 w-3.5 text-muted-foreground" />}</td>
+                      </tr>
+                      <AnimatePresence>
+                        {expandedId === task.id && <ExpandedRow key={`expanded-${task.id}`} task={task} websites={websites} refetch={refetch} />}
+                      </AnimatePresence>
+                    </>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </motion.div>
   );

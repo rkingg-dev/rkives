@@ -8,6 +8,7 @@ import { PageSkeleton } from "@/components/ui/loading-skeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { cn } from "@/lib/utils";
 import { ExternalLink, Star, AlertTriangle, Pencil, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription } from "@/components/ui/modal";
 import { Pagination } from "@/components/ui/pagination";
 import { WebsiteForm } from "@/components/forms/WebsiteForm";
@@ -107,7 +108,7 @@ export default function WebsitesPage() {
                 const daysUntilDomain = Math.ceil((new Date(site.domain_expiry).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
                 return (
                   <tr key={site.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
-                    <td className="px-5 py-3"><div className="flex items-center gap-2"><span className="font-medium text-foreground">{site.name}</span><a href={site.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors"><ExternalLink className="h-3 w-3" /></a></div><p className="text-xs text-muted-foreground truncate max-w-[200px]">{site.scope}</p></td>
+                    <td className="px-5 py-3"><div className="flex items-center gap-2"><Link href={`/dashboard/websites/${site.id}`} className="font-medium text-foreground hover:underline">{site.name}</Link><a href={site.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors"><ExternalLink className="h-3 w-3" /></a></div><p className="text-xs text-muted-foreground truncate max-w-[200px]">{site.scope}</p></td>
                     <td className="px-5 py-3 text-muted-foreground">{client?.company || "\u2014"}</td>
                     <td className="px-5 py-3 text-muted-foreground">{site.platform}</td>
                     <td className="px-5 py-3"><span className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-md", site.status === "Live" ? "text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10" : "text-amber-500 bg-amber-50 dark:bg-amber-500/10")}>{site.status}</span></td>

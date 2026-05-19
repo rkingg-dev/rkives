@@ -54,6 +54,7 @@ export default function TasksPage() {
   const { data: websites } = useSupabaseQuery({ table: "websites" });
   const { update, remove } = useSupabaseMutation("tasks");
 
+  const [view, setView] = useState<"table" | "kanban">("table");
   const [status, setStatus] = useState("All");
   const [priority, setPriority] = useState("All");
   const [type, setType] = useState("All");
@@ -111,7 +112,22 @@ export default function TasksPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-foreground">Tasks</h2>
-        <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1 bg-card border border-border rounded-lg p-1">
+            <button
+              onClick={() => setView("table")}
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${view === "table" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              Table
+            </button>
+            <button
+              onClick={() => setView("kanban")}
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${view === "kanban" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              Board
+            </button>
+          </div>
+          <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
           <DrawerTrigger asChild>
             <button onClick={() => setDrawerOpen(true)} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">New Task</button>
           </DrawerTrigger>
@@ -125,6 +141,7 @@ export default function TasksPage() {
             </DrawerBody>
           </DrawerContent>
         </Drawer>
+        </div>
       </div>
 
       <Drawer open={editOpen} onOpenChange={setEditOpen}>
@@ -192,64 +209,115 @@ export default function TasksPage() {
           </button>
         </div>
       )}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="w-12 px-5 py-3">
-                  <input type="checkbox" checked={allSelected} onChange={toggleAll} className="rounded border-border" />
-                </th>
-                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Task</th>
-                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Website</th>
-                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Type</th>
-                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Priority</th>
-                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
-                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Due</th>
-                <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider"></th>
-                <th className="px-5 py-3"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginated.map((task) => {
-                const site = websites.find((w) => w.id === task.website_id);
-                return (
-                  <tr key={task.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
-                    <td className="px-5 py-3">
-                      <input type="checkbox" checked={selected.includes(task.id)} onChange={() => toggleSelect(task.id)} className="rounded border-border" />
-                    </td>
-                    <td className="px-5 py-3">
-                      <div className="font-medium text-foreground">{task.title}</div>
-                      <div className="text-xs text-muted-foreground truncate max-w-[250px]">{task.description}</div>
-                    </td>
-                    <td className="px-5 py-3 text-muted-foreground">{site?.name || "Personal"}</td>
-                    <td className="px-5 py-3 text-muted-foreground">{task.task_type}</td>
-                    <td className="px-5 py-3"><span className={cn("text-xs font-medium", getPriorityColor(task.priority))}>{task.priority}</span></td>
-                    <td className="px-5 py-3">
-                      <span className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-md flex items-center gap-1 w-fit", getStatusColor(task.status))}>
-                        {getStatusIcon(task.status)} {task.status}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3 text-muted-foreground">{task.due_date}</td>
-                    <td className="px-5 py-3">{task.is_recurring && <Repeat className="h-3.5 w-3.5 text-muted-foreground" />}</td>
-                    <td className="px-5 py-3">
-                      <div className="flex items-center gap-2">
-                        <button onClick={() => { setEditItem(task); setEditOpen(true); }} className="p-1.5 rounded-md hover:bg-muted transition-colors">
-                          <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
-                        </button>
-                        <button onClick={() => handleDelete(task.id)} className="p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors">
-                          <Trash2 className="h-3.5 w-3.5 text-red-500" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+      {view === "kanban" && (
+        <div className="flex gap-4 overflow-x-auto pb-4">
+          {["To Do", "In Progress", "Waiting", "On Hold", "Done"].map((status) => {
+            const statusTasks = filtered.filter((t) => t.status === status);
+            return (
+              <div key={status} className="min-w-[280px] flex-1">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-sm font-medium text-foreground">{status}</h4>
+                  <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">{statusTasks.length}</span>
+                </div>
+                <div className="space-y-2">
+                  {statusTasks.length === 0 ? (
+                    <div className="p-4 border border-dashed border-border rounded-lg text-center">
+                      <p className="text-xs text-muted-foreground">No tasks</p>
+                    </div>
+                  ) : (
+                    statusTasks.map((task) => (
+                      <motion.div
+                        key={task.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-card border border-border rounded-lg p-3 cursor-pointer hover:shadow-md transition-shadow"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <h5 className="text-sm font-medium text-foreground">{task.title}</h5>
+                        </div>
+                        <div className="flex items-center gap-2 mt-2">
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md ${
+                            task.priority === "Urgent" ? "text-red-600 bg-red-50 dark:bg-red-500/10" :
+                            task.priority === "High" ? "text-red-500 bg-red-50 dark:bg-red-500/10" :
+                            task.priority === "Medium" ? "text-amber-500 bg-amber-50 dark:bg-amber-500/10" :
+                            "text-muted-foreground bg-muted"
+                          }`}>{task.priority}</span>
+                          {task.task_type && <span className="text-[10px] text-muted-foreground">{task.task_type}</span>}
+                        </div>
+                        {task.due_date && (
+                          <p className="text-[10px] text-muted-foreground mt-2">
+                            Due {new Date(task.due_date).toLocaleDateString()}
+                          </p>
+                        )}
+                      </motion.div>
+                    ))
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
-        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} totalItems={filtered.length} pageSize={pageSize} onPageSizeChange={(size) => { setPageSize(size); setPage(1); }} />
-      </motion.div>
+      )}
+      {view === "table" && (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="w-12 px-5 py-3">
+                    <input type="checkbox" checked={allSelected} onChange={toggleAll} className="rounded border-border" />
+                  </th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Task</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Website</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Type</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Priority</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Due</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider"></th>
+                  <th className="px-5 py-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginated.map((task) => {
+                  const site = websites.find((w) => w.id === task.website_id);
+                  return (
+                    <tr key={task.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
+                      <td className="px-5 py-3">
+                        <input type="checkbox" checked={selected.includes(task.id)} onChange={() => toggleSelect(task.id)} className="rounded border-border" />
+                      </td>
+                      <td className="px-5 py-3">
+                        <div className="font-medium text-foreground">{task.title}</div>
+                        <div className="text-xs text-muted-foreground truncate max-w-[250px]">{task.description}</div>
+                      </td>
+                      <td className="px-5 py-3 text-muted-foreground">{site?.name || "Personal"}</td>
+                      <td className="px-5 py-3 text-muted-foreground">{task.task_type}</td>
+                      <td className="px-5 py-3"><span className={cn("text-xs font-medium", getPriorityColor(task.priority))}>{task.priority}</span></td>
+                      <td className="px-5 py-3">
+                        <span className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-md flex items-center gap-1 w-fit", getStatusColor(task.status))}>
+                          {getStatusIcon(task.status)} {task.status}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3 text-muted-foreground">{task.due_date}</td>
+                      <td className="px-5 py-3">{task.is_recurring && <Repeat className="h-3.5 w-3.5 text-muted-foreground" />}</td>
+                      <td className="px-5 py-3">
+                        <div className="flex items-center gap-2">
+                          <button onClick={() => { setEditItem(task); setEditOpen(true); }} className="p-1.5 rounded-md hover:bg-muted transition-colors">
+                            <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
+                          </button>
+                          <button onClick={() => handleDelete(task.id)} className="p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors">
+                            <Trash2 className="h-3.5 w-3.5 text-red-500" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} totalItems={filtered.length} pageSize={pageSize} onPageSizeChange={(size) => { setPageSize(size); setPage(1); }} />
+        </motion.div>
+      )}
     </div>
   );
 }

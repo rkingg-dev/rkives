@@ -43,22 +43,33 @@ function PortfolioWidget() {
       <div className="space-y-4">
         <div>
           <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Selected Works</p>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-semibold text-foreground">{loading ? "--" : selectedWorks}</span>
-            <span className="text-xs font-medium text-muted-foreground">projects</span>
-          </div>
+          {loading ? (
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-semibold text-foreground">--</span>
+              <span className="text-xs font-medium text-muted-foreground">projects</span>
+            </div>
+          ) : selectedWorks === 0 ? (
+            <p className="text-sm text-muted-foreground">No portfolio sites yet</p>
+          ) : (
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-semibold text-foreground">{selectedWorks}</span>
+              <span className="text-xs font-medium text-muted-foreground">projects</span>
+            </div>
+          )}
         </div>
 
-        <div className="grid grid-cols-2 gap-3 pt-2 border-t border-border">
-          <div>
-            <p className="text-xs text-muted-foreground">Live</p>
-            <p className="text-sm font-semibold text-foreground">{loading ? "--" : websites.filter((w) => w.status === "Live").length}</p>
+        {!loading && selectedWorks > 0 && (
+          <div className="grid grid-cols-2 gap-3 pt-2 border-t border-border">
+            <div>
+              <p className="text-xs text-muted-foreground">Live</p>
+              <p className="text-sm font-semibold text-foreground">{websites.filter((w) => w.status === "Live").length}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">In Dev</p>
+              <p className="text-sm font-semibold text-foreground">{websites.filter((w) => w.status === "In Development").length}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-xs text-muted-foreground">In Dev</p>
-            <p className="text-sm font-semibold text-foreground">{loading ? "--" : websites.filter((w) => w.status === "In Development").length}</p>
-          </div>
-        </div>
+        )}
       </div>
 
       <div className="mt-4 pt-4 border-t border-border">
@@ -134,33 +145,45 @@ function MaintenanceWidget() {
       <div className="space-y-4">
         <div>
           <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Renewals This Month</p>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-semibold text-foreground">{loading ? "--" : renewalsThisMonth}</span>
-          </div>
+          {loading ? (
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-semibold text-foreground">--</span>
+            </div>
+          ) : renewalsThisMonth === 0 ? (
+            <p className="text-sm text-muted-foreground">No renewals upcoming</p>
+          ) : (
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-semibold text-foreground">{renewalsThisMonth}</span>
+            </div>
+          )}
         </div>
 
-        <div className="h-16">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={maintenanceBarData} barCategoryGap="30%">
-              <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                {maintenanceBarData.map((_, index) => (
-                  <Cell key={index} fill={index === 3 ? "var(--foreground)" : "var(--muted)"} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        {!loading && renewalsThisMonth > 0 && (
+          <>
+            <div className="h-16">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={maintenanceBarData} barCategoryGap="30%">
+                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                    {maintenanceBarData.map((_, index) => (
+                      <Cell key={index} fill={index === 3 ? "var(--foreground)" : "var(--muted)"} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
 
-        <div className="grid grid-cols-2 gap-3 pt-2 border-t border-border">
-          <div>
-            <p className="text-xs text-muted-foreground">Hosting</p>
-            <p className="text-sm font-semibold text-foreground">{loading ? "--" : hostingRenewals}</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Domains</p>
-            <p className="text-sm font-semibold text-foreground">{loading ? "--" : domainRenewals}</p>
-          </div>
-        </div>
+            <div className="grid grid-cols-2 gap-3 pt-2 border-t border-border">
+              <div>
+                <p className="text-xs text-muted-foreground">Hosting</p>
+                <p className="text-sm font-semibold text-foreground">{hostingRenewals}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Domains</p>
+                <p className="text-sm font-semibold text-foreground">{domainRenewals}</p>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </motion.div>
   );

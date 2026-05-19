@@ -10,19 +10,6 @@ import { ArrowLeft, Copy, Pencil, Send, Download, User, Calendar, CreditCard, Ch
 import Link from "next/link";
 import { toast } from "sonner";
 
-const invoiceItems = [
-  { description: "Monthly maintenance — Website hosting management, security updates, and content changes", qty: 1, rate: 12000, amount: 12000 },
-  { description: "SEO optimization — Blog content, meta tags, and performance improvements", qty: 1, rate: 0, amount: 0 },
-  { description: "SSL certificate renewal and DNS management", qty: 1, rate: 0, amount: 0 },
-];
-
-const activity = [
-  { user: "R King", action: "created the invoice.", time: "Aug 1, 2024", avatar: "" },
-  { user: "R King", action: "sent the invoice.", time: "Aug 1, 2024", avatar: "" },
-  { user: "Client", action: "viewed the invoice.", time: "Aug 2, 2024", avatar: "" },
-  { user: "Client", action: "paid the invoice.", time: "Aug 3, 2024", avatar: "", paid: true },
-];
-
 export default function InvoicePage() {
   const [paymentId, setPaymentId] = useState<string | null>(null);
 
@@ -40,6 +27,15 @@ export default function InvoicePage() {
 
   const payment = payments[0] || null;
   const client = payment ? clients.find((c) => c.id === payment.client_id) : null;
+
+  const invoiceItems = payment ? [
+    { description: payment.payment_type || "Service", qty: 1, rate: payment.amount, amount: payment.amount },
+  ] : [];
+
+  const activity = payment ? [
+    { user: "R King", action: "created the invoice.", time: payment.created_at, avatar: "" },
+    payment.paid_at && { user: "Client", action: "paid the invoice.", time: payment.paid_at, avatar: "", paid: true },
+  ].filter(Boolean) as { user: string; action: string; time: string; avatar: string; paid?: boolean }[] : [];
 
   if (loading && paymentId) return <PageSkeleton />;
   if (error) return <ErrorState message={error} onRetry={refetch} />;

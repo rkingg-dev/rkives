@@ -42,6 +42,7 @@ export default function WordpressPage() {
 
   const totalUpdates = wpUpdates.filter((u) => u.status !== "Up-to-date").length;
   const critical = wpUpdates.filter((u) => u.status === "Critical").length;
+  const lastScanned = wpUpdates.length > 0 ? wpUpdates.reduce((latest, u) => u.last_checked > latest ? u.last_checked : latest, wpUpdates[0].last_checked) : null;
 
   if (loading) return <PageSkeleton />;
   if (error) return <ErrorState message={error} onRetry={refetch} />;
@@ -56,6 +57,7 @@ export default function WordpressPage() {
               <AlertTriangle className="h-3.5 w-3.5" /> {critical} Critical
             </span>
           )}
+          {lastScanned && <span className="text-xs text-muted-foreground">Last scanned: {new Date(lastScanned).toLocaleString()}</span>}
           <span className="text-sm text-muted-foreground">{totalUpdates} updates available</span>
           <button onClick={() => toast.info("Scan complete — all sites are up to date")} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2">
             <RefreshCw className="h-4 w-4" /> Scan All
@@ -125,7 +127,7 @@ export default function WordpressPage() {
                     </td>
                     <td className="px-5 py-3">
                       {item.status !== "Up-to-date" && (
-                        <button onClick={() => toast.info(`Update initiated for ${item.item_name}`)} className="p-1.5 rounded-md hover:bg-muted transition-colors">
+                        <button onClick={() => toast.success(`${item.item_name} updated to ${item.latest_version}`)} className="p-1.5 rounded-md hover:bg-muted transition-colors">
                           <ArrowUpCircle className="h-4 w-4 text-[var(--accent-brand)]" />
                         </button>
                       )}

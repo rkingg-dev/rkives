@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useSupabaseQuery } from "@/hooks/use-supabase-query";
 import { useSupabaseMutation } from "@/hooks/use-supabase-mutation";
 import { Mail, Phone, Pencil, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription } from "@/components/ui/modal";
 import { Pagination } from "@/components/ui/pagination";
 import { PageSkeleton } from "@/components/ui/loading-skeleton";
@@ -94,7 +95,7 @@ export default function ClientsPage() {
                 const siteCount = websites.filter((w) => w.client_id === client.id).length;
                 return (
                   <tr key={client.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
-                    <td className="px-5 py-3"><div className="font-medium text-foreground">{client.name}</div><div className="text-xs text-muted-foreground">{client.company}</div></td>
+                    <td className="px-5 py-3"><Link href={`/dashboard/clients/${client.id}`} className="font-medium text-foreground hover:underline">{client.name}</Link><div className="text-xs text-muted-foreground">{client.company}</div></td>
                     <td className="px-5 py-3"><div className="flex items-center gap-1.5 text-muted-foreground"><Mail className="h-3 w-3" /> {client.email}</div><div className="flex items-center gap-1.5 text-muted-foreground mt-0.5"><Phone className="h-3 w-3" /> {client.phone}</div></td>
                     <td className="px-5 py-3 text-foreground font-medium">{siteCount}</td>
                     <td className="px-5 py-3">
