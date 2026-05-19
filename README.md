@@ -2,8 +2,8 @@
 
 A personal workflow dashboard for freelance web developers. Manage clients, websites, tasks, payments, credentials, and more — all in one place.
 
-![Next.js](https://img.shields.io/badge/Next.js-14.2.5-black?logo=next.js)
-![React](https://img.shields.io/badge/React-18-61dafb?logo=react)
+![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=next.js)
+![React](https://img.shields.io/badge/React-19-61dafb?logo=react)
 ![Supabase](https://img.shields.io/badge/Supabase-2.45-3ecf8e?logo=supabase)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06b6d4?logo=tailwindcss)
@@ -70,8 +70,8 @@ Every entity supports full Create, Read, Update, Delete:
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | Next.js 14 (App Router) |
-| UI | React 18, Tailwind CSS, Framer Motion |
+| Framework | Next.js 15 (App Router) |
+| UI | React 19, Tailwind CSS, Framer Motion |
 | Components | Radix UI primitives (shadcn/ui pattern) |
 | Charts | Recharts |
 | Forms | react-hook-form + zod |
@@ -325,7 +325,7 @@ The finance page uses a hybrid approach:
 
 ### Other platforms
 
-The app is a standard Next.js 14 application. It can be deployed to any platform that supports Node.js:
+The app is a standard Next.js 15 application. It can be deployed to any platform that supports Node.js:
 - Railway
 - Render
 - DigitalOcean App Platform
