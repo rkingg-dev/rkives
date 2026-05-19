@@ -31,15 +31,15 @@ export default function PaymentsPage() {
                 <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Website</label><Select className="mt-1" options={[{ label: "General", value: "general" }, ...websiteData.map((w) => ({ label: w.name, value: w.id }))]} /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Amount</label><input type="number" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Amount</label><input type="number" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
                 <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Type</label><Select className="mt-1" options={[{ label: "Monthly Maintenance", value: "monthly" }, { label: "Project Payment", value: "project" }, { label: "Hosting", value: "hosting" }, { label: "Domain", value: "domain" }, { label: "One-time", value: "onetime" }]} /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Method</label><Select className="mt-1" options={[{ label: "GCash", value: "gcash" }, { label: "Bank Transfer", value: "bank" }, { label: "PayPal", value: "paypal" }, { label: "Cash", value: "cash" }]} /></div>
-                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Reference #</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Reference #</label><input className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
               </div>
-              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Billing Period</label><input placeholder="Aug 2024" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
-              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Receipt Photo</label><input type="file" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-muted file:text-foreground" /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Billing Period</label><input placeholder="Aug 2024" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Receipt Photo</label><input type="file" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-muted file:text-foreground" /></div>
             </div>
             <ModalFooter>
               <ModalClose asChild><button className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Cancel</button></ModalClose>

@@ -16,14 +16,14 @@ export default function ProjectsPage() {
           <ModalContent>
             <ModalHeader><ModalTitle>Add Project</ModalTitle><ModalDescription>Create a new project.</ModalDescription></ModalHeader>
             <div className="space-y-4">
-              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Project Name</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Project Name</label><input className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
               <div className="grid grid-cols-2 gap-4">
                 <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Website</label><Select className="mt-1" options={websiteData.map((w) => ({ label: w.name, value: w.id }))} placeholder="Select website" /></div>
                 <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Type</label><Select className="mt-1" options={[{ label: "Full Build", value: "full" }, { label: "Redesign", value: "redesign" }, { label: "Landing Page", value: "landing" }, { label: "Web App", value: "webapp" }, { label: "SEO", value: "seo" }]} /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Deadline</label><input type="date" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
-                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Progress (%)</label><input type="number" min="0" max="100" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Deadline</label><input type="date" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Progress (%)</label><input type="number" min="0" max="100" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
               </div>
             </div>
             <ModalFooter>

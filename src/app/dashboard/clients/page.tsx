@@ -28,15 +28,15 @@ export default function ClientsPage() {
             </ModalHeader>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Name</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
-                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Company</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Name</label><input className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Company</label><input className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Email</label><input type="email" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
-                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Phone</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Email</label><input type="email" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Phone</label><input className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
               </div>
-              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Address</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
-              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Notes</label><textarea rows={3} className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none" /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Address</label><input className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Notes</label><textarea rows={3} className="mt-1 w-full rounded-md border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none" /></div>
             </div>
             <ModalFooter>
               <ModalClose asChild><button className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Cancel</button></ModalClose>

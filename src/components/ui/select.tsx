@@ -37,7 +37,7 @@ export function Select({ options, value, onValueChange, placeholder = "Select...
         type="button"
         onClick={() => setOpen(!open)}
         className={cn(
-          "flex items-center justify-between w-full h-9 rounded-lg border border-border bg-card px-3 text-sm text-left transition-colors hover:border-[var(--accent-brand)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)]",
+          "flex items-center justify-between w-full h-9 rounded-md border border-border bg-card px-3 text-sm text-left transition-colors hover:border-[var(--accent-brand)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-brand)]",
           !selected && "text-muted-foreground"
         )}
       >

@@ -29,7 +29,7 @@ export default function LoginPage() {
             <input
               type="email"
               placeholder="rking@rkives.io"
-              className="mt-1.5 w-full h-11 rounded-lg border border-border bg-card px-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[var(--accent-brand)] focus:border-transparent transition-all"
+              className="mt-1.5 w-full h-11 rounded-md border border-border bg-card px-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[var(--accent-brand)] focus:border-transparent transition-all"
             />
           </div>
 
@@ -39,7 +39,7 @@ export default function LoginPage() {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
-                className="w-full h-11 rounded-lg border border-border bg-card px-4 pr-11 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[var(--accent-brand)] focus:border-transparent transition-all"
+                className="w-full h-11 rounded-md border border-border bg-card px-4 pr-11 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[var(--accent-brand)] focus:border-transparent transition-all"
               />
               <button
                 type="button"

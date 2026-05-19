@@ -60,15 +60,15 @@ export default function SettingsPage() {
               <div className="space-y-4 max-w-md">
                 <div>
                   <label className="text-xs text-muted-foreground uppercase tracking-wider">Name</label>
-                  <input type="text" defaultValue="R King Garcia" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                  <input type="text" defaultValue="R King Garcia" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground uppercase tracking-wider">Email</label>
-                  <input type="email" defaultValue="rking@rkives.io" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                  <input type="email" defaultValue="rking@rkives.io" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground uppercase tracking-wider">Company</label>
-                  <input type="text" defaultValue="RKives" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                  <input type="text" defaultValue="RKives" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
                 </div>
                 <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                   Save Changes
@@ -83,11 +83,11 @@ export default function SettingsPage() {
               <div className="space-y-4 max-w-md">
                 <div>
                   <label className="text-xs text-muted-foreground uppercase tracking-wider">Workspace Name</label>
-                  <input type="text" defaultValue="RKives Workspace" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                  <input type="text" defaultValue="RKives Workspace" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground uppercase tracking-wider">Currency</label>
-                  <input type="text" defaultValue="PHP (\u20B1)" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                  <input type="text" defaultValue="PHP (\u20B1)" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
                 </div>
                 <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                   Save Changes

@@ -42,15 +42,15 @@ export default function PasswordsPage() {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Website</label><Select className="mt-1" options={websiteData.map((w) => ({ label: w.name, value: w.id }))} placeholder="Select website" /></div>
-                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Label</label><input placeholder="WordPress Admin, Hosting, etc." className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Label</label><input placeholder="WordPress Admin, Hosting, etc." className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
               </div>
-              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Login URL</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Login URL</label><input className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Username</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
-                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Email</label><input type="email" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Username</label><input className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+                <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Email</label><input type="email" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
               </div>
-              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Password</label><input type="password" className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
-              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">2FA Secret (optional)</label><input className="mt-1 w-full h-9 rounded-lg border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">Password</label><input type="password" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
+              <div><label className="text-xs text-muted-foreground uppercase tracking-wider">2FA Secret (optional)</label><input className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" /></div>
             </div>
             <ModalFooter>
               <ModalClose asChild><button className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Cancel</button></ModalClose>
