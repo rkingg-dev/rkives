@@ -38,11 +38,25 @@ export default function SettingsPage() {
   const [profileEmail, setProfileEmail] = useState("");
   const [profileCompany, setProfileCompany] = useState("");
 
+  // Workspace settings
+  const [workspaceName, setWorkspaceName] = useState("");
+  const [workspaceCurrency, setWorkspaceCurrency] = useState("PHP");
+
+  // Notification preferences
+  const [notifSettings, setNotifSettings] = useState({
+    taskDeadlines: true,
+    paymentReceived: true,
+    domainExpiry: true,
+    weeklyDigest: false,
+  });
+
   useEffect(() => {
     if (user) {
       setProfileName(`${user.first_name} ${user.last_name}`.trim());
       setProfileEmail(user.email);
       setProfileCompany(user.company_name);
+      setWorkspaceName(user.company_name || "");
+      setWorkspaceCurrency("PHP");
     }
   }, [user]);
 
@@ -57,6 +71,18 @@ export default function SettingsPage() {
     });
     if (result) toast.success("Profile updated");
     else toast.error("Failed to update");
+  }
+
+  async function handleSaveWorkspace() {
+    if (!user) return;
+    const result = await update(user.id, { company_name: workspaceName });
+    if (result) toast.success("Workspace updated");
+    else toast.error("Failed to update");
+  }
+
+  function toggleNotif(key: keyof typeof notifSettings) {
+    setNotifSettings((prev) => ({ ...prev, [key]: !prev[key] }));
+    toast.success("Notification preferences saved");
   }
 
   return (
@@ -135,14 +161,28 @@ export default function SettingsPage() {
               <div className="space-y-4 max-w-md">
                 <div>
                   <label className="text-xs text-muted-foreground uppercase tracking-wider">Workspace Name</label>
-                  <input type="text" defaultValue="RKives Workspace" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                  <input
+                    type="text"
+                    value={workspaceName}
+                    onChange={(e) => setWorkspaceName(e.target.value)}
+                    className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                  />
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground uppercase tracking-wider">Currency</label>
-                  <input type="text" defaultValue="PHP (\u20B1)" className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+                  <input
+                    type="text"
+                    value={workspaceCurrency}
+                    onChange={(e) => setWorkspaceCurrency(e.target.value)}
+                    className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                  />
                 </div>
-                <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
-                  Save Changes
+                <button
+                  onClick={handleSaveWorkspace}
+                  disabled={loading}
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+                >
+                  {loading ? "Saving..." : "Save Changes"}
                 </button>
               </div>
             </motion.div>
@@ -172,7 +212,9 @@ export default function SettingsPage() {
                       <p className="text-sm font-medium text-foreground">{int.name}</p>
                       <p className="text-xs text-muted-foreground">{int.description}</p>
                     </div>
-                    <button className={cn(
+                    <button
+                      onClick={() => toast.info(`${int.name} integration coming soon`)}
+                      className={cn(
                       "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
                       int.connected
                         ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
@@ -206,15 +248,55 @@ export default function SettingsPage() {
           {activeTab === "notifications" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-xl border border-border shadow-sm p-6">
               <h3 className="text-sm font-semibold text-foreground mb-4">Notification Preferences</h3>
-              <div className="space-y-3">
-                {["Task deadlines", "Maintenance renewals", "Client messages", "Weekly digest"].map((pref) => (
-                  <label key={pref} className="flex items-center justify-between py-2">
-                    <span className="text-sm text-foreground">{pref}</span>
-                    <div className="h-5 w-9 rounded-full bg-muted relative cursor-pointer">
-                      <div className="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow-sm" />
-                    </div>
-                  </label>
-                ))}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Task deadlines</p>
+                    <p className="text-xs text-muted-foreground">Get notified when tasks are due</p>
+                  </div>
+                  <button
+                    onClick={() => toggleNotif("taskDeadlines")}
+                    className={`relative w-10 h-6 rounded-full transition-colors ${notifSettings.taskDeadlines ? "bg-[var(--accent-brand)]" : "bg-muted"}`}
+                  >
+                    <span className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${notifSettings.taskDeadlines ? "translate-x-4" : ""}`} />
+                  </button>
+                </div>
+                <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Payment received</p>
+                    <p className="text-xs text-muted-foreground">Get notified when a payment is verified</p>
+                  </div>
+                  <button
+                    onClick={() => toggleNotif("paymentReceived")}
+                    className={`relative w-10 h-6 rounded-full transition-colors ${notifSettings.paymentReceived ? "bg-[var(--accent-brand)]" : "bg-muted"}`}
+                  >
+                    <span className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${notifSettings.paymentReceived ? "translate-x-4" : ""}`} />
+                  </button>
+                </div>
+                <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Domain expiry</p>
+                    <p className="text-xs text-muted-foreground">Get notified before a domain expires</p>
+                  </div>
+                  <button
+                    onClick={() => toggleNotif("domainExpiry")}
+                    className={`relative w-10 h-6 rounded-full transition-colors ${notifSettings.domainExpiry ? "bg-[var(--accent-brand)]" : "bg-muted"}`}
+                  >
+                    <span className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${notifSettings.domainExpiry ? "translate-x-4" : ""}`} />
+                  </button>
+                </div>
+                <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Weekly digest</p>
+                    <p className="text-xs text-muted-foreground">Receive a summary of your week</p>
+                  </div>
+                  <button
+                    onClick={() => toggleNotif("weeklyDigest")}
+                    className={`relative w-10 h-6 rounded-full transition-colors ${notifSettings.weeklyDigest ? "bg-[var(--accent-brand)]" : "bg-muted"}`}
+                  >
+                    <span className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${notifSettings.weeklyDigest ? "translate-x-4" : ""}`} />
+                  </button>
+                </div>
               </div>
             </motion.div>
           )}

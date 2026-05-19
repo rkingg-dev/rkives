@@ -7,7 +7,7 @@ import { useSupabaseMutation } from "@/hooks/use-supabase-mutation";
 import { PageSkeleton } from "@/components/ui/loading-skeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { cn } from "@/lib/utils";
-import { Plus, Tag, Calendar, Globe, Pencil, Trash2 } from "lucide-react";
+import { Plus, Tag, Calendar, Globe, Pencil, Trash2, ExternalLink } from "lucide-react";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription } from "@/components/ui/modal";
 import { ChangelogForm } from "@/components/forms/ChangelogForm";
 import { toast } from "sonner";
@@ -72,6 +72,7 @@ export default function ChangelogPage() {
       </div>
 
       {/* Site Filter */}
+      <div className="flex items-center gap-3">
       <div className="flex gap-1 bg-card border border-border rounded-lg p-1 w-fit overflow-x-auto">
         <button onClick={() => setSiteFilter("All")} className={cn("px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", siteFilter === "All" ? "text-[var(--accent-brand)] font-semibold" : "text-muted-foreground hover:text-foreground")}>All Sites</button>
         {siteIds.map((siteId) => {
@@ -83,8 +84,27 @@ export default function ChangelogPage() {
           );
         })}
       </div>
+      <button
+        onClick={() => {
+          const siteId = filtered.length > 0 ? filtered[0].website_id : null;
+          const site = websites.find((w) => w.id === siteId);
+          if (site) {
+            navigator.clipboard.writeText(`${window.location.origin}/changelog/${site.slug}`);
+            toast.success("Changelog URL copied");
+          }
+        }}
+        className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground border border-border rounded-lg transition-colors"
+      >
+        <ExternalLink className="h-3.5 w-3.5" /> Share
+      </button>
+      </div>
 
       {/* Timeline */}
+      {filtered.length === 0 ? (
+        <div className="py-16 text-center">
+          <p className="text-sm text-muted-foreground">No changelog entries yet</p>
+        </div>
+      ) : (
       <div className="space-y-4">
         {filtered.map((entry, i) => {
           const site = websites.find((w) => w.id === entry.website_id);
@@ -115,6 +135,7 @@ export default function ChangelogPage() {
           );
         })}
       </div>
+      )}
 
       {/* Edit Modal */}
       <Modal open={editOpen} onOpenChange={setEditOpen}>

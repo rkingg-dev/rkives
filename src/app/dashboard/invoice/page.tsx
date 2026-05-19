@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { ArrowLeft, Copy, Pencil, Send, Download, User, Calendar, CreditCard, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 
 export default function InvoicePage() {
   const [paymentId, setPaymentId] = useState<string | null>(null);
@@ -51,6 +52,7 @@ export default function InvoicePage() {
 
   return (
     <div className="space-y-6">
+      <Breadcrumb items={[{ label: "Payments", href: "/dashboard/payments" }, { label: "Invoice" }]} />
       {/* Top Bar */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">

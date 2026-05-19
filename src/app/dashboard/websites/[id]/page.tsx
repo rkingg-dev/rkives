@@ -6,6 +6,7 @@ import { PageSkeleton } from "@/components/ui/loading-skeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { ArrowLeft, Globe, CheckSquare, Shield, ScrollText, RefreshCw } from "lucide-react";
 import Link from "next/link";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 
 export default function WebsiteDetailPage() {
   const params = useParams();
@@ -31,6 +32,7 @@ export default function WebsiteDetailPage() {
 
   return (
     <div className="space-y-6">
+      <Breadcrumb items={[{ label: "Websites", href: "/dashboard/websites" }, { label: site.name }]} />
       <Link href="/dashboard/websites" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
         <ArrowLeft className="h-4 w-4" /> Back to websites
       </Link>

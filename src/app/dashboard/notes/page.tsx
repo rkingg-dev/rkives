@@ -65,6 +65,11 @@ export default function NotesPage() {
         <input type="text" placeholder="Search notes..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full h-9 rounded-lg border border-border bg-card pl-9 pr-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring" />
       </div>
 
+      {filtered.length === 0 ? (
+        <div className="py-16 text-center">
+          <p className="text-sm text-muted-foreground">No notes yet</p>
+        </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filtered.map((note, i) => {
           const site = websites.find((w) => w.id === note.website_id);
@@ -100,6 +105,7 @@ export default function NotesPage() {
           );
         })}
       </div>
+      )}
 
       {/* Edit Modal */}
       <Modal open={editOpen} onOpenChange={setEditOpen}>

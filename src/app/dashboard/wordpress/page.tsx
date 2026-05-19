@@ -92,6 +92,11 @@ export default function WordpressPage() {
       </div>
 
       {/* Updates Table */}
+      {filtered.length === 0 ? (
+        <div className="py-16 text-center">
+          <p className="text-sm text-muted-foreground">No WordPress updates found</p>
+        </div>
+      ) : (
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -140,6 +145,7 @@ export default function WordpressPage() {
         </div>
         <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} totalItems={filtered.length} pageSize={pageSize} onPageSizeChange={(s) => { setPageSize(s); setPage(1); }} />
       </motion.div>
+      )}
     </div>
   );
 }

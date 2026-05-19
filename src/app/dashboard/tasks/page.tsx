@@ -8,10 +8,11 @@ import { toast } from "sonner";
 import { PageSkeleton } from "@/components/ui/loading-skeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { cn } from "@/lib/utils";
-import { CheckCircle, Clock, AlertCircle, Pause, Repeat, Pencil, Trash2 } from "lucide-react";
+import { CheckCircle, Clock, AlertCircle, Pause, Repeat, Pencil, Trash2, Download } from "lucide-react";
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerBody } from "@/components/ui/drawer";
 import { Pagination } from "@/components/ui/pagination";
 import { TaskForm } from "@/components/forms/TaskForm";
+import { exportToCSV } from "@/lib/export-csv";
 
 const statusFilters = ["All", "Current Tasks", "Completed"];
 const priorityFilters = ["All", "Urgent", "High", "Medium", "Low"];
@@ -127,6 +128,19 @@ export default function TasksPage() {
               Board
             </button>
           </div>
+          <button
+            onClick={() => exportToCSV(filtered.map((t) => ({
+              Title: t.title,
+              Status: t.status,
+              Priority: t.priority,
+              Type: t.task_type,
+              DueDate: t.due_date,
+              AssignedTo: t.assigned_to,
+            })), "tasks.csv")}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground border border-border rounded-lg transition-colors"
+          >
+            <Download className="h-3.5 w-3.5" /> Export
+          </button>
           <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
           <DrawerTrigger asChild>
             <button onClick={() => setDrawerOpen(true)} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">New Task</button>

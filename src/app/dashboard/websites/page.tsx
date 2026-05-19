@@ -7,12 +7,13 @@ import { useSupabaseMutation } from "@/hooks/use-supabase-mutation";
 import { PageSkeleton } from "@/components/ui/loading-skeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { cn } from "@/lib/utils";
-import { ExternalLink, Star, AlertTriangle, Pencil, Trash2 } from "lucide-react";
+import { ExternalLink, Star, AlertTriangle, Pencil, Trash2, Download } from "lucide-react";
 import Link from "next/link";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription } from "@/components/ui/modal";
 import { Pagination } from "@/components/ui/pagination";
 import { WebsiteForm } from "@/components/forms/WebsiteForm";
 import { toast } from "sonner";
+import { exportToCSV } from "@/lib/export-csv";
 
 export default function WebsitesPage() {
   const { data: websites, loading, error, refetch } = useSupabaseQuery({ table: "websites", orderBy: { column: "created_at", ascending: false } });
@@ -57,6 +58,23 @@ export default function WebsitesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-foreground">Websites</h2>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => exportToCSV(filtered.map((s) => {
+              const client = clients.find((c) => c.id === s.client_id);
+              return {
+                Name: s.name,
+                Company: client?.company || "",
+                URL: s.url,
+                Platform: s.platform,
+                Status: s.status,
+                MonthlyFee: s.monthly_maintenance_fee,
+              };
+            }), "websites.csv")}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground border border-border rounded-lg transition-colors"
+          >
+            <Download className="h-3.5 w-3.5" /> Export
+          </button>
         <Modal open={modalOpen} onOpenChange={setModalOpen}>
           <ModalTrigger asChild>
             <button onClick={() => setModalOpen(true)} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">Add Website</button>
@@ -69,6 +87,7 @@ export default function WebsitesPage() {
             <WebsiteForm onSuccess={() => { setModalOpen(false); refetch(); }} />
           </ModalContent>
         </Modal>
+        </div>
       </div>
 
       <Modal open={editOpen} onOpenChange={setEditOpen}>

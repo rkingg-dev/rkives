@@ -76,6 +76,11 @@ export default function ReportsPage() {
         <div className="p-5 border-b border-border">
           <h3 className="text-sm font-semibold text-foreground">Recent Reports</h3>
         </div>
+        {reports.length === 0 ? (
+          <div className="py-16 text-center">
+            <p className="text-sm text-muted-foreground">No reports generated yet</p>
+          </div>
+        ) : (
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border">
@@ -108,6 +113,7 @@ export default function ReportsPage() {
             ))}
           </tbody>
         </table>
+        )}
       </motion.div>
 
       <motion.div

@@ -62,6 +62,11 @@ export default function ProjectsPage() {
         </ModalContent>
       </Modal>
 
+      {projects.length === 0 ? (
+        <div className="py-16 text-center">
+          <p className="text-sm text-muted-foreground">No projects yet</p>
+        </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {projects.map((project, i) => {
           const site = websites.find((w) => w.id === project.website_id);
@@ -94,6 +99,7 @@ export default function ProjectsPage() {
           );
         })}
       </div>
+      )}
     </div>
   );
 }

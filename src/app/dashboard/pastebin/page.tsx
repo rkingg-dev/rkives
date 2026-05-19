@@ -69,6 +69,11 @@ export default function PastebinPage() {
         <input type="text" placeholder="Search pastes..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full h-9 rounded-lg border border-border bg-card pl-9 pr-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring" />
       </div>
 
+      {filtered.length === 0 ? (
+        <div className="py-16 text-center">
+          <p className="text-sm text-muted-foreground">No pastes yet</p>
+        </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filtered.map((paste, i) => (
           <motion.div key={paste.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="bg-card rounded-xl border border-border shadow-sm overflow-hidden hover:border-border/80 transition-colors">
@@ -104,6 +109,7 @@ export default function PastebinPage() {
           </motion.div>
         ))}
       </div>
+      )}
 
       {/* Edit Modal */}
       <Modal open={editOpen} onOpenChange={setEditOpen}>

@@ -9,6 +9,7 @@ import { PageSkeleton } from "@/components/ui/loading-skeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { ArrowLeft, Globe, CheckSquare, CreditCard, Shield } from "lucide-react";
 import Link from "next/link";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 
 export default function ClientDetailPage() {
   const params = useParams();
@@ -33,6 +34,7 @@ export default function ClientDetailPage() {
 
   return (
     <div className="space-y-6">
+      <Breadcrumb items={[{ label: "Clients", href: "/dashboard/clients" }, { label: client.name }]} />
       {/* Back link */}
       <Link href="/dashboard/clients" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
         <ArrowLeft className="h-4 w-4" /> Back to clients
