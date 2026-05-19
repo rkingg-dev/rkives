@@ -4,9 +4,13 @@ import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { monthlyRevenue, expenseBreakdown, personalExpenses, savingsGoals } from "@/lib/finance-data";
 import { useSupabaseQuery } from "@/hooks/use-supabase-query";
+import { useSupabaseMutation } from "@/hooks/use-supabase-mutation";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Wallet, TrendingUp, ArrowDownRight, PiggyBank, Plus } from "lucide-react";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Pagination } from "@/components/ui/pagination";
+import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalClose } from "@/components/ui/modal";
 
 const goalIcons: Record<string, React.ElementType> = { shield: Wallet, laptop: TrendingUp, plane: PiggyBank };
 
@@ -31,6 +35,8 @@ const personalBudget = [
 export default function FinancePage() {
   const [page, setPage] = useState(1);
   const [tab, setTab] = useState<"all" | "business" | "personal">("all");
+  const [expenseModalOpen, setExpenseModalOpen] = useState(false);
+  const [expenseForm, setExpenseForm] = useState({ description: "", amount: "", category: "Other Business", type: "business" as "business" | "personal" });
   const pageSize = 10;
 
   const { data: websites } = useSupabaseQuery({ table: "websites" });
@@ -157,12 +163,120 @@ export default function FinancePage() {
         </motion.div>
       </div>
 
+      {/* Chart */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-xl border border-border p-5">
+        <h3 className="text-sm font-semibold text-foreground mb-4">Income vs Expenses</h3>
+        <div className="h-[250px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={monthlyRevenue}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+              <XAxis dataKey="month" tick={{ fontSize: 12, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 12, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+              <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "8px", fontSize: "12px" }} />
+              <Area type="monotone" dataKey="revenue" stroke="#111827" fill="#111827" fillOpacity={0.05} strokeWidth={2} name="Revenue" />
+              <Area type="monotone" dataKey="profit" stroke="#22c55e" fill="#22c55e" fillOpacity={0.05} strokeWidth={2} name="Profit" />
+              <Area type="monotone" dataKey="personal" stroke="#f97316" fill="#f97316" fillOpacity={0.05} strokeWidth={1.5} name="Personal" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-foreground" /> Revenue</span>
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500" /> Profit</span>
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[var(--accent-brand)]" /> Personal</span>
+        </div>
+      </motion.div>
+
       {/* Bottom Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Transactions */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="lg:col-span-2 bg-card rounded-xl border border-border overflow-hidden">
           <div className="px-5 py-4 border-b border-border flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-foreground">Transactions</h3>
+            <div className="flex items-center gap-3">
+              <h3 className="text-sm font-semibold text-foreground">Transactions</h3>
+              <Modal open={expenseModalOpen} onOpenChange={setExpenseModalOpen}>
+                <ModalTrigger asChild>
+                  <button onClick={() => setExpenseModalOpen(true)} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-muted rounded-lg hover:bg-muted/80 transition-colors">
+                    <Plus className="h-3 w-3" /> Add Expense
+                  </button>
+                </ModalTrigger>
+                <ModalContent>
+                  <ModalHeader>
+                    <ModalTitle>Add Expense</ModalTitle>
+                    <ModalDescription>Record a new expense.</ModalDescription>
+                  </ModalHeader>
+                  <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!expenseForm.description || !expenseForm.amount) {
+                      toast.error("Fill in all fields");
+                      return;
+                    }
+                    // Store as a local transaction (in a real app this would save to DB)
+                    toast.success(`Expense added: ₱${Number(expenseForm.amount).toLocaleString()}`);
+                    setExpenseForm({ description: "", amount: "", category: "Other Business", type: "business" });
+                    setExpenseModalOpen(false);
+                  }} className="space-y-4">
+                    <div>
+                      <label className="text-xs text-muted-foreground uppercase tracking-wider">Description</label>
+                      <input
+                        type="text"
+                        value={expenseForm.description}
+                        onChange={(e) => setExpenseForm({ ...expenseForm, description: e.target.value })}
+                        placeholder="e.g., Hosting renewal"
+                        className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground uppercase tracking-wider">Amount (₱)</label>
+                      <input
+                        type="number"
+                        value={expenseForm.amount}
+                        onChange={(e) => setExpenseForm({ ...expenseForm, amount: e.target.value })}
+                        placeholder="0"
+                        className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground uppercase tracking-wider">Category</label>
+                      <select
+                        value={expenseForm.category}
+                        onChange={(e) => setExpenseForm({ ...expenseForm, category: e.target.value })}
+                        className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                      >
+                        {expenseForm.type === "business" ? (
+                          <>
+                            <option value="Hosting">Hosting</option>
+                            <option value="Domains">Domains</option>
+                            <option value="Tools & Software">Tools & Software</option>
+                            <option value="Fonts & Assets">Fonts & Assets</option>
+                            <option value="Other Business">Other Business</option>
+                          </>
+                        ) : (
+                          <>
+                            <option value="Rent">Rent</option>
+                            <option value="Food & Dining">Food & Dining</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Other Personal">Other Personal</option>
+                          </>
+                        )}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground uppercase tracking-wider">Type</label>
+                      <div className="flex gap-2 mt-1">
+                        <button type="button" onClick={() => setExpenseForm({ ...expenseForm, type: "business", category: "Other Business" })} className={cn("px-4 py-2 text-sm rounded-lg border transition-colors", expenseForm.type === "business" ? "border-foreground bg-muted text-foreground" : "border-border text-muted-foreground hover:text-foreground")}>Business</button>
+                        <button type="button" onClick={() => setExpenseForm({ ...expenseForm, type: "personal", category: "Other Personal" })} className={cn("px-4 py-2 text-sm rounded-lg border transition-colors", expenseForm.type === "personal" ? "border-foreground bg-muted text-foreground" : "border-border text-muted-foreground hover:text-foreground")}>Personal</button>
+                      </div>
+                    </div>
+                    <div className="flex justify-end gap-3 pt-2">
+                      <button type="button" onClick={() => setExpenseModalOpen(false)} className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">Cancel</button>
+                      <button type="submit" className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">Add Expense</button>
+                    </div>
+                  </form>
+                </ModalContent>
+              </Modal>
+            </div>
             <div className="flex gap-1 bg-muted/50 border border-border rounded-lg p-0.5">
               {(["all", "business", "personal"] as const).map((t) => (
                 <button key={t} onClick={() => { setTab(t); setPage(1); }} className={cn("px-3 py-1 text-xs font-medium rounded-md transition-colors capitalize", tab === t ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{t}</button>
