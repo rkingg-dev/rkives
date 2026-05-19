@@ -7,6 +7,7 @@ import { useSupabaseMutation } from "@/hooks/use-supabase-mutation";
 import { PageSkeleton } from "@/components/ui/loading-skeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import { Receipt, CheckCircle, Clock, CreditCard, Pencil, Trash2 } from "lucide-react";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription } from "@/components/ui/modal";
 import { Pagination } from "@/components/ui/pagination";
@@ -18,6 +19,7 @@ export default function PaymentsPage() {
   const { data: clients } = useSupabaseQuery({ table: "clients" });
   const { data: websites } = useSupabaseQuery({ table: "websites" });
   const { remove } = useSupabaseMutation("payments");
+  const router = useRouter();
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -25,6 +27,11 @@ export default function PaymentsPage() {
   const paginated = payments.slice((page - 1) * pageSize, page * pageSize);
   const totalReceived = payments.filter((p) => p.status === "Verified").reduce((sum, p) => sum + p.amount, 0);
   const pending = payments.filter((p) => p.status === "Pending").reduce((sum, p) => sum + p.amount, 0);
+  const now = new Date();
+  const thisMonthPayments = payments.filter((p) => {
+    const created = new Date(p.created_at);
+    return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear();
+  });
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editItem, setEditItem] = useState<any>(null);
@@ -82,7 +89,7 @@ export default function PaymentsPage() {
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-card rounded-xl border border-border shadow-sm p-5">
           <div className="flex items-center gap-2 mb-2"><Receipt className="h-4 w-4 text-muted-foreground" /><p className="text-xs text-muted-foreground uppercase tracking-wider">This Month</p></div>
-          <p className="text-2xl font-semibold text-foreground">{payments.length} payments</p>
+          <p className="text-2xl font-semibold text-foreground">{thisMonthPayments.length} payments</p>
         </motion.div>
       </div>
 
@@ -108,7 +115,7 @@ export default function PaymentsPage() {
                 const client = clients.find((c) => c.id === p.client_id);
                 const site = websites.find((w) => w.id === p.website_id);
                 return (
-                  <tr key={p.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => window.location.href = `/dashboard/invoice?id=${p.id}`}>
+                  <tr key={p.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => router.push(`/dashboard/invoice?id=${p.id}`)}>
                     <td className="px-5 py-3 font-medium text-foreground">{client?.name}</td>
                     <td className="px-5 py-3 text-muted-foreground">{site?.name || "\u2014"}</td>
                     <td className="px-5 py-3 text-muted-foreground">{p.payment_type}</td>

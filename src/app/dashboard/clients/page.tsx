@@ -18,8 +18,14 @@ export default function ClientsPage() {
   const { remove } = useSupabaseMutation("clients");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const totalPages = Math.ceil(clients.length / pageSize);
-  const paginated = clients.slice((page - 1) * pageSize, page * pageSize);
+  const [search, setSearch] = useState("");
+  const filtered = clients.filter((c) =>
+    c.name.toLowerCase().includes(search.toLowerCase()) ||
+    c.company.toLowerCase().includes(search.toLowerCase()) ||
+    c.email.toLowerCase().includes(search.toLowerCase())
+  );
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editItem, setEditItem] = useState<any>(null);
@@ -66,6 +72,14 @@ export default function ClientsPage() {
         </ModalContent>
       </Modal>
 
+      <input
+        type="text"
+        placeholder="Search clients..."
+        value={search}
+        onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+        className="h-9 w-full max-w-sm rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+      />
+
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -73,7 +87,6 @@ export default function ClientsPage() {
               <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Client</th>
               <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Contact</th>
               <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Websites</th>
-              <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
               <th className="px-5 py-3"></th>
             </tr></thead>
             <tbody>
@@ -84,7 +97,6 @@ export default function ClientsPage() {
                     <td className="px-5 py-3"><div className="font-medium text-foreground">{client.name}</div><div className="text-xs text-muted-foreground">{client.company}</div></td>
                     <td className="px-5 py-3"><div className="flex items-center gap-1.5 text-muted-foreground"><Mail className="h-3 w-3" /> {client.email}</div><div className="flex items-center gap-1.5 text-muted-foreground mt-0.5"><Phone className="h-3 w-3" /> {client.phone}</div></td>
                     <td className="px-5 py-3 text-foreground font-medium">{siteCount}</td>
-                    <td className="px-5 py-3"><span className="text-[10px] font-semibold px-2 py-0.5 rounded-md text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10">Active</span></td>
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-2">
                         <button onClick={() => { setEditItem(client); setEditOpen(true); }} className="p-1.5 rounded-md hover:bg-muted transition-colors">
@@ -101,7 +113,7 @@ export default function ClientsPage() {
             </tbody>
           </table>
         </div>
-        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} totalItems={clients.length} pageSize={pageSize} onPageSizeChange={(s) => { setPageSize(s); setPage(1); }} />
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} totalItems={filtered.length} pageSize={pageSize} onPageSizeChange={(s) => { setPageSize(s); setPage(1); }} />
       </motion.div>
     </div>
   );

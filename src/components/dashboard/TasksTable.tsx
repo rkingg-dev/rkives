@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useSupabaseQuery } from "@/hooks/use-supabase-query";
+import { useSupabaseMutation } from "@/hooks/use-supabase-mutation";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { ExternalLink, UserPlus, CheckCircle, SlidersHorizontal, Repeat } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -30,8 +32,19 @@ function getPriorityColor(priority: string) {
   }
 }
 
-function ExpandedRow({ task, websites }: { task: any; websites: any[] }) {
+function ExpandedRow({ task, websites, refetch }: { task: any; websites: any[]; refetch: () => void }) {
   const site = websites.find((w) => w.id === task.website_id);
+  const { update } = useSupabaseMutation("tasks");
+
+  async function handleMarkDone() {
+    const result = await update(task.id, { status: "Done" });
+    if (result) {
+      toast.success("Task marked as done");
+      refetch();
+    } else {
+      toast.error("Failed to update task");
+    }
+  }
   return (
     <motion.tr initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="bg-muted/10">
       <td colSpan={7} className="p-0">
@@ -69,10 +82,10 @@ function ExpandedRow({ task, websites }: { task: any; websites: any[] }) {
               <button className="flex items-center gap-1.5 px-4 py-2 bg-orange-500 text-white rounded-xl text-xs font-medium hover:bg-orange-600 transition-colors">
                 View Website <ExternalLink className="h-3 w-3" />
               </button>
-              <button className="flex items-center gap-1.5 px-4 py-2 border border-border rounded-xl text-xs font-medium hover:bg-muted transition-colors">
+              <button onClick={() => toast.info("Task assignment coming soon")} className="flex items-center gap-1.5 px-4 py-2 border border-border rounded-xl text-xs font-medium hover:bg-muted transition-colors">
                 <UserPlus className="h-3 w-3" /> Assign Task
               </button>
-              <button className="flex items-center gap-1.5 px-4 py-2 border border-border rounded-xl text-xs font-medium hover:bg-muted transition-colors">
+              <button onClick={handleMarkDone} className="flex items-center gap-1.5 px-4 py-2 border border-border rounded-xl text-xs font-medium hover:bg-muted transition-colors">
                 <CheckCircle className="h-3 w-3" /> Mark Done
               </button>
             </div>
@@ -87,7 +100,7 @@ export default function TasksTable() {
   const [activeTab, setActiveTab] = useState(0);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const { data: tasks, loading: loadingTasks } = useSupabaseQuery({
+  const { data: tasks, loading: loadingTasks, refetch } = useSupabaseQuery({
     table: "tasks",
     orderBy: { column: "created_at", ascending: false },
     limit: 8,
@@ -161,7 +174,7 @@ export default function TasksTable() {
                       <td className="px-5 py-3">{task.is_recurring && <Repeat className="h-3.5 w-3.5 text-muted-foreground" />}</td>
                     </tr>
                     <AnimatePresence>
-                      {expandedId === task.id && <ExpandedRow key={`expanded-${task.id}`} task={task} websites={websites} />}
+                      {expandedId === task.id && <ExpandedRow key={`expanded-${task.id}`} task={task} websites={websites} refetch={refetch} />}
                     </AnimatePresence>
                   </>
                 );

@@ -6,6 +6,7 @@ import { useSupabaseQuery } from "@/hooks/use-supabase-query";
 import { PageSkeleton } from "@/components/ui/loading-skeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { Download, FileText, CheckCircle, Clock } from "lucide-react";
+import { toast } from "sonner";
 
 const scheduled = [
   { name: "Monthly Client Reports", frequency: "1st of month", nextRun: "Sep 1, 2024", recipients: 8 },
@@ -32,7 +33,7 @@ export default function ReportsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-foreground">Reports</h2>
-        <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2">
+        <button onClick={() => toast.info("Report generation coming soon")} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2">
           <FileText className="h-4 w-4" /> Generate Report
         </button>
       </div>
@@ -69,7 +70,7 @@ export default function ReportsPage() {
                   </span>
                 </td>
                 <td className="px-5 py-3">
-                  <button className="p-1.5 rounded-md hover:bg-muted transition-colors">
+                  <button onClick={() => toast.info("Download coming soon")} className="p-1.5 rounded-md hover:bg-muted transition-colors">
                     <Download className="h-3.5 w-3.5 text-muted-foreground" />
                   </button>
                 </td>

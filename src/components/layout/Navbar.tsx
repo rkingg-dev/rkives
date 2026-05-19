@@ -177,7 +177,7 @@ export default function Navbar() {
                 )}
               </div>
               <div className="px-4 py-2.5 border-t border-border">
-                <button className="text-xs text-muted-foreground hover:text-foreground transition-colors">View all notifications</button>
+                <button onClick={() => { setNotiOpen(false); }} className="text-xs text-muted-foreground hover:text-foreground transition-colors">View all notifications</button>
               </div>
             </div>
           )}
@@ -196,15 +196,15 @@ export default function Navbar() {
                 <p className="text-xs text-muted-foreground mt-0.5">rking@rkives.io</p>
               </div>
               <div className="py-1">
-                <button className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors text-left">
+                <button onClick={() => router.push("/dashboard/settings")} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors text-left">
                   <User className="h-4 w-4 text-muted-foreground" />
                   Profile
                 </button>
-                <button className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors text-left">
+                <button onClick={() => router.push("/dashboard/settings")} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors text-left">
                   <CreditCard className="h-4 w-4 text-muted-foreground" />
                   Billing
                 </button>
-                <button className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors text-left">
+                <button onClick={() => router.push("/dashboard/settings")} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors text-left">
                   <Settings className="h-4 w-4 text-muted-foreground" />
                   Settings
                 </button>

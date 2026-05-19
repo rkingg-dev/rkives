@@ -20,8 +20,19 @@ export default function WebsitesPage() {
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const totalPages = Math.ceil(websites.length / pageSize);
-  const paginated = websites.slice((page - 1) * pageSize, page * pageSize);
+  const [search, setSearch] = useState("");
+  const filtered = websites.filter((s) => {
+    const client = clients.find((c) => c.id === s.client_id);
+    const q = search.toLowerCase();
+    return (
+      s.name.toLowerCase().includes(q) ||
+      (client?.name || "").toLowerCase().includes(q) ||
+      s.platform.toLowerCase().includes(q) ||
+      s.status.toLowerCase().includes(q)
+    );
+  });
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editItem, setEditItem] = useState<any>(null);
@@ -68,6 +79,14 @@ export default function WebsitesPage() {
         </ModalContent>
       </Modal>
 
+      <input
+        type="text"
+        placeholder="Search websites..."
+        value={search}
+        onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+        className="h-9 w-full max-w-sm rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+      />
+
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -112,7 +131,7 @@ export default function WebsitesPage() {
             </tbody>
           </table>
         </div>
-        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} totalItems={websites.length} pageSize={pageSize} onPageSizeChange={(s) => { setPageSize(s); setPage(1); }} />
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} totalItems={filtered.length} pageSize={pageSize} onPageSizeChange={(s) => { setPageSize(s); setPage(1); }} />
       </motion.div>
     </div>
   );

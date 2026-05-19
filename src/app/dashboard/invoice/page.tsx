@@ -8,6 +8,7 @@ import { ErrorState } from "@/components/ui/error-state";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, Copy, Pencil, Send, Download, User, Calendar, CreditCard, CheckCircle } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 const invoiceItems = [
   { description: "Monthly maintenance — Website hosting management, security updates, and content changes", qty: 1, rate: 12000, amount: 12000 },
@@ -66,13 +67,13 @@ export default function InvoicePage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button className="flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-colors">
+          <button onClick={() => { navigator.clipboard.writeText(window.location.href); toast.success("URL copied"); }} className="flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-colors">
             <Copy className="h-4 w-4" /> Copy URL
           </button>
-          <button className="flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-colors">
+          <button onClick={() => toast.info("Invoice editing coming soon")} className="flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-colors">
             <Pencil className="h-4 w-4" /> Edit
           </button>
-          <button className="flex items-center gap-1.5 px-4 py-2 bg-[var(--accent-brand)] text-white rounded-lg text-sm font-medium hover:bg-[var(--accent-brand)]/90 transition-colors">
+          <button onClick={() => toast.info("Invoice sending coming soon")} className="flex items-center gap-1.5 px-4 py-2 bg-[var(--accent-brand)] text-white rounded-lg text-sm font-medium hover:bg-[var(--accent-brand)]/90 transition-colors">
             <Send className="h-4 w-4" /> Send
           </button>
         </div>
@@ -172,7 +173,7 @@ export default function InvoicePage() {
               </div>
             </div>
             <div className="mt-4 pt-4 border-t border-border">
-              <button className="flex items-center gap-1.5 text-sm text-[var(--accent-brand)] hover:underline">
+              <button onClick={() => toast.info("PDF download coming soon")} className="flex items-center gap-1.5 text-sm text-[var(--accent-brand)] hover:underline">
                 <Download className="h-4 w-4" /> Download receipt
               </button>
             </div>

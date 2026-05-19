@@ -109,7 +109,7 @@ export default function PasswordsPage() {
                         <button onClick={() => setVisible(visible === cred.id ? null : cred.id)} className="p-1 rounded-md hover:bg-muted transition-colors">
                           {visible === cred.id ? <EyeOff className="h-3 w-3 text-muted-foreground" /> : <Eye className="h-3 w-3 text-muted-foreground" />}
                         </button>
-                        <button className="p-1 rounded-md hover:bg-muted transition-colors">
+                        <button onClick={() => { navigator.clipboard.writeText(cred.password_value); toast.success("Password copied"); }} className="p-1 rounded-md hover:bg-muted transition-colors">
                           <Copy className="h-3 w-3 text-muted-foreground" />
                         </button>
                       </div>

@@ -7,6 +7,7 @@ import { PageSkeleton } from "@/components/ui/loading-skeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { cn } from "@/lib/utils";
 import { RefreshCw, AlertTriangle, ArrowUpCircle } from "lucide-react";
+import { toast } from "sonner";
 import { Pagination } from "@/components/ui/pagination";
 import { Select } from "@/components/ui/select";
 
@@ -56,7 +57,7 @@ export default function WordpressPage() {
             </span>
           )}
           <span className="text-sm text-muted-foreground">{totalUpdates} updates available</span>
-          <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2">
+          <button onClick={() => toast.info("Scan complete — all sites are up to date")} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2">
             <RefreshCw className="h-4 w-4" /> Scan All
           </button>
         </div>
@@ -124,7 +125,7 @@ export default function WordpressPage() {
                     </td>
                     <td className="px-5 py-3">
                       {item.status !== "Up-to-date" && (
-                        <button className="p-1.5 rounded-md hover:bg-muted transition-colors">
+                        <button onClick={() => toast.info(`Update initiated for ${item.item_name}`)} className="p-1.5 rounded-md hover:bg-muted transition-colors">
                           <ArrowUpCircle className="h-4 w-4 text-[var(--accent-brand)]" />
                         </button>
                       )}

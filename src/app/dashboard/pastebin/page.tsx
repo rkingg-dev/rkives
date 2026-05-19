@@ -85,11 +85,11 @@ export default function PastebinPage() {
                 <span className="text-[10px] text-muted-foreground">{paste.created_at}</span>
                 <div className="flex items-center gap-2">
                   {paste.share_token && (
-                    <button className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground transition-colors">
+                    <button onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/api/pastebin/${paste.share_token}`); toast.success("Share URL copied"); }} className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground transition-colors">
                       <ExternalLink className="h-3 w-3" /> Share
                     </button>
                   )}
-                  <button className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground transition-colors">
+                  <button onClick={() => { navigator.clipboard.writeText(paste.content); toast.success("Paste copied"); }} className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground transition-colors">
                     <Copy className="h-3 w-3" /> Copy
                   </button>
                   <button onClick={() => { setEditItem(paste); setEditOpen(true); }} className="p-1.5 rounded-md hover:bg-muted transition-colors">
