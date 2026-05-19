@@ -104,10 +104,10 @@ export default function FinancePage() {
       </div>
 
       {/* Chart + Personal Budget + Cash Flow side by side */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="lg:col-span-2 bg-card rounded-xl border border-border p-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="lg:col-span-2 bg-card rounded-xl border border-border p-5 flex flex-col">
           <h3 className="text-sm font-semibold text-foreground mb-4">Income vs Expenses</h3>
-          <div className="h-[250px]">
+          <div className="flex-1 min-h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={monthlyRevenue}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
