@@ -50,7 +50,7 @@ export default function NotesPage() {
         {filtered.map((note, i) => {
           const site = websiteData.find((w) => w.id === note.websiteId);
           return (
-            <motion.div key={note.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="bg-card rounded-2xl border border-border shadow-sm p-5 hover:border-border/80 transition-colors cursor-pointer">
+            <motion.div key={note.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="bg-card rounded-xl border border-border shadow-sm p-5 hover:border-border/80 transition-colors cursor-pointer">
               <div className="flex items-start justify-between mb-2">
                 <h3 className="font-semibold text-foreground text-sm leading-tight">{note.title}</h3>
                 {note.isPublic ? <Globe className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-0.5" /> : <Lock className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-0.5" />}

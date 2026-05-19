@@ -55,7 +55,7 @@ export default function SettingsPage() {
         {/* Settings Content */}
         <div className="flex-1">
           {activeTab === "profile" && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-2xl border border-border shadow-sm p-6">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-xl border border-border shadow-sm p-6">
               <h3 className="text-sm font-semibold text-foreground mb-4">Profile Settings</h3>
               <div className="space-y-4 max-w-md">
                 <div>
@@ -78,7 +78,7 @@ export default function SettingsPage() {
           )}
 
           {activeTab === "workspace" && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-2xl border border-border shadow-sm p-6">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-xl border border-border shadow-sm p-6">
               <h3 className="text-sm font-semibold text-foreground mb-4">Workspace Settings</h3>
               <div className="space-y-4 max-w-md">
                 <div>
@@ -97,21 +97,21 @@ export default function SettingsPage() {
           )}
 
           {activeTab === "roles" && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-2xl border border-border shadow-sm p-6">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-xl border border-border shadow-sm p-6">
               <h3 className="text-sm font-semibold text-foreground mb-4">Roles & Permissions</h3>
               <p className="text-sm text-muted-foreground">Manage team roles and access permissions for your workspace.</p>
             </motion.div>
           )}
 
           {activeTab === "team" && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-2xl border border-border shadow-sm p-6">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-xl border border-border shadow-sm p-6">
               <h3 className="text-sm font-semibold text-foreground mb-4">Team Members</h3>
               <p className="text-sm text-muted-foreground">Invite team members to collaborate on your projects.</p>
             </motion.div>
           )}
 
           {activeTab === "integrations" && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-2xl border border-border shadow-sm p-6">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-xl border border-border shadow-sm p-6">
               <h3 className="text-sm font-semibold text-foreground mb-4">Integrations</h3>
               <div className="space-y-3">
                 {integrations.map((int) => (
@@ -135,7 +135,7 @@ export default function SettingsPage() {
           )}
 
           {activeTab === "billing" && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-2xl border border-border shadow-sm p-6">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-xl border border-border shadow-sm p-6">
               <h3 className="text-sm font-semibold text-foreground mb-4">Billing</h3>
               <div className="rounded-xl border border-border p-4 bg-muted/20">
                 <div className="flex items-center justify-between">
@@ -152,7 +152,7 @@ export default function SettingsPage() {
           )}
 
           {activeTab === "notifications" && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-2xl border border-border shadow-sm p-6">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-xl border border-border shadow-sm p-6">
               <h3 className="text-sm font-semibold text-foreground mb-4">Notification Preferences</h3>
               <div className="space-y-3">
                 {["Task deadlines", "Maintenance renewals", "Client messages", "Weekly digest"].map((pref) => (

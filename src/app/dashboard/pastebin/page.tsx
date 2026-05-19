@@ -53,7 +53,7 @@ export default function PastebinPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filtered.map((paste, i) => (
-          <motion.div key={paste.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden hover:border-border/80 transition-colors">
+          <motion.div key={paste.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="bg-card rounded-xl border border-border shadow-sm overflow-hidden hover:border-border/80 transition-colors">
             <div className="p-5">
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">

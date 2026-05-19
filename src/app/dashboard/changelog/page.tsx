@@ -71,7 +71,7 @@ export default function ChangelogPage() {
         {filtered.map((entry, i) => {
           const site = websiteData.find((w) => w.id === entry.websiteId);
           return (
-            <motion.div key={entry.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="bg-card rounded-2xl border border-border shadow-sm p-5 relative">
+            <motion.div key={entry.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="bg-card rounded-xl border border-border shadow-sm p-5 relative">
               {entry.version && <span className="absolute top-5 right-5 text-xs font-mono text-muted-foreground bg-muted px-2 py-0.5 rounded-md">{entry.version}</span>}
               <div className="flex items-center gap-2 mb-2">
                 <span className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-md", typeColors[entry.type] || "text-muted-foreground bg-muted")}>{entry.type}</span>

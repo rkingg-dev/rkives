@@ -96,7 +96,7 @@ function SidebarContent() {
               href={item.href}
               title={collapsed ? item.label : undefined}
               className={cn(
-                "flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium transition-all duration-200",
+                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-200",
                 collapsed && "justify-center px-0",
                 isActive
                   ? "bg-sidebar-active text-foreground shadow-sm"
@@ -120,7 +120,7 @@ function SidebarContent() {
               href={item.href}
               title={collapsed ? item.label : undefined}
               className={cn(
-                "flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium transition-all duration-200",
+                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-200",
                 collapsed && "justify-center px-0",
                 isActive
                   ? "bg-sidebar-active text-foreground shadow-sm"

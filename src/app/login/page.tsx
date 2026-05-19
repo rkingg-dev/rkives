@@ -11,7 +11,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-background flex items-center justify-center px-6">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="h-12 w-12 rounded-xl bg-foreground flex items-center justify-center mx-auto mb-4">
+          <div className="h-12 w-12 rounded-lg bg-foreground flex items-center justify-center mx-auto mb-4">
             <svg className="h-7 w-7 text-primary-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 10h.01M15 10h.01M12 2a8 8 0 0 0-8 8v4l-2 2h20l-2-2v-4a8 8 0 0 0-8-8z" fill="currentColor" stroke="none"/>
               <rect x="7" y="13" width="10" height="3" rx="1.5" fill="currentColor" stroke="none"/>
@@ -29,7 +29,7 @@ export default function LoginPage() {
             <input
               type="email"
               placeholder="rking@rkives.io"
-              className="mt-1.5 w-full h-11 rounded-xl border border-border bg-card px-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[var(--accent-brand)] focus:border-transparent transition-all"
+              className="mt-1.5 w-full h-11 rounded-lg border border-border bg-card px-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[var(--accent-brand)] focus:border-transparent transition-all"
             />
           </div>
 
@@ -39,7 +39,7 @@ export default function LoginPage() {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
-                className="w-full h-11 rounded-xl border border-border bg-card px-4 pr-11 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[var(--accent-brand)] focus:border-transparent transition-all"
+                className="w-full h-11 rounded-lg border border-border bg-card px-4 pr-11 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[var(--accent-brand)] focus:border-transparent transition-all"
               />
               <button
                 type="button"
@@ -63,7 +63,7 @@ export default function LoginPage() {
 
           <Link
             href="/dashboard"
-            className="flex items-center justify-center gap-2 w-full h-11 bg-foreground text-primary-foreground rounded-xl text-sm font-medium hover:bg-foreground/90 transition-colors"
+            className="flex items-center justify-center gap-2 w-full h-11 bg-foreground text-primary-foreground rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors"
           >
             Sign in <ArrowRight className="h-4 w-4" />
           </Link>

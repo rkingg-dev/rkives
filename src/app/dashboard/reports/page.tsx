@@ -23,7 +23,7 @@ export default function ReportsPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden"
+        className="bg-card rounded-xl border border-border shadow-sm overflow-hidden"
       >
         <div className="p-5 border-b border-border">
           <h3 className="text-sm font-semibold text-foreground">Recent Reports</h3>
@@ -66,7 +66,7 @@ export default function ReportsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden"
+        className="bg-card rounded-xl border border-border shadow-sm overflow-hidden"
       >
         <div className="p-5 border-b border-border">
           <h3 className="text-sm font-semibold text-foreground">Scheduled Reports</h3>
