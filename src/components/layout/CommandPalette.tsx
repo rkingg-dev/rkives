@@ -13,14 +13,62 @@ export default function CommandPalette() {
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
+      // Don't trigger shortcuts when typing in inputs
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((o) => !o);
+        return;
+      }
+
+      if (open) return; // Don't trigger shortcuts when palette is open
+
+      // Quick navigation shortcuts
+      switch (e.key) {
+        case "g":
+          // Wait for second key
+          break;
+        case "n":
+          if (!e.metaKey && !e.ctrlKey) {
+            e.preventDefault();
+            router.push("/dashboard/tasks");
+          }
+          break;
+        case "p":
+          if (!e.metaKey && !e.ctrlKey) {
+            e.preventDefault();
+            router.push("/dashboard/payments");
+          }
+          break;
+        case "c":
+          if (!e.metaKey && !e.ctrlKey) {
+            e.preventDefault();
+            router.push("/dashboard/clients");
+          }
+          break;
+        case "w":
+          if (!e.metaKey && !e.ctrlKey) {
+            e.preventDefault();
+            router.push("/dashboard/websites");
+          }
+          break;
+        case "f":
+          if (!e.metaKey && !e.ctrlKey) {
+            e.preventDefault();
+            router.push("/dashboard/finance");
+          }
+          break;
+        case "/":
+          e.preventDefault();
+          // Focus the search input in navbar
+          document.querySelector<HTMLInputElement>('[placeholder="Search..."]')?.focus();
+          break;
       }
     }
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [open, router]);
 
   useEffect(() => {
     if (search.length < 2) {
@@ -78,7 +126,13 @@ export default function CommandPalette() {
             />
           </div>
           <Command.List className="max-h-80 overflow-y-auto p-1">
-            <Command.Empty className="py-6 text-center text-sm text-muted-foreground">No results found.</Command.Empty>
+            <Command.Empty className="py-6 text-center text-sm text-muted-foreground">
+              <p>No results found.</p>
+              <div className="mt-4 text-xs text-muted-foreground/60 space-y-1">
+                <p><kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">N</kbd> Tasks &nbsp; <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">P</kbd> Payments &nbsp; <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">C</kbd> Clients</p>
+                <p><kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">W</kbd> Websites &nbsp; <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">F</kbd> Finance &nbsp; <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">/</kbd> Search</p>
+              </div>
+            </Command.Empty>
 
             {results.length > 0 && (
               <Command.Group heading="Search Results">

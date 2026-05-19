@@ -143,6 +143,26 @@ export default function WebsiteDetailPage() {
           </div>
         </div>
       )}
+
+      {/* Tech Stack */}
+      {site.tech_stack && site.tech_stack.length > 0 && (
+        <div className="bg-card rounded-xl border border-border shadow-sm p-5">
+          <h3 className="text-sm font-semibold text-foreground mb-3">Tech Stack</h3>
+          <div className="flex flex-wrap gap-2">
+            {site.tech_stack.map((tech: string) => (
+              <span key={tech} className="text-xs bg-muted px-2.5 py-1 rounded-md text-foreground">{tech}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Description */}
+      {site.full_description && (
+        <div className="bg-card rounded-xl border border-border shadow-sm p-5">
+          <h3 className="text-sm font-semibold text-foreground mb-3">About</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">{site.full_description}</p>
+        </div>
+      )}
     </div>
   );
 }

@@ -15,6 +15,7 @@ export default function PublicPastePage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [pwError, setPwError] = useState("");
   const [copying, setCopying] = useState(false);
+  const [highlighted, setHighlighted] = useState("");
 
   useEffect(() => {
     fetch(`/api/pastebin/${token}`)
@@ -33,6 +34,16 @@ export default function PublicPastePage() {
       })
       .catch(() => { setError("Failed to load paste"); setLoading(false); });
   }, [token]);
+
+  useEffect(() => {
+    if (paste?.content && paste?.language) {
+      import("shiki").then(({ codeToHtml }) => {
+        codeToHtml(paste.content, { lang: paste.language === "js" ? "javascript" : paste.language, theme: "github-dark" })
+          .then((html) => setHighlighted(html))
+          .catch(() => setHighlighted(""));
+      });
+    }
+  }, [paste]);
 
   async function handlePassword(e: React.FormEvent) {
     e.preventDefault();
@@ -96,9 +107,13 @@ export default function PublicPastePage() {
             {copying ? "Copied!" : "Copy"}
           </button>
         </div>
-        <pre className="bg-card border border-border rounded-xl p-6 overflow-x-auto text-sm font-mono text-foreground leading-relaxed">
-          <code>{paste.content}</code>
-        </pre>
+        {highlighted ? (
+          <div dangerouslySetInnerHTML={{ __html: highlighted }} className="bg-card border border-border rounded-xl overflow-hidden text-sm [&_pre]:p-6 [&_pre]:overflow-x-auto [&_pre]:leading-relaxed" />
+        ) : (
+          <pre className="bg-card border border-border rounded-xl p-6 overflow-x-auto text-sm font-mono text-foreground leading-relaxed">
+            <code>{paste.content}</code>
+          </pre>
+        )}
         <div className="mt-8 pt-4 border-t border-border">
           <p className="text-xs text-muted-foreground">Shared via rkives</p>
         </div>

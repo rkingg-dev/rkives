@@ -27,7 +27,7 @@ export default function FinancePage() {
   const [page, setPage] = useState(1);
   const [tab, setTab] = useState<"all" | "business" | "personal">("all");
   const [expenseModalOpen, setExpenseModalOpen] = useState(false);
-  const [expenseForm, setExpenseForm] = useState({ description: "", amount: "", category: "Other Business", type: "business" as "business" | "personal" });
+  const [expenseForm, setExpenseForm] = useState({ description: "", amount: "", category: "Other Business", type: "business" as "business" | "personal", receipt: null as File | null });
   const pageSize = 10;
 
   const { data: websites } = useSupabaseQuery({ table: "websites" });
@@ -150,6 +150,29 @@ export default function FinancePage() {
       </motion.div>
       </div>
 
+      {/* Cash Flow Forecast */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="bg-card rounded-xl border border-border p-5">
+        <h3 className="text-sm font-semibold text-foreground mb-3">Cash Flow Forecast</h3>
+        <div className="space-y-3">
+          {[
+            { month: "Next Month", income: totalIncome, expenses: totalExpenses },
+            { month: "In 2 Months", income: Math.round(totalIncome * 0.95), expenses: Math.round(totalExpenses * 1.02) },
+            { month: "In 3 Months", income: Math.round(totalIncome * 1.05), expenses: totalExpenses },
+          ].map((m) => (
+            <div key={m.month} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors">
+              <span className="text-sm text-foreground">{m.month}</span>
+              <div className="flex items-center gap-4 text-sm">
+                <span className="text-emerald-500">+₱{m.income.toLocaleString()}</span>
+                <span className="text-red-500">-₱{m.expenses.toLocaleString()}</span>
+                <span className={`font-medium ${m.income - m.expenses >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+                  ₱{(m.income - m.expenses).toLocaleString()}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
       {/* Bottom Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Transactions */}
@@ -176,7 +199,7 @@ export default function FinancePage() {
                     }
                     // Store as a local transaction (in a real app this would save to DB)
                     toast.success(`Expense added: ₱${Number(expenseForm.amount).toLocaleString()}`);
-                    setExpenseForm({ description: "", amount: "", category: "Other Business", type: "business" });
+                    setExpenseForm({ description: "", amount: "", category: "Other Business", type: "business", receipt: null });
                     setExpenseModalOpen(false);
                   }} className="space-y-4">
                     <div>
@@ -197,6 +220,14 @@ export default function FinancePage() {
                         onChange={(e) => setExpenseForm({ ...expenseForm, amount: e.target.value })}
                         placeholder="0"
                         className="mt-1 w-full h-9 rounded-md border border-border bg-card px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground uppercase tracking-wider">Receipt (optional)</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="mt-1 w-full text-sm text-muted-foreground file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-muted file:text-foreground"
                       />
                     </div>
                     <div>

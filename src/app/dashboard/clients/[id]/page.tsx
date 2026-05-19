@@ -71,6 +71,25 @@ export default function ClientDetailPage() {
         </div>
       </div>
 
+      {/* Contract */}
+      <div className="bg-card rounded-xl border border-border p-5">
+        <h3 className="text-sm font-semibold text-foreground mb-3">Contract</h3>
+        <div className="grid grid-cols-3 gap-4 text-sm">
+          <div>
+            <p className="text-xs text-muted-foreground">Start Date</p>
+            <p className="text-foreground mt-0.5">—</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground">End Date</p>
+            <p className="text-foreground mt-0.5">—</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground">Status</p>
+            <p className="text-foreground mt-0.5">Active</p>
+          </div>
+        </div>
+      </div>
+
       {/* Websites list */}
       <div className="bg-card rounded-xl border border-border shadow-sm p-5">
         <h3 className="text-sm font-semibold text-foreground mb-3">Websites</h3>

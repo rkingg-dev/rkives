@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -15,13 +16,27 @@ interface NoteFormProps {
   defaultValues?: Partial<NoteFormData> & { id?: string };
 }
 
+function simpleMarkdown(text: string): string {
+  return text
+    .replace(/^### (.+)$/gm, '<h3 class="text-sm font-semibold text-foreground mt-3 mb-1">$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2 class="text-base font-semibold text-foreground mt-4 mb-1">$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1 class="text-lg font-bold text-foreground mt-4 mb-2">$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`(.+?)`/g, '<code class="text-xs bg-muted px-1 py-0.5 rounded font-mono">$1</code>')
+    .replace(/^- (.+)$/gm, '<li class="ml-4 list-disc text-foreground">$1</li>')
+    .replace(/\n/g, '<br />');
+}
+
 export function NoteForm({ onSuccess, defaultValues }: NoteFormProps) {
+  const [preview, setPreview] = useState(false);
   const { insert, update, loading } = useSupabaseMutation("notes");
   const { data: websites } = useSupabaseQuery({ table: "websites" });
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
     reset,
     control,
@@ -99,15 +114,28 @@ export function NoteForm({ onSuccess, defaultValues }: NoteFormProps) {
       </div>
 
       <div>
-        <label className="text-xs text-muted-foreground uppercase tracking-wider">
-          Content
-        </label>
-        <textarea
-          {...register("content")}
-          rows={5}
-          className="mt-1 w-full rounded-md border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none"
-          placeholder="Write your note..."
-        />
+        <div className="flex items-center justify-between">
+          <label className="text-xs text-muted-foreground uppercase tracking-wider">Content</label>
+          <button type="button" onClick={() => setPreview(!preview)} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+            {preview ? "Edit" : "Preview"}
+          </button>
+        </div>
+        {preview ? (
+          <div className="mt-1 w-full min-h-[120px] rounded-md border border-border bg-card px-3 py-2 text-sm prose prose-invert prose-sm max-w-none">
+            {watch("content") ? (
+              <div dangerouslySetInnerHTML={{ __html: simpleMarkdown(watch("content")) }} />
+            ) : (
+              <p className="text-muted-foreground">Nothing to preview</p>
+            )}
+          </div>
+        ) : (
+          <textarea
+            {...register("content")}
+            rows={5}
+            placeholder="Write in markdown..."
+            className="mt-1 w-full rounded-md border border-border bg-card px-3 py-2 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+          />
+        )}
       </div>
 
       <div>
