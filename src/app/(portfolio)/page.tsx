@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { flushSync } from 'react-dom'
 import Image from 'next/image'
 import Link from 'next/link'
 import clsx from 'clsx'
-import { motion, useInView, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 import { Layout } from '@/portfolio-components/Layout'
 
@@ -443,14 +443,11 @@ function FocusItem({
   index: number
   focusOnly?: boolean
 }) {
-  let ref = useRef(null)
-  let isInView = useInView(ref, { amount: 0.4, margin: "-10% 0px -10% 0px" })
-
   return (
     <motion.article
-      ref={ref}
-      initial={{ opacity: 0, y: 30, scale: 0.96 }}
-      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0.35, y: 10, scale: 0.96 }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ amount: 0.3, once: false }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: Math.min(index, 5) * 0.05 }}
       className="group"
     >
