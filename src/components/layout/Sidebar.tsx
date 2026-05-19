@@ -79,10 +79,19 @@ function SidebarContent() {
       <div className="p-5 pb-4 flex items-center gap-2.5">
         <div className="shrink-0">
           <svg className="h-7 w-7" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-            <path d="M16 54V25.5C16 14.6 22.7 7 32 7s16 7.6 16 18.5V54l-4.6-3.4L38.8 54l-4.6-3.4L29.6 54 25 50.6 20.4 54 16 50.6Z" fill="currentColor" className="text-muted-foreground" />
-            <path d="M21.5 29.2c3.1-2.5 7.4-2.9 11-.9l-1.2 5.2c-3.4-1-6.8-.7-10.1.9l.3-5.2Zm15.9-.9c3.7-2 8-1.6 11.1.9l.3 5.2c-3.3-1.6-6.7-1.9-10.1-.9l-1.3-5.2Z" fill="#f97316" />
-            <path d="M34 30.6c1.5-.5 3.1-.5 4.6 0" stroke="#f97316" strokeWidth="2" strokeLinecap="round" />
-            <path d="M31 41.5c2.2 1.1 4.6 1.1 6.8 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-muted-foreground" />
+            {/* Folder back */}
+            <path d="M6 18h52v34a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4V18z" fill="currentColor" className="text-muted-foreground" opacity="0.3" />
+            {/* Folder tab */}
+            <path d="M6 14a4 4 0 0 1 4-4h12l4 4H6z" fill="currentColor" className="text-muted-foreground" opacity="0.4" />
+            {/* Folder front */}
+            <path d="M6 18h52a4 4 0 0 1 4 4v26a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4V18z" fill="currentColor" className="text-muted-foreground" opacity="0.5" />
+            {/* Ghost body peeking from folder */}
+            <path d="M22 38V28c0-4.4 3.6-8 8-8s8 3.6 8 8v10l-2.5-1.9L33 38l-2.5-1.9L28 38l-2.5-1.9L22 38z" fill="white" />
+            {/* Ghost sunglasses */}
+            <path d="M25.5 28.5c1.7-1.4 4.1-1.6 6.1-.5l-.7 2.9c-1.9-.5-3.8-.4-5.6.5l.2-2.9z" fill="#f97316" />
+            <path d="M32.4 28c2.1-1.1 4.4-.9 6.1.5l.2 2.9c-1.8-.9-3.7-1-5.6-.5l-.7-2.9z" fill="#f97316" />
+            {/* Ghost bridge */}
+            <path d="M31.6 29.8c.8-.3 1.7-.3 2.5 0" stroke="#f97316" strokeWidth="1.2" strokeLinecap="round" />
           </svg>
         </div>
         {!collapsed && (
