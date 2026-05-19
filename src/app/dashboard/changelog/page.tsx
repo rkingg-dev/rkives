@@ -55,11 +55,11 @@ export default function ChangelogPage() {
 
       {/* Site Filter */}
       <div className="flex gap-1 bg-card border border-border rounded-lg p-1 w-fit overflow-x-auto">
-        <button onClick={() => setSiteFilter("All")} className={cn("px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", siteFilter === "All" ? "bg-[var(--accent-brand)] text-white shadow-sm" : "text-muted-foreground hover:text-foreground")}>All Sites</button>
+        <button onClick={() => setSiteFilter("All")} className={cn("px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", siteFilter === "All" ? "text-[var(--accent-brand)] font-semibold" : "text-muted-foreground hover:text-foreground")}>All Sites</button>
         {sitesWithChangelog.map((siteId) => {
           const site = websiteData.find((w) => w.id === siteId);
           return (
-            <button key={siteId} onClick={() => setSiteFilter(siteId)} className={cn("px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", siteFilter === siteId ? "bg-[var(--accent-brand)] text-white shadow-sm" : "text-muted-foreground hover:text-foreground")}>
+            <button key={siteId} onClick={() => setSiteFilter(siteId)} className={cn("px-3 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap", siteFilter === siteId ? "text-[var(--accent-brand)] font-semibold" : "text-muted-foreground hover:text-foreground")}>
               {site?.name}
             </button>
           );

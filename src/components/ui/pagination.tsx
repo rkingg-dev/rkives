@@ -30,7 +30,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, totalItems, 
               onClick={() => onPageSizeChange(size)}
               className={cn(
                 "px-2 py-1 text-xs font-medium rounded-md transition-colors",
-                pageSize === size ? "bg-[var(--accent-brand)] text-white shadow-sm" : "text-muted-foreground hover:text-foreground"
+                pageSize === size ? "text-[var(--accent-brand)] font-semibold" : "text-muted-foreground hover:text-foreground"
               )}
             >
               {size}
