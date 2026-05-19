@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, createContext, useContext, useCallback } from 'react'
 import clsx from 'clsx'
 
 import { Intro, IntroFooter } from '@/portfolio-components/Intro'
@@ -9,6 +9,10 @@ import { StarField } from '@/portfolio-components/StarField'
 import { ThemeToggle } from '@/portfolio-components/ThemeToggle'
 
 type Section = 'portfolio' | 'notes' | 'about'
+
+// Context to provide scroll container ref to children
+const ScrollContext = createContext<React.RefObject<HTMLDivElement | null> | null>(null)
+export function useScrollContainer() { return useContext(ScrollContext) }
 
 function Glow() {
   let id = useId()
@@ -43,16 +47,14 @@ function Glow() {
 
 function FixedSidebar({ main, footer }: { main: React.ReactNode; footer: React.ReactNode }) {
   return (
-    <div className="relative flex-none overflow-hidden px-6 lg:fixed lg:inset-0 lg:z-40 lg:flex lg:px-0">
+    <div className="relative flex-none overflow-hidden px-6 lg:pointer-events-none lg:fixed lg:inset-0 lg:z-40 lg:flex lg:px-0">
       <Glow />
-      <div className="relative flex w-full lg:mr-[calc(max(2rem,50%-38rem)+40rem)] lg:min-w-lg lg:overflow-x-hidden lg:overflow-y-auto lg:pl-[max(4rem,calc(50%-38rem))]">
+      <div className="relative flex w-full lg:pointer-events-auto lg:mr-[calc(max(2rem,50%-38rem)+40rem)] lg:min-w-lg lg:overflow-x-hidden lg:overflow-y-auto lg:pl-[max(4rem,calc(50%-38rem))]">
         <div className="mx-auto max-w-lg lg:mx-0 lg:flex lg:w-96 lg:max-w-none lg:flex-col lg:before:flex-1 lg:before:pt-6">
           <div className="pt-20 pb-16 sm:pt-32 sm:pb-20 lg:py-20">
             <div className="relative">{main}</div>
           </div>
-          <div className="hidden lg:flex lg:flex-col lg:items-center lg:justify-end lg:pb-6 lg:flex-1">
-            {footer}
-          </div>
+          <div className="hidden flex-1 items-end justify-center pb-4 lg:flex lg:pb-6">{footer}</div>
         </div>
       </div>
     </div>
@@ -144,11 +146,13 @@ export function Layout({
   scrollKey?: string
   children: React.ReactNode
 }) {
+  let introRef = useRef<HTMLDivElement>(null)
+  let scrollRef = useRef<HTMLDivElement>(null)
   let [showMobileHeader, setShowMobileHeader] = useState(false)
 
   useEffect(() => {
     function updateMobileHeader() {
-      let intro = document.getElementById('portfolio-intro')
+      let intro = introRef.current
       if (!intro || window.innerWidth >= 1024) {
         setShowMobileHeader(false)
         return
@@ -168,28 +172,27 @@ export function Layout({
 
   // Smooth scroll to top on section change
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    let scrollContainer = scrollRef.current
+    if (!scrollContainer) return
+    scrollContainer.scrollTo({ top: 0, behavior: 'smooth' })
   }, [activeSection, scrollKey])
 
   return (
-    <>
-      {/* Spacer: pushes content below the fixed sidebar */}
-      <div className="hidden lg:block" style={{ height: '30vh', minHeight: '12rem' }} />
-
-      <div id="portfolio-intro">
+    <ScrollContext.Provider value={scrollRef}>
+      <div ref={introRef}>
         <FixedSidebar
           main={<Intro activeSection={activeSection} onSelectSection={onSelectSection} />}
           footer={<IntroFooter activeSection={activeSection} onSelectSection={onSelectSection} />}
         />
       </div>
       <MobileHeader visible={showMobileHeader} />
-
-      {/* Content scrolls with the window — whileInView works here */}
-      <div className="relative pb-24 lg:pb-0">
+      <div
+        ref={scrollRef}
+        className="relative flex-auto pb-24 lg:h-screen lg:overflow-y-auto lg:pb-0"
+      >
         <main>{children}</main>
       </div>
-
       <MobileFooter activeSection={activeSection} onSelectSection={onSelectSection} />
-    </>
+    </ScrollContext.Provider>
   )
 }

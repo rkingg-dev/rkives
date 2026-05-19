@@ -7,7 +7,8 @@ import Link from 'next/link'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
 
-import { Layout } from '@/portfolio-components/Layout'
+import { Layout, useScrollContainer } from '@/portfolio-components/Layout'
+import { useScrollInView } from '@/hooks/use-scroll-in-view'
 
 type Section = 'portfolio' | 'notes' | 'about'
 
@@ -443,16 +444,22 @@ function FocusItem({
   index: number
   focusOnly?: boolean
 }) {
+  let scrollRef = useScrollContainer()
+  let { ref, isInView } = useScrollInView(scrollRef, { amount: 0.2 })
+
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ amount: 0.3, once: false }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: Math.min(index, 5) * 0.05 }}
-      className="group"
+    <div
+      ref={ref}
+      className="transition-all duration-500 ease-out group"
+      style={{
+        opacity: isInView ? 1 : 0.2,
+        transform: isInView ? "translateY(0)" : "translateY(20px)",
+        filter: isInView ? "blur(0px)" : "blur(4px)",
+        transitionDelay: `${Math.min(index, 5) * 50}ms`,
+      }}
     >
       {children}
-    </motion.article>
+    </div>
   )
 }
 
