@@ -8,7 +8,6 @@ import KpiTabs from "@/components/dashboard/KpiTabs";
 import TrendsChart from "@/components/dashboard/TrendsChart";
 import TasksTable from "@/components/dashboard/TasksTable";
 import MiniCalendar from "@/components/dashboard/MiniCalendar";
-import { MaintenanceWidget } from "@/components/dashboard/WorkspaceWidgets";
 import { checkRecurringTasks } from "@/lib/recurring-tasks";
 
 export default function DashboardPage() {
@@ -99,7 +98,6 @@ export default function DashboardPage() {
           </div>
           )}
         </div>
-        <MaintenanceWidget />
       </div>
     </div>
   );
