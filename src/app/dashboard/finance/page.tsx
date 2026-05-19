@@ -108,10 +108,32 @@ export default function FinancePage() {
         </motion.div>
       </div>
 
-      {/* Budget Categories */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Chart + Budget side by side */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="lg:col-span-2 bg-card rounded-xl border border-border p-5">
+          <h3 className="text-sm font-semibold text-foreground mb-4">Income vs Expenses</h3>
+          <div className="h-[250px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={monthlyRevenue}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                <XAxis dataKey="month" tick={{ fontSize: 12, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 12, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "8px", fontSize: "12px" }} />
+                <Area type="monotone" dataKey="revenue" stroke="#111827" fill="#111827" fillOpacity={0.05} strokeWidth={2} name="Revenue" />
+                <Area type="monotone" dataKey="profit" stroke="#22c55e" fill="#22c55e" fillOpacity={0.05} strokeWidth={2} name="Profit" />
+                <Area type="monotone" dataKey="personal" stroke="#f97316" fill="#f97316" fillOpacity={0.05} strokeWidth={1.5} name="Personal" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-foreground" /> Revenue</span>
+            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500" /> Profit</span>
+            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[var(--accent-brand)]" /> Personal</span>
+          </div>
+        </motion.div>
+
         {/* Business Budget */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="bg-card rounded-xl border border-border p-5">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="bg-card rounded-xl border border-border p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-foreground">Business Budget</h3>
             <span className="text-xs text-muted-foreground">₱{expenseBreakdown.reduce((s, e) => s + e.amount, 0).toLocaleString()} / ₱{budgetCategories.reduce((s, c) => s + c.limit, 0).toLocaleString()}</span>
@@ -135,58 +157,33 @@ export default function FinancePage() {
             })}
           </div>
         </motion.div>
+      </div>
 
-        {/* Personal Budget */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-xl border border-border p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-foreground">Personal Budget</h3>
-            <span className="text-xs text-muted-foreground">₱{personalExpenses.reduce((s, e) => s + e.amount, 0).toLocaleString()} / ₱{personalBudget.reduce((s, c) => s + c.limit, 0).toLocaleString()}</span>
-          </div>
-          <div className="space-y-4">
-            {personalBudget.map((cat) => {
-              const spent = spentByCategory[cat.name] || 0;
-              const pct = Math.min((spent / cat.limit) * 100, 100);
-              const over = spent > cat.limit;
-              return (
-                <div key={cat.name}>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-foreground">{cat.name}</span>
-                    <span className={cn("text-xs font-medium", over ? "text-red-500" : "text-muted-foreground")}>₱{spent.toLocaleString()} / ₱{cat.limit.toLocaleString()}</span>
-                  </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
-                    <div className={cn("h-full rounded-full transition-all", over ? "bg-red-500" : cat.color)} style={{ width: `${pct}%` }} />
-                  </div>
+      {/* Personal Budget */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="w-full max-w-[66.666%] bg-card rounded-xl border border-border p-5">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-semibold text-foreground">Personal Budget</h3>
+          <span className="text-xs text-muted-foreground">₱{personalExpenses.reduce((s, e) => s + e.amount, 0).toLocaleString()} / ₱{personalBudget.reduce((s, c) => s + c.limit, 0).toLocaleString()}</span>
+        </div>
+        <div className="space-y-4">
+          {personalBudget.map((cat) => {
+            const spent = spentByCategory[cat.name] || 0;
+            const pct = Math.min((spent / cat.limit) * 100, 100);
+            const over = spent > cat.limit;
+            return (
+              <div key={cat.name}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm text-foreground">{cat.name}</span>
+                  <span className={cn("text-xs font-medium", over ? "text-red-500" : "text-muted-foreground")}>₱{spent.toLocaleString()} / ₱{cat.limit.toLocaleString()}</span>
                 </div>
-              );
-            })}
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Chart */}
-      <div className="w-full max-w-[75%]">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-xl border border-border p-5">
-          <h3 className="text-sm font-semibold text-foreground mb-4">Income vs Expenses</h3>
-          <div className="h-[250px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={monthlyRevenue}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                <XAxis dataKey="month" tick={{ fontSize: 12, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 12, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "8px", fontSize: "12px" }} />
-                <Area type="monotone" dataKey="revenue" stroke="#111827" fill="#111827" fillOpacity={0.05} strokeWidth={2} name="Revenue" />
-                <Area type="monotone" dataKey="profit" stroke="#22c55e" fill="#22c55e" fillOpacity={0.05} strokeWidth={2} name="Profit" />
-                <Area type="monotone" dataKey="personal" stroke="#f97316" fill="#f97316" fillOpacity={0.05} strokeWidth={1.5} name="Personal" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-foreground" /> Revenue</span>
-            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500" /> Profit</span>
-            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[var(--accent-brand)]" /> Personal</span>
-          </div>
-        </motion.div>
-      </div>
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div className={cn("h-full rounded-full transition-all", over ? "bg-red-500" : cat.color)} style={{ width: `${pct}%` }} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </motion.div>
 
       {/* Bottom Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
