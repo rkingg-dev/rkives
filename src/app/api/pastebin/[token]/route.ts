@@ -3,14 +3,15 @@ import { createServerClient } from "@/lib/supabase/server";
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
+  const { token } = await params;
   const supabase = createServerClient();
 
   const { data, error } = await supabase
     .from("pastebin_entries")
     .select("*")
-    .eq("share_token", params.token)
+    .eq("share_token", token)
     .eq("is_public", true)
     .single() as { data: { expires_at: string | null; [key: string]: unknown } | null; error: unknown };
 
