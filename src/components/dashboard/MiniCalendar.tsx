@@ -17,13 +17,12 @@ const months = ["January", "February", "March", "April", "May", "June", "July", 
 
 // Simulated events
 const events: Record<string, { label: string; color: string }[]> = {
+  "2024-08-01": [{ label: "Send invoices", color: "bg-emerald-500" }],
   "2024-08-05": [{ label: "BrightPath invoicing", color: "bg-emerald-500" }],
   "2024-08-08": [{ label: "GreenLeaf thumbnails due", color: "bg-amber-500" }],
   "2024-08-12": [{ label: "Harbor staging deploy", color: "bg-blue-500" }],
-  "2024-08-15": [{ label: "CloudSync pricing modal", color: "bg-[var(--accent-brand)]" }],
+  "2024-08-15": [{ label: "CloudSync pricing modal", color: "bg-[var(--accent-brand)]" }, { label: "Savings transfer", color: "bg-blue-500" }, { label: "Domain renewal", color: "bg-amber-500" }],
   "2024-08-20": [{ label: "RK case study publish", color: "bg-purple-500" }],
-  "2024-08-01": [{ label: "Send invoices", color: "bg-emerald-500" }],
-  "2024-08-15": [{ label: "Savings transfer", color: "bg-blue-500" }, { label: "Domain renewal", color: "bg-amber-500" }],
 };
 
 export default function MiniCalendar() {

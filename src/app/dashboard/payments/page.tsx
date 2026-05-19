@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { paymentData, clientData, websiteData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { Receipt, CheckCircle, Clock, CreditCard } from "lucide-react";
+import Link from "next/link";
 import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter, ModalClose } from "@/components/ui/modal";
 import { Select } from "@/components/ui/select";
 import { Pagination } from "@/components/ui/pagination";
@@ -85,7 +86,7 @@ export default function PaymentsPage() {
                 const client = clientData.find((c) => c.id === p.clientId);
                 const site = websiteData.find((w) => w.id === p.websiteId);
                 return (
-                  <tr key={p.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors cursor-pointer">
+                  <tr key={p.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => window.location.href = `/dashboard/payments/${p.id}`}>
                     <td className="px-5 py-3 font-medium text-foreground">{client?.name}</td>
                     <td className="px-5 py-3 text-muted-foreground">{site?.name || "—"}</td>
                     <td className="px-5 py-3 text-muted-foreground">{p.type}</td>
