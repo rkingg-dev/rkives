@@ -1,8 +1,7 @@
 'use client'
 
-import { useEffect, useId, useRef } from 'react'
+import { useId, useEffect, useState } from 'react'
 import clsx from 'clsx'
-import { animate } from 'framer-motion'
 
 type Star = [x: number, y: number, dim?: boolean, blur?: boolean]
 
@@ -10,30 +9,25 @@ function createRandom(seed: number) {
   return function random() {
     seed |= 0
     seed = (seed + 0x6d2b79f5) | 0
-
     let value = Math.imul(seed ^ (seed >>> 15), 1 | seed)
     value = (value + Math.imul(value ^ (value >>> 7), 61 | value)) ^ value
-
     return ((value ^ (value >>> 14)) >>> 0) / 4294967296
   }
 }
 
 function generateStars(seed: number, count: number) {
   let random = createRandom(seed)
-
   return Array.from({ length: count }, () => {
     let x = Math.round(random() * 881)
     let y = Math.round(random() * 211)
     let dim = random() > 0.28
     let blur = random() > 0.62
-
     return [x, y, dim, blur] satisfies Star
   })
 }
 
 function generateConstellations(seed: number, count: number) {
   let random = createRandom(seed + 173)
-
   return Array.from({ length: count }, () => {
     let pointCount = Math.floor(random() * 3) + 4
     let originX = 80 + random() * 720
@@ -43,169 +37,31 @@ function generateConstellations(seed: number, count: number) {
       let distance = 24 + random() * 56
       let x = Math.round(Math.min(Math.max(originX + Math.cos(angle) * distance, 8), 873))
       let y = Math.round(Math.min(Math.max(originY + Math.sin(angle) * distance, 8), 203))
-
       return [x, y] satisfies Star
     })
-
-    if (random() > 0.55) {
-      points.push(points[1])
-    }
-
+    if (random() > 0.55) points.push(points[1])
     return points
   })
 }
 
 function generateAriesConstellations(seed: number, count: number) {
   let random = createRandom(seed + 401)
-
   return Array.from({ length: count }, () => {
     let originX = 110 + random() * 640
     let originY = 34 + random() * 142
     let scale = 0.65 + random() * 0.55
     let direction = random() > 0.5 ? 1 : -1
     let tilt = (random() - 0.5) * 20
-    let ariesShape = [
-      [0, 0],
-      [34, -24],
-      [73, -16],
-      [112, 10],
-      [148, 4],
-    ]
-
+    let ariesShape = [[0, 0], [34, -24], [73, -16], [112, 10], [148, 4]]
     return ariesShape.map(([x, y]) => {
       let tiltedX = x * direction - y * Math.sin((tilt * Math.PI) / 180)
       let tiltedY = y + x * Math.sin((tilt * Math.PI) / 180) * 0.35
-
       return [
         Math.round(Math.min(Math.max(originX + tiltedX * scale, 8), 873)),
         Math.round(Math.min(Math.max(originY + tiltedY * scale, 8), 203)),
       ] satisfies Star
     })
   })
-}
-
-function Star({
-  blurId,
-  point: [cx, cy, dim, blur],
-}: {
-  blurId: string
-  point: Star
-}) {
-  let groupRef = useRef<React.ElementRef<'g'>>(null)
-  let ref = useRef<React.ElementRef<'circle'>>(null)
-
-  useEffect(() => {
-    if (!groupRef.current || !ref.current) {
-      return
-    }
-
-    let delay = Math.random() * 2
-
-    let animations = [
-      animate(groupRef.current as Element, { opacity: 1 }, { duration: 4, delay }),
-      animate(
-        ref.current as Element,
-        {
-          opacity: dim ? [0.2, 0.5] : [1, 0.6],
-          scale: dim ? [1, 1.2] : [1.2, 1],
-        } as any,
-        {
-          delay,
-          duration: Math.random() * 2 + 2,
-          direction: 'alternate',
-          repeat: Infinity,
-        } as any,
-      ),
-    ]
-
-    return () => {
-      for (let animation of animations) {
-        animation.cancel()
-      }
-    }
-  }, [dim])
-
-  return (
-    <g ref={groupRef} className="opacity-0">
-      <circle
-        ref={ref}
-        cx={cx}
-        cy={cy}
-        r={1}
-        style={{
-          transformOrigin: `${cx / 16}rem ${cy / 16}rem`,
-          opacity: dim ? 0.2 : 1,
-          transform: `scale(${dim ? 1 : 1.2})`,
-        }}
-        filter={blur ? `url(#${blurId})` : undefined}
-      />
-    </g>
-  )
-}
-
-function Constellation({
-  points,
-  blurId,
-}: {
-  points: Array<Star>
-  blurId: string
-}) {
-  let ref = useRef<React.ElementRef<'path'>>(null)
-  let uniquePoints = points.filter(
-    (point, pointIndex) =>
-      points.findIndex((p) => String(p) === String(point)) === pointIndex,
-  )
-  let isFilled = uniquePoints.length !== points.length
-
-  useEffect(() => {
-    if (!ref.current) {
-      return
-    }
-
-    let strokeDelay = Math.random() * 3 + 2
-    let animations = [
-      animate(
-        ref.current as Element,
-        { strokeDashoffset: 0, visibility: 'visible' } as any,
-        { duration: 5, delay: strokeDelay },
-      ),
-    ]
-
-    if (isFilled) {
-      animations.push(
-        animate(
-          ref.current as Element,
-          { fill: 'rgb(255 255 255 / 0.02)' } as any,
-          { duration: 1, delay: strokeDelay + 5 },
-        ),
-      )
-    }
-
-    return () => {
-      for (let animation of animations) {
-        animation.cancel()
-      }
-    }
-  }, [isFilled])
-
-  return (
-    <>
-      <path
-        ref={ref}
-        stroke="white"
-        strokeOpacity="0.2"
-        strokeDasharray={1}
-        strokeDashoffset={1}
-        pathLength={1}
-        fill="transparent"
-        d={`M ${points.join('L')}`}
-        className="invisible"
-      />
-      {uniquePoints.map((point, pointIndex) => (
-        <Star key={pointIndex} point={point} blurId={blurId} />
-      ))}
-    </>
-  )
 }
 
 export function StarField({
@@ -226,11 +82,17 @@ export function StarField({
   animated?: boolean
 }) {
   let blurId = useId()
+  let [visible, setVisible] = useState(false)
   let stars = generateStars(seed, starCount)
   let constellations = [
     ...generateConstellations(seed, constellationCount),
     ...generateAriesConstellations(seed, ariesCount),
   ]
+
+  useEffect(() => {
+    let timer = setTimeout(() => setVisible(true), 100)
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
     <svg
@@ -247,30 +109,78 @@ export function StarField({
           <feGaussianBlur in="SourceGraphic" stdDeviation=".5" />
         </filter>
       </defs>
-      {constellations.map((points, constellationIndex) => (
-        <Constellation
-          key={constellationIndex}
-          points={points}
-          blurId={blurId}
-        />
-      ))}
-      {stars.map((point, pointIndex) => (
+
+      {constellations.map((points, i) => {
+        let uniquePoints = points.filter(
+          (point, j) => points.findIndex((p) => String(p) === String(point)) === j,
+        )
+        let isFilled = uniquePoints.length !== points.length
+        return (
+          <g key={`c-${i}`}>
+            <path
+              stroke="white"
+              strokeOpacity="0.2"
+              strokeDasharray={1}
+              strokeDashoffset={visible ? 0 : 1}
+              pathLength={1}
+              fill={isFilled && visible ? 'rgb(255 255 255 / 0.02)' : 'transparent'}
+              d={`M ${points.join('L')}`}
+              style={{ transition: 'stroke-dashoffset 5s ease, fill 1s ease 5s' }}
+            />
+            {uniquePoints.map((point, j) => (
+              <circle
+                key={j}
+                cx={point[0]}
+                cy={point[1]}
+                r={1}
+                className={clsx(
+                  animated && 'transition-opacity duration-1000',
+                  visible ? 'opacity-75' : 'opacity-0',
+                )}
+                style={{
+                  animation: animated ? `star-twinkle ${2 + Math.random() * 3}s ease-in-out infinite alternate` : undefined,
+                  animationDelay: animated ? `${Math.random() * 4}s` : undefined,
+                  transformOrigin: `${point[0] / 16}rem ${point[1] / 16}rem`,
+                }}
+                filter={(point as any)[3] ? `url(#${blurId})` : undefined}
+              />
+            ))}
+          </g>
+        )
+      })}
+
+      {stars.map((point, i) => (
         <g
-          key={pointIndex}
+          key={`s-${i}`}
           style={{
             transform: tiny ? 'scale(0.7)' : undefined,
             transformOrigin: `${point[0] / 16}rem ${point[1] / 16}rem`,
           }}
         >
           {animated ? (
-            <Star point={point} blurId={blurId} />
+            <circle
+              cx={point[0]}
+              cy={point[1]}
+              r={1}
+              className={clsx(
+                visible ? 'opacity-100' : 'opacity-0',
+                'transition-opacity duration-[2000ms]',
+              )}
+              style={{
+                animation: `star-twinkle ${point[2] ? 4 + Math.random() * 2 : 2 + Math.random() * 3}s ease-in-out infinite alternate`,
+                animationDelay: `${Math.random() * 4}s`,
+                transformOrigin: `${point[0] / 16}rem ${point[1] / 16}rem`,
+                opacity: point[2] ? 0.28 : 0.75,
+              }}
+              filter={(point as any)[3] ? `url(#${blurId})` : undefined}
+            />
           ) : (
             <circle
               cx={point[0]}
               cy={point[1]}
               r={1}
               opacity={point[2] ? 0.28 : 0.75}
-              filter={point[3] ? `url(#${blurId})` : undefined}
+              filter={(point as any)[3] ? `url(#${blurId})` : undefined}
             />
           )}
         </g>

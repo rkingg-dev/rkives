@@ -145,6 +145,12 @@ input[type="file"] {
   animation: selector-enter 760ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+@keyframes star-twinkle {
+  0% { opacity: 0.15; transform: scale(0.8); }
+  100% { opacity: 0.85; transform: scale(1.2); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .content-enter, .selector-enter { animation: none; }
+  @keyframes star-twinkle { 0%, 100% { opacity: 0.5; transform: scale(1); } }
 }
