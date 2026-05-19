@@ -14,15 +14,6 @@ import { Modal, ModalTrigger, ModalContent, ModalHeader, ModalTitle, ModalDescri
 
 const goalIcons: Record<string, React.ElementType> = { shield: Wallet, laptop: TrendingUp, plane: PiggyBank };
 
-// Budget categories with monthly limits
-const budgetCategories = [
-  { name: "Hosting", limit: 5000, color: "bg-foreground" },
-  { name: "Domains", limit: 2000, color: "bg-gray-500" },
-  { name: "Tools & Software", limit: 3000, color: "bg-gray-400" },
-  { name: "Fonts & Assets", limit: 1500, color: "bg-gray-300" },
-  { name: "Other Business", limit: 1000, color: "bg-gray-200" },
-];
-
 const personalBudget = [
   { name: "Rent", limit: 12000, color: "bg-foreground" },
   { name: "Food & Dining", limit: 6000, color: "bg-gray-500" },
@@ -108,7 +99,7 @@ export default function FinancePage() {
         </motion.div>
       </div>
 
-      {/* Chart + Budget side by side */}
+      {/* Chart + Personal Budget side by side */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="lg:col-span-2 bg-card rounded-xl border border-border p-5">
           <h3 className="text-sm font-semibold text-foreground mb-4">Income vs Expenses</h3>
@@ -132,35 +123,8 @@ export default function FinancePage() {
           </div>
         </motion.div>
 
-        {/* Business Budget */}
+        {/* Personal Budget */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="bg-card rounded-xl border border-border p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-foreground">Business Budget</h3>
-            <span className="text-xs text-muted-foreground">₱{expenseBreakdown.reduce((s, e) => s + e.amount, 0).toLocaleString()} / ₱{budgetCategories.reduce((s, c) => s + c.limit, 0).toLocaleString()}</span>
-          </div>
-          <div className="space-y-4">
-            {budgetCategories.map((cat) => {
-              const spent = spentByCategory[cat.name] || 0;
-              const pct = Math.min((spent / cat.limit) * 100, 100);
-              const over = spent > cat.limit;
-              return (
-                <div key={cat.name}>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-foreground">{cat.name}</span>
-                    <span className={cn("text-xs font-medium", over ? "text-red-500" : "text-muted-foreground")}>₱{spent.toLocaleString()} / ₱{cat.limit.toLocaleString()}</span>
-                  </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
-                    <div className={cn("h-full rounded-full transition-all", over ? "bg-red-500" : cat.color)} style={{ width: `${pct}%` }} />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Personal Budget */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="w-full max-w-[66.666%] bg-card rounded-xl border border-border p-5">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-foreground">Personal Budget</h3>
           <span className="text-xs text-muted-foreground">₱{personalExpenses.reduce((s, e) => s + e.amount, 0).toLocaleString()} / ₱{personalBudget.reduce((s, c) => s + c.limit, 0).toLocaleString()}</span>
