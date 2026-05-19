@@ -550,44 +550,49 @@ function ThumbnailStrip({
   items: PortfolioItem[]
   activeIndex: number
 }) {
-  let thumbH = 56
-  let gap = 8
-  let frameH = thumbH + 12
-  let offset = -(activeIndex * (thumbH + gap))
+  let thumbW = 64
+  let thumbH = 80
+  let gap = 10
+  let pad = 6
+  let frameW = thumbW + pad * 2
+  let frameH = thumbH + pad * 2
+  let frameTop = activeIndex * (thumbH + gap)
 
   return (
-    <div className="fixed right-8 top-1/2 -translate-y-1/2 z-30 hidden lg:block" style={{ height: frameH }}>
-      {/* Camera frame — fixed, never moves */}
-      <div className="absolute inset-0 pointer-events-none z-10">
-        <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-orange-400" />
-        <span className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-orange-400" />
-        <span className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-orange-400" />
-        <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-orange-400" />
-      </div>
-
-      {/* Scrolling thumbnails — moves through the frame */}
-      <div className="overflow-hidden" style={{ height: frameH }}>
-        <div
-          className="flex flex-col transition-transform duration-500 ease-out"
-          style={{ transform: `translateY(${offset}px)`, gap }}
-        >
-          {items.map((item) => (
-            <div
-              key={item.slug}
-              className="relative rounded overflow-hidden shrink-0 opacity-50 transition-opacity duration-300"
-              style={{ width: 56, height: thumbH }}
-            >
-              <Image
-                src={item.thumbnail}
-                alt=""
-                fill
-                className="object-cover"
-                sizes="56px"
-              />
+    <div className="fixed right-8 top-1/2 -translate-y-1/2 z-30 hidden lg:flex flex-col items-center" style={{ gap }}>
+      {items.map((item, i) => (
+        <div key={item.slug} className="relative" style={{ width: frameW, height: frameH }}>
+          {/* Camera frame — only on active item */}
+          {i === activeIndex && (
+            <div className="absolute inset-0 pointer-events-none z-10">
+              <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-orange-400" />
+              <span className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-orange-400" />
+              <span className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-orange-400" />
+              <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-orange-400" />
             </div>
-          ))}
+          )}
+          {/* Thumbnail */}
+          <div
+            className="absolute rounded overflow-hidden transition-all duration-300"
+            style={{
+              width: thumbW,
+              height: thumbH,
+              top: pad,
+              left: pad,
+              opacity: i === activeIndex ? 1 : 0.35,
+              filter: i === activeIndex ? "none" : "grayscale(0.5)",
+            }}
+          >
+            <Image
+              src={item.thumbnail}
+              alt=""
+              fill
+              className="object-cover"
+              sizes={`${thumbW}px`}
+            />
+          </div>
         </div>
-      </div>
+      ))}
     </div>
   )
 }
