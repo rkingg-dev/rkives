@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { flushSync } from 'react-dom'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -439,13 +439,19 @@ function FocusItem({
   children,
   index,
   focusOnly = true,
+  onActive,
 }: {
   children: React.ReactNode
   index: number
   focusOnly?: boolean
+  onActive?: (index: number) => void
 }) {
   let scrollRef = useScrollContainer()
   let { ref, isInView } = useScrollInView(scrollRef, { amount: 0.2 })
+
+  useEffect(() => {
+    if (isInView) onActive?.(index)
+  }, [isInView, index, onActive])
 
   return (
     <div
@@ -537,6 +543,46 @@ function Pagination({
   )
 }
 
+function ThumbnailStrip({
+  items,
+  activeIndex,
+}: {
+  items: PortfolioItem[]
+  activeIndex: number
+}) {
+  return (
+    <div className="fixed right-6 top-1/2 -translate-y-1/2 z-30 hidden lg:flex flex-col gap-2">
+      {items.map((item, i) => (
+        <div
+          key={item.slug}
+          className={clsx(
+            "relative w-16 h-12 rounded-md overflow-hidden transition-all duration-300",
+            i === activeIndex
+              ? "ring-2 ring-orange-400 scale-110 opacity-100"
+              : "ring-1 ring-white/10 opacity-40 hover:opacity-70"
+          )}
+        >
+          <Image
+            src={item.thumbnail}
+            alt=""
+            fill
+            className="object-cover"
+            sizes="64px"
+          />
+          {i === activeIndex && (
+            <>
+              <span className="absolute top-0.5 left-0.5 w-2 h-2 border-t border-l border-orange-400" />
+              <span className="absolute top-0.5 right-0.5 w-2 h-2 border-t border-r border-orange-400" />
+              <span className="absolute bottom-0.5 left-0.5 w-2 h-2 border-b border-l border-orange-400" />
+              <span className="absolute bottom-0.5 right-0.5 w-2 h-2 border-b border-r border-orange-400" />
+            </>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function PortfolioList({
   items,
   onOpen,
@@ -550,11 +596,15 @@ function PortfolioList({
   totalPages: number
   onPageChange: (page: number) => void
 }) {
+  let [activeIndex, setActiveIndex] = useState(0)
+  let handleActive = useCallback((i: number) => setActiveIndex(i), [])
+
   return (
     <ContentShell>
+      <ThumbnailStrip items={items} activeIndex={activeIndex} />
       <div className="space-y-14 lg:pt-[18vh] lg:pb-[38vh]">
         {items.map((item, index) => (
-          <FocusItem key={item.slug} index={index}>
+          <FocusItem key={item.slug} index={index} onActive={handleActive}>
             <button
               type="button"
               onClick={() => onOpen(item.slug)}
