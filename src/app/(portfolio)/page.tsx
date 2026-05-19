@@ -550,13 +550,13 @@ function ThumbnailStrip({
   items: PortfolioItem[]
   activeIndex: number
 }) {
-  let thumbHeight = 52 // h-13 = 52px
-  let gap = 8 // gap-2 = 8px
-  let frameSize = thumbHeight + 8 // slightly bigger than thumb
-  let offset = -(activeIndex * (thumbHeight + gap))
+  let thumbH = 56
+  let gap = 8
+  let frameH = thumbH + 12
+  let offset = -(activeIndex * (thumbH + gap))
 
   return (
-    <div className="fixed right-8 top-1/2 -translate-y-1/2 z-30 hidden lg:block" style={{ height: frameSize }}>
+    <div className="fixed right-8 top-1/2 -translate-y-1/2 z-30 hidden lg:block" style={{ height: frameH }}>
       {/* Camera frame — fixed, never moves */}
       <div className="absolute inset-0 pointer-events-none z-10">
         <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-orange-400" />
@@ -566,15 +566,16 @@ function ThumbnailStrip({
       </div>
 
       {/* Scrolling thumbnails — moves through the frame */}
-      <div className="overflow-hidden h-full">
+      <div className="overflow-hidden" style={{ height: frameH }}>
         <div
-          className="flex flex-col gap-2 transition-transform duration-500 ease-out"
-          style={{ transform: `translateY(${offset}px)` }}
+          className="flex flex-col transition-transform duration-500 ease-out"
+          style={{ transform: `translateY(${offset}px)`, gap }}
         >
           {items.map((item) => (
             <div
               key={item.slug}
-              className="relative w-14 h-13 rounded overflow-hidden shrink-0 opacity-50 transition-opacity duration-300"
+              className="relative rounded overflow-hidden shrink-0 opacity-50 transition-opacity duration-300"
+              style={{ width: 56, height: thumbH }}
             >
               <Image
                 src={item.thumbnail}
