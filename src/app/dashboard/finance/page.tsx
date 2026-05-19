@@ -127,56 +127,31 @@ export default function FinancePage() {
           </div>
         </motion.div>
 
-        <div className="space-y-4">
-          {/* Personal Budget */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="bg-card rounded-xl border border-border p-5">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-foreground">Personal Budget</h3>
-              <span className="text-xs text-muted-foreground">₱{personalExpenses.reduce((s, e) => s + e.amount, 0).toLocaleString()} / ₱{personalBudget.reduce((s, c) => s + c.limit, 0).toLocaleString()}</span>
-            </div>
-            <div className="space-y-4">
-              {personalBudget.map((cat) => {
-                const spent = spentByCategory[cat.name] || 0;
-                const pct = Math.min((spent / cat.limit) * 100, 100);
-                const over = spent > cat.limit;
-                return (
-                  <div key={cat.name}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-foreground">{cat.name}</span>
-                      <span className={cn("text-xs font-medium", over ? "text-red-500" : "text-muted-foreground")}>₱{spent.toLocaleString()} / ₱{cat.limit.toLocaleString()}</span>
-                    </div>
-                    <div className="h-2 bg-muted rounded-full overflow-hidden">
-                      <div className={cn("h-full rounded-full transition-all", over ? "bg-red-500" : cat.color)} style={{ width: `${pct}%` }} />
-                    </div>
+        {/* Personal Budget */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="bg-card rounded-xl border border-border p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-semibold text-foreground">Personal Budget</h3>
+            <span className="text-xs text-muted-foreground">₱{personalExpenses.reduce((s, e) => s + e.amount, 0).toLocaleString()} / ₱{personalBudget.reduce((s, c) => s + c.limit, 0).toLocaleString()}</span>
+          </div>
+          <div className="space-y-4">
+            {personalBudget.map((cat) => {
+              const spent = spentByCategory[cat.name] || 0;
+              const pct = Math.min((spent / cat.limit) * 100, 100);
+              const over = spent > cat.limit;
+              return (
+                <div key={cat.name}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm text-foreground">{cat.name}</span>
+                    <span className={cn("text-xs font-medium", over ? "text-red-500" : "text-muted-foreground")}>₱{spent.toLocaleString()} / ₱{cat.limit.toLocaleString()}</span>
                   </div>
-                );
-              })}
-            </div>
-          </motion.div>
-
-          {/* Cash Flow Forecast */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-card rounded-xl border border-border p-5">
-            <h3 className="text-sm font-semibold text-foreground mb-3">Cash Flow Forecast</h3>
-            <div className="space-y-3">
-              {[
-                { month: "Next Month", income: totalIncome, expenses: totalExpenses },
-                { month: "In 2 Months", income: Math.round(totalIncome * 0.95), expenses: Math.round(totalExpenses * 1.02) },
-                { month: "In 3 Months", income: Math.round(totalIncome * 1.05), expenses: totalExpenses },
-              ].map((m) => (
-                <div key={m.month} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors">
-                  <span className="text-sm text-foreground">{m.month}</span>
-                  <div className="flex items-center gap-3 text-xs">
-                    <span className="text-emerald-500">+₱{m.income.toLocaleString()}</span>
-                    <span className="text-red-500">-₱{m.expenses.toLocaleString()}</span>
-                    <span className={`font-medium ${m.income - m.expenses >= 0 ? "text-emerald-500" : "text-red-500"}`}>
-                      ₱{(m.income - m.expenses).toLocaleString()}
-                    </span>
+                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                    <div className={cn("h-full rounded-full transition-all", over ? "bg-red-500" : cat.color)} style={{ width: `${pct}%` }} />
                   </div>
                 </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+              );
+            })}
+          </div>
+        </motion.div>
       </div>
 
       {/* Bottom Row */}
@@ -324,6 +299,29 @@ export default function FinancePage() {
 
         {/* Right Column */}
         <div className="space-y-4">
+          {/* Cash Flow Forecast */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-card rounded-xl border border-border p-5">
+            <h3 className="text-sm font-semibold text-foreground mb-3">Cash Flow Forecast</h3>
+            <div className="space-y-3">
+              {[
+                { month: "Next Month", income: totalIncome, expenses: totalExpenses },
+                { month: "In 2 Months", income: Math.round(totalIncome * 0.95), expenses: Math.round(totalExpenses * 1.02) },
+                { month: "In 3 Months", income: Math.round(totalIncome * 1.05), expenses: totalExpenses },
+              ].map((m) => (
+                <div key={m.month} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                  <span className="text-sm text-foreground">{m.month}</span>
+                  <div className="flex items-center gap-3 text-xs">
+                    <span className="text-emerald-500">+₱{m.income.toLocaleString()}</span>
+                    <span className="text-red-500">-₱{m.expenses.toLocaleString()}</span>
+                    <span className={`font-medium ${m.income - m.expenses >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+                      ₱{(m.income - m.expenses).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
           {/* Savings Goals */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-card rounded-xl border border-border p-5">
             <div className="flex items-center justify-between mb-3">
