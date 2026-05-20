@@ -53,18 +53,18 @@ export default function PortfolioPage() {
 
       {/* ─── Hero / Hello Section ─── */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-8 py-32">
-        {/* Photo card — big, centered */}
-        <div className="bg-[#e8e4de] rounded-sm p-8 max-w-lg w-full">
-          <h2 className="text-4xl lg:text-5xl font-bold text-[#0a0a0a] leading-tight mb-8" style={{ fontFamily: "var(--font-satoshi)" }}>
+        {/* Photo card — Instax style */}
+        <div className="bg-[#e8e4de] rounded-sm p-6 w-full max-w-[40rem]">
+          <h2 className="text-4xl lg:text-5xl font-bold text-[#0a0a0a] leading-tight mb-6" style={{ fontFamily: "var(--font-satoshi)" }}>
             HELLO<br />MY NAME IS<br />R KING
           </h2>
-          <div className="relative w-full aspect-[4/3] bg-[#0a0a0a] rounded-sm overflow-hidden">
+          <div className="relative w-full aspect-[4/3] bg-[#0a0a0a] overflow-hidden">
             <Image src="/placeholder-portrait.jpg" alt="R King Garcia" fill className="object-cover" />
           </div>
         </div>
 
         {/* Info below card */}
-        <div className="mt-6 w-full max-w-lg flex items-start justify-between">
+        <div className="mt-6 w-full max-w-[40rem] flex items-start justify-between">
           <div className="text-[11px] text-white/40 uppercase tracking-wider leading-relaxed" style={{ fontFamily: "var(--font-satoshi)" }}>
             web development rkingg<br />
             digital product designer<br />
