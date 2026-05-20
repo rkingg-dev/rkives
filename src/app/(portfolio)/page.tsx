@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import Lenis from "lenis";
 
 const logos = [
   "SnapShot", ".inc", "acme", "U-Turn", "Sitemark",
@@ -9,12 +10,12 @@ const logos = [
 
 function LogoMarquee() {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-white/10 bg-[#0a0a0a]/80 backdrop-blur-sm">
-      <div className="marquee-track py-5">
+    <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-white/[0.06]">
+      <div className="marquee-track py-4">
         {[...logos, ...logos].map((name, i) => (
           <span
             key={i}
-            className="mx-8 text-sm font-medium tracking-wide text-white/30 whitespace-nowrap"
+            className="mx-10 text-[13px] font-medium tracking-wide text-white/25 whitespace-nowrap"
           >
             {name}
           </span>
@@ -25,55 +26,94 @@ function LogoMarquee() {
 }
 
 export default function PortfolioPage() {
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    return () => lenis.destroy();
+  }, []);
+
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen bg-[#0a0a0a]">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-8 py-6">
-        <span className="text-sm font-bold tracking-widest text-white">
+        <span
+          className="text-[14px] font-bold tracking-[0.15em] text-white"
+          style={{ fontFamily: "var(--font-satoshi)" }}
+        >
           RKINGG//
         </span>
-        <span className="text-sm text-white/40">©2025</span>
+        <span
+          className="text-[14px] text-white/30"
+          style={{ fontFamily: "var(--font-satoshi)" }}
+        >
+          ©2025
+        </span>
       </header>
 
       {/* Hero — full viewport */}
       <section className="relative flex h-screen items-center justify-center">
-        {/* Giant background text */}
+        {/* Giant background text — spans full width */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
           <span
-            className="font-bold text-[18vw] leading-none tracking-tight"
+            className="font-bold leading-none tracking-tight"
             style={{
-              color: "rgba(180, 30, 30, 0.35)",
               fontFamily: "var(--font-satoshi)",
+              fontSize: "clamp(8rem, 20vw, 22rem)",
+              color: "rgba(160, 20, 20, 0.4)",
+              letterSpacing: "-0.02em",
             }}
           >
             RKINGG
           </span>
         </div>
 
-        {/* Image grid — 3 overlapping cards */}
-        <div className="relative z-10 flex items-center justify-center gap-0">
-          {/* Card 1 — tall */}
-          <div className="relative w-[280px] h-[380px] rounded-2xl overflow-hidden -mr-8 shadow-2xl shadow-black/50 rotate-[-2deg] transition-transform duration-500 hover:rotate-0 hover:scale-105 hover:z-20">
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-600" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-sm" />
-            </div>
+        {/* Image cards — overlapping, centered */}
+        <div className="relative z-10 flex items-center justify-center">
+          {/* Card 1 — left, slightly rotated */}
+          <div
+            className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/60 transition-all duration-700 ease-out hover:scale-[1.03] hover:z-20"
+            style={{
+              width: "clamp(180px, 22vw, 300px)",
+              height: "clamp(260px, 32vw, 420px)",
+              marginRight: "-5%",
+              transform: "rotate(-3deg)",
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500 via-red-500 to-red-700" />
           </div>
 
-          {/* Card 2 — center, tallest */}
-          <div className="relative w-[300px] h-[420px] rounded-2xl overflow-hidden z-10 shadow-2xl shadow-black/50 transition-transform duration-500 hover:scale-105 hover:z-20">
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-amber-500" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-28 h-28 rounded-full bg-white/20 backdrop-blur-sm" />
-            </div>
+          {/* Card 2 — center, tallest, on top */}
+          <div
+            className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/60 z-10 transition-all duration-700 ease-out hover:scale-[1.03] hover:z-20"
+            style={{
+              width: "clamp(200px, 25vw, 340px)",
+              height: "clamp(300px, 40vw, 500px)",
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-400 via-orange-500 to-amber-600" />
           </div>
 
-          {/* Card 3 — shorter */}
-          <div className="relative w-[260px] h-[340px] rounded-2xl overflow-hidden -ml-8 shadow-2xl shadow-black/50 rotate-[2deg] transition-transform duration-500 hover:rotate-0 hover:scale-105 hover:z-20">
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-600 to-orange-700" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm" />
-            </div>
+          {/* Card 3 — right, slightly rotated */}
+          <div
+            className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/60 transition-all duration-700 ease-out hover:scale-[1.03] hover:z-20"
+            style={{
+              width: "clamp(160px, 20vw, 280px)",
+              height: "clamp(240px, 30vw, 380px)",
+              marginLeft: "-5%",
+              transform: "rotate(3deg)",
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-600 via-orange-600 to-red-800" />
           </div>
         </div>
       </section>
