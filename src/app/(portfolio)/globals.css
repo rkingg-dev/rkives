@@ -32,3 +32,8 @@ body {
 .marquee-track:hover {
   animation-play-state: paused;
 }
+
+::selection {
+  background: #e8734a;
+  color: #0a0a0a;
+}
