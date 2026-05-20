@@ -41,28 +41,27 @@ export default function PortfolioPage() {
       <section className="relative min-h-screen flex flex-col items-center justify-center px-8 py-32">
         {/* Photo card — Instax style */}
         <div className="bg-[#e8e4de] p-4 w-full max-w-[30rem]">
-          <h2 className="text-2xl lg:text-3xl font-bold text-[#0a0a0a] leading-tight mb-4" style={{ fontFamily: "var(--font-satoshi)" }}>
-            HELLO MY NAME IS R KING
+          <h2 className="text-2xl lg:text-3xl font-bold text-[#0a0a0a] leading-tight mb-4">
+            Hello My Name Is<br />RKINGG
           </h2>
 
           <div className="relative w-full aspect-[4/3] bg-[#0a0a0a]">
             <Image src="/placeholder-portrait.jpg" alt="R King Garcia" fill className="object-cover" />
           </div>
-
         </div>
 
         {/* Info below card */}
         <div className="mt-6 w-full max-w-[30rem] flex items-start justify-between">
-          <div className="text-[11px] text-white/40 uppercase tracking-wider leading-relaxed" style={{ fontFamily: "var(--font-satoshi)" }}>
+          <div className="text-[11px] text-white/40 uppercase tracking-wider leading-relaxed">
             web development rkingg<br />
             digital product designer<br />
             manila, ph<br />
             ui/ux designer 09200-0240
           </div>
           <div className="text-right">
-            <span className="text-sm font-medium text-white block" style={{ fontFamily: "var(--font-satoshi)" }}>RKINGG//</span>
-            <span className="text-[11px] text-white/30 uppercase tracking-widest block mt-1" style={{ fontFamily: "var(--font-satoshi)" }}>"portfolio"</span>
-            <span className="text-sm font-medium text-white block mt-1" style={{ fontFamily: "var(--font-satoshi)" }}>©2026</span>
+            <span className="text-sm font-medium text-white block">RKINGG//</span>
+            <span className="text-[11px] text-white/30 uppercase tracking-widest block mt-1">"portfolio"</span>
+            <span className="text-sm font-medium text-white block mt-1">&copy;2026</span>
           </div>
         </div>
       </section>
@@ -70,19 +69,19 @@ export default function PortfolioPage() {
       {/* ─── Contact / Business Card ─── */}
       <section className="relative px-8 lg:px-16 py-32 border-t border-white/[0.06] bg-[#e8e4de]">
         <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-5xl lg:text-7xl font-bold text-[#0a0a0a]" style={{ fontFamily: "var(--font-satoshi)" }}>"BUSINESS CARD"</h2>
+          <h2 className="text-5xl lg:text-7xl font-bold text-[#0a0a0a]">"BUSINESS CARD"</h2>
         </div>
         <div className="max-w-6xl mx-auto flex items-center justify-between mt-24">
-          <a href="mailto:hello@rkingg.com" className="text-sm text-[#0a0a0a]/60 hover:text-[#0a0a0a] transition-colors" style={{ fontFamily: "var(--font-satoshi)" }}>hello@rkingg.com</a>
-          <span className="text-sm text-[#0a0a0a]/40" style={{ fontFamily: "var(--font-satoshi)" }}>2022©</span>
+          <a href="mailto:hello@rkingg.com" className="text-sm text-[#0a0a0a]/60 hover:text-[#0a0a0a] transition-colors">hello@rkingg.com</a>
+          <span className="text-sm text-[#0a0a0a]/40">2022&copy;</span>
         </div>
       </section>
 
       {/* ─── Footer bar ─── */}
       <div className="px-8 lg:px-16 py-6 bg-[#0a0a0a] flex items-center justify-between">
-        <span className="text-[11px] text-white/30 uppercase tracking-wider" style={{ fontFamily: "var(--font-satoshi)" }}>RKINGG 0016/</span>
-        <span className="text-[11px] text-white/30 uppercase tracking-wider" style={{ fontFamily: "var(--font-satoshi)" }}>MANILA PH</span>
-        <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-[11px] text-white/30 uppercase tracking-wider hover:text-white transition-colors" style={{ fontFamily: "var(--font-satoshi)" }}>BACK</button>
+        <span className="text-[11px] text-white/30 uppercase tracking-wider">RKINGG 0016/</span>
+        <span className="text-[11px] text-white/30 uppercase tracking-wider">MANILA PH</span>
+        <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-[11px] text-white/30 uppercase tracking-wider hover:text-white transition-colors">BACK</button>
       </div>
 
       {/* Logo Marquee */}
