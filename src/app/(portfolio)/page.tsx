@@ -47,13 +47,13 @@ export default function PortfolioPage() {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-8 py-6">
         <span
-          className="text-[14px] font-bold tracking-[0.15em] text-white"
+          className="text-base font-medium text-white"
           style={{ fontFamily: "var(--font-satoshi)" }}
         >
           RKINGG//
         </span>
         <span
-          className="text-[14px] text-white/30"
+          className="text-base font-medium text-white"
           style={{ fontFamily: "var(--font-satoshi)" }}
         >
           ©2025
