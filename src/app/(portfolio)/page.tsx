@@ -642,10 +642,9 @@ function ThumbnailStrip({
 
 function HeroSection() {
   return (
-    <section className="min-h-[85vh] flex items-center">
-      <div className="mx-auto max-w-7xl px-6 lg:flex lg:px-8">
-        <div className="lg:ml-96 lg:flex lg:w-full lg:justify-end lg:pl-32">
-          <div className="mx-auto max-w-lg lg:mx-0 lg:w-0 lg:max-w-xl lg:flex-auto">
+    <section className="min-h-screen flex items-center">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 w-full">
+        <div className="max-w-2xl">
             <FadeInSection>
               <h1 className="font-satoshi text-7xl sm:text-8xl font-bold tracking-tight text-white leading-[0.95]">
                 RKINGG<span className="text-orange-400">//</span>
@@ -666,7 +665,6 @@ function HeroSection() {
               </Link>
             </FadeInSection>
           </div>
-        </div>
       </div>
     </section>
   )
@@ -716,8 +714,8 @@ function WorksSection({
   return (
     <section className="py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:flex lg:px-8">
-        <div className="lg:ml-96 lg:flex lg:w-full lg:justify-end lg:pl-32">
-          <div className="mx-auto max-w-lg lg:mx-0 lg:w-0 lg:max-w-none lg:flex-auto">
+        <div className="flex w-full justify-center">
+          <div className="w-full max-w-4xl">
             <FadeInSection>
               <HighlightHeading className="font-satoshi text-4xl sm:text-5xl font-bold text-white">
                 Selected Works
@@ -741,9 +739,9 @@ function WorksSection({
 function AboutSection() {
   return (
     <section className="py-24 sm:py-32">
-      <div className="mx-auto max-w-7xl px-6 lg:flex lg:px-8">
-        <div className="lg:ml-96 lg:flex lg:w-full lg:justify-end lg:pl-32">
-          <div className="mx-auto max-w-lg lg:mx-0 lg:w-0 lg:max-w-2xl lg:flex-auto">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 w-full">
+        <div className="flex w-full justify-center">
+          <div className="w-full max-w-4xl">
             <FadeInSection>
               <HighlightHeading className="font-satoshi text-4xl sm:text-5xl font-bold text-white">
                 About
@@ -827,9 +825,9 @@ function ContactFooter() {
       id="contact"
       className="py-24 sm:py-32 border-t border-white/10"
     >
-      <div className="mx-auto max-w-7xl px-6 lg:flex lg:px-8">
-        <div className="lg:ml-96 lg:flex lg:w-full lg:justify-end lg:pl-32">
-          <div className="mx-auto max-w-lg lg:mx-0 lg:w-0 lg:max-w-xl lg:flex-auto">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 w-full">
+        <div className="flex w-full justify-center">
+          <div className="w-full max-w-2xl">
             <FadeInSection>
               <h2 className="font-satoshi text-4xl sm:text-5xl font-bold text-white">
                 Let's work together
