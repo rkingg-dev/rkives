@@ -51,26 +51,8 @@ export default function PortfolioPage() {
         <span className="text-base font-medium text-white" style={{ fontFamily: "var(--font-satoshi)" }}>©2025</span>
       </header>
 
-      {/* ─── Hero ─── */}
-      <section className="relative flex h-screen items-center justify-center">
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
-          <span className="font-bold leading-none tracking-tight" style={{ fontFamily: "var(--font-satoshi)", fontSize: "clamp(8rem, 20vw, 22rem)", color: "rgba(160, 20, 20, 0.4)", letterSpacing: "-0.02em" }}>RKINGG</span>
-        </div>
-        <div className="relative z-10 flex items-center justify-center">
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/60 transition-all duration-700 hover:scale-[1.03] hover:z-20" style={{ width: "clamp(180px, 22vw, 300px)", height: "clamp(260px, 32vw, 420px)", marginRight: "-5%", transform: "rotate(-3deg)" }}>
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-500 via-red-500 to-red-700" />
-          </div>
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/60 z-10 transition-all duration-700 hover:scale-[1.03] hover:z-20" style={{ width: "clamp(200px, 25vw, 340px)", height: "clamp(300px, 40vw, 500px)" }}>
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-400 via-orange-500 to-amber-600" />
-          </div>
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/60 transition-all duration-700 hover:scale-[1.03] hover:z-20" style={{ width: "clamp(160px, 20vw, 280px)", height: "clamp(240px, 30vw, 380px)", marginLeft: "-5%", transform: "rotate(3deg)" }}>
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-600 via-orange-600 to-red-800" />
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Hello Section ─── */}
-      <section className="relative px-8 lg:px-16 py-24 border-t border-white/[0.06]">
+      {/* ─── Hero / Hello Section ─── */}
+      <section className="relative min-h-screen flex items-center px-8 lg:px-16 border-t border-white/[0.06]">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
             {/* Left — Photo card */}
