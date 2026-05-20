@@ -1,14 +1,17 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { flushSync } from 'react-dom'
+import { useRef, useState, useMemo, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import clsx from 'clsx'
-import { motion } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 
 import { Layout, useScrollContainer } from '@/portfolio-components/Layout'
 import { useScrollInView } from '@/hooks/use-scroll-in-view'
+
+/* ------------------------------------------------------------------ */
+/*  Types                                                              */
+/* ------------------------------------------------------------------ */
 
 type Section = 'portfolio' | 'notes' | 'about'
 
@@ -31,7 +34,10 @@ type NoteItem = {
   details: string[]
 }
 
-const ITEMS_PER_PAGE = 6
+/* ------------------------------------------------------------------ */
+/*  Data                                                               */
+/* ------------------------------------------------------------------ */
+
 const portfolioThumbnails = {
   orangeCode:
     'https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=1806&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -86,7 +92,7 @@ const portfolioItems: PortfolioItem[] = [
     details: [
       'Translated loose operational requirements into a clean prototype for stakeholder review.',
       'Built the main content areas around comparison, filtering, and quick inspection.',
-      'Used restrained interaction states so the tool feels polished without getting in the user\'s way.',
+      "Used restrained interaction states so the tool feels polished without getting in the user's way.",
     ],
   },
   {
@@ -370,6 +376,10 @@ const socialLinks = [
   },
 ]
 
+/* ------------------------------------------------------------------ */
+/*  Helpers                                                            */
+/* ------------------------------------------------------------------ */
+
 function SocialIcon({
   icon,
   className,
@@ -413,13 +423,13 @@ function SocialIcon({
 
 function PrivateCompanyName({ children }: { children: React.ReactNode }) {
   return (
-    <span className="relative inline-flex max-w-full select-none overflow-hidden rounded-[3px] bg-gray-950/8 px-2 py-0.5 align-baseline text-transparent ring-1 ring-gray-950/10 dark:bg-white/8 dark:ring-white/10">
-      <span className="[text-shadow:0_0_8px_rgba(15,23,42,0.5)] dark:[text-shadow:0_0_8px_rgba(255,255,255,0.25)]">
+    <span className="relative inline-flex max-w-full select-none overflow-hidden rounded-[3px] bg-white/8 px-2 py-0.5 align-baseline text-transparent ring-1 ring-white/10">
+      <span className="[text-shadow:0_0_8px_rgba(255,255,255,0.25)]">
         {children}
       </span>
-      <span className="pointer-events-none absolute inset-x-1 top-1/2 h-px -translate-y-1/2 bg-gray-950/70 dark:bg-white/70" />
-      <span className="pointer-events-none absolute inset-x-1 top-[calc(50%+3px)] h-px -translate-y-1/2 bg-gray-950/45 dark:bg-white/45" />
-      <span className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(135deg,transparent_0,transparent_4px,rgba(2,6,23,0.24)_4px,rgba(2,6,23,0.24)_6px)] dark:bg-[repeating-linear-gradient(135deg,transparent_0,transparent_4px,rgba(255,255,255,0.2)_4px,rgba(255,255,255,0.2)_6px)]" />
+      <span className="pointer-events-none absolute inset-x-1 top-1/2 h-px -translate-y-1/2 bg-white/70" />
+      <span className="pointer-events-none absolute inset-x-1 top-[calc(50%+3px)] h-px -translate-y-1/2 bg-white/45" />
+      <span className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(135deg,transparent_0,transparent_4px,rgba(255,255,255,0.2)_4px,rgba(255,255,255,0.2)_6px)]" />
     </span>
   )
 }
@@ -434,6 +444,94 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
 function formatDate(date: string) {
   return dateFormatter.format(new Date(`${date}T00:00:00Z`))
 }
+
+/* ------------------------------------------------------------------ */
+/*  Animation Components                                               */
+/* ------------------------------------------------------------------ */
+
+function FadeInSection({
+  children,
+  className,
+  delay = 0,
+}: {
+  children: React.ReactNode
+  className?: string
+  delay?: number
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+function HighlightHeading({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
+  return (
+    <motion.h2
+      initial={{ opacity: 0.15 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: false, amount: 0.5 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.h2>
+  )
+}
+
+function ParallaxImage({
+  src,
+  alt,
+  className,
+  sizes,
+  priority,
+}: {
+  src: string
+  alt: string
+  className?: string
+  sizes?: string
+  priority?: boolean
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  const scrollContainer = useScrollContainer()
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    container: scrollContainer || undefined,
+    offset: ['start end', 'end start'],
+  })
+  const y = useTransform(scrollYProgress, [0, 1], ['-6%', '6%'])
+
+  return (
+    <div ref={ref} className={clsx('overflow-hidden', className)}>
+      <motion.div style={{ y }} className="relative h-[112%] -mt-[6%]">
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className="object-cover"
+          sizes={sizes}
+          priority={priority}
+        />
+      </motion.div>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Kept Components                                                    */
+/* ------------------------------------------------------------------ */
 
 function FocusItem({
   children,
@@ -459,86 +557,12 @@ function FocusItem({
       className="transition-all duration-500 ease-out group"
       style={{
         opacity: isActive ? 1 : 0.25,
-        transform: isActive ? "translateY(0)" : "translateY(12px)",
-        filter: isActive ? "blur(0px)" : "blur(3px)",
+        transform: isActive ? 'translateY(0)' : 'translateY(12px)',
+        filter: isActive ? 'blur(0px)' : 'blur(3px)',
       }}
     >
       {children}
     </div>
-  )
-}
-
-function ContentTransition({
-  transitionKey,
-  children,
-}: {
-  transitionKey: string
-  children: React.ReactNode
-}) {
-  return (
-    <div key={transitionKey}>
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {children}
-      </motion.div>
-    </div>
-  )
-}
-
-function ContentShell({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mx-auto max-w-7xl px-6 lg:flex lg:px-8">
-      <div className="lg:ml-96 lg:flex lg:w-full lg:justify-end lg:pl-32">
-        <div className="mx-auto max-w-lg lg:mx-0 lg:w-0 lg:max-w-xl lg:flex-auto">
-          {children}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function Pagination({
-  page,
-  totalPages,
-  onChange,
-}: {
-  page: number
-  totalPages: number
-  onChange: (page: number) => void
-}) {
-  if (totalPages <= 1) {
-    return null
-  }
-
-  return (
-    <nav
-      aria-label="Pagination"
-      className="flex justify-center border-t border-gray-900/10 pt-6 dark:border-white/10 lg:snap-center"
-    >
-      <div className="flex items-center gap-x-2">
-        {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-          (item) => (
-            <button
-              key={item}
-              type="button"
-              onClick={() => onChange(item)}
-              aria-current={page === item ? 'page' : undefined}
-              className={clsx(
-                'grid h-8 w-8 place-items-center rounded-lg text-sm/6 font-semibold transition duration-300 hover:-translate-y-0.5',
-                page === item
-                  ? 'scale-110 text-orange-500 dark:text-orange-300'
-                  : 'text-gray-400 hover:text-gray-950 dark:text-white/35 dark:hover:text-white',
-              )}
-            >
-              {item}
-            </button>
-          ),
-        )}
-      </div>
-    </nav>
   )
 }
 
@@ -560,20 +584,31 @@ function ThumbnailStrip({
   let offset = -(activeIndex * (thumbH + gap)) + (containerH / 2) - (thumbH / 2)
 
   return (
-    <div className="fixed right-8 top-1/2 -translate-y-1/2 z-30 hidden lg:block" style={{ height: containerH }}>
-      {/* Camera frame — fixed at center, never moves */}
-      <div className="absolute left-1/2 -translate-x-1/2 pointer-events-none z-10" style={{ width: frameW, height: frameH, top: (containerH - frameH) / 2 }}>
+    <div
+      className="fixed right-8 top-1/2 -translate-y-1/2 z-30 hidden lg:block"
+      style={{ height: containerH }}
+    >
+      <div
+        className="absolute left-1/2 -translate-x-1/2 pointer-events-none z-10"
+        style={{
+          width: frameW,
+          height: frameH,
+          top: (containerH - frameH) / 2,
+        }}
+      >
         <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-orange-400" />
         <span className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-orange-400" />
         <span className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-orange-400" />
         <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-orange-400" />
       </div>
-
-      {/* Thumbnails — scroll through the frame */}
-      <div className="relative w-full h-full" style={{ overflow: "visible" }}>
+      <div className="relative w-full h-full" style={{ overflow: 'visible' }}>
         <div
           className="absolute left-1/2 -translate-x-1/2 flex flex-col transition-transform duration-500 ease-out"
-          style={{ transform: `translateX(-50%) translateY(${offset}px)`, gap, width: thumbW }}
+          style={{
+            transform: `translateX(-50%) translateY(${offset}px)`,
+            gap,
+            width: thumbW,
+          }}
         >
           {items.map((item, i) => (
             <div
@@ -583,7 +618,7 @@ function ThumbnailStrip({
                 width: thumbW,
                 height: thumbH,
                 opacity: i === activeIndex ? 1 : 0.3,
-                filter: i === activeIndex ? "none" : "grayscale(0.6)",
+                filter: i === activeIndex ? 'none' : 'grayscale(0.6)',
               }}
             >
               <Image
@@ -601,77 +636,248 @@ function ThumbnailStrip({
   )
 }
 
-function PortfolioList({
-  items,
-  onOpen,
-  page,
-  totalPages,
-  onPageChange,
-}: {
-  items: PortfolioItem[]
-  onOpen: (slug: string) => void
-  page: number
-  totalPages: number
-  onPageChange: (page: number) => void
-}) {
-  let [activeIndex, setActiveIndex] = useState(0)
-  let dists = useRef<number[]>(new Array(items.length).fill(Infinity))
+/* ------------------------------------------------------------------ */
+/*  Section Components                                                 */
+/* ------------------------------------------------------------------ */
 
-  let handleDist = useCallback((index: number, dist: number) => {
-    dists.current[index] = dist
-    let minIdx = 0
-    for (let i = 1; i < dists.current.length; i++) {
-      if (dists.current[i] < dists.current[minIdx]) minIdx = i
-    }
-    setActiveIndex(minIdx)
-  }, [])
-
+function HeroSection() {
   return (
-    <ContentShell>
-      <ThumbnailStrip items={items} activeIndex={activeIndex} />
-      <div className="space-y-14 lg:pt-[18vh] lg:pb-[38vh]">
-        {items.map((item, index) => (
-          <FocusItem key={item.slug} index={index} onDist={handleDist}>
-            <button
-              type="button"
-              onClick={() => onOpen(item.slug)}
-              className="block w-full text-left transition duration-500"
-            >
-              <div className="relative overflow-hidden rounded-xl bg-gray-100 ring-1 ring-gray-900/10 transition group-hover:ring-orange-400/50 lg:group-data-[focused=true]:ring-orange-400/50 dark:bg-gray-900 dark:ring-white/10">
-                <Image
-                  src={item.thumbnail}
-                  alt=""
-                  width={1600}
-                  height={900}
-                  className="aspect-[16/9] w-full object-cover transition duration-500 group-hover:scale-[1.02]"
-                  sizes="(min-width: 1280px) 36rem, (min-width: 1024px) 45vw, (min-width: 640px) 32rem, 95vw"
-                  priority={index < 2}
-                  loading={index < 2 ? undefined : 'lazy'}
-                />
-              </div>
-              <div className="mt-5 flex items-center gap-x-3 text-2xs/4 font-medium text-gray-500 dark:text-white/45">
-                <time dateTime={item.date}>{formatDate(item.date)}</time>
-                <span className="h-1 w-1 rounded-full bg-orange-400/70" />
-                <span>{item.role}</span>
-              </div>
-              <h2 className="mt-3 font-display text-xl/8 font-semibold text-gray-950 transition group-hover:text-orange-500 lg:group-data-[focused=true]:text-orange-500 dark:text-white dark:group-hover:text-orange-300 dark:lg:group-data-[focused=true]:text-orange-300">
-                {item.title}
-              </h2>
-              <p className="mt-3 text-sm/6 text-gray-600 dark:text-gray-300">
-                {item.description}
+    <section className="min-h-[85vh] flex items-center">
+      <div className="mx-auto max-w-7xl px-6 lg:flex lg:px-8">
+        <div className="lg:ml-96 lg:flex lg:w-full lg:justify-end lg:pl-32">
+          <div className="mx-auto max-w-lg lg:mx-0 lg:w-0 lg:max-w-xl lg:flex-auto">
+            <FadeInSection>
+              <h1 className="font-satoshi text-7xl sm:text-8xl font-bold tracking-tight text-white leading-[0.95]">
+                RKINGG<span className="text-orange-400">//</span>
+              </h1>
+            </FadeInSection>
+            <FadeInSection delay={0.1}>
+              <p className="mt-6 text-xl text-gray-400 max-w-md leading-relaxed">
+                We craft digital experiences that inspire and elevate brands
               </p>
-            </button>
-          </FocusItem>
-        ))}
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          onChange={onPageChange}
-        />
+            </FadeInSection>
+            <FadeInSection delay={0.2}>
+              <Link
+                href="#contact"
+                className="mt-8 inline-flex items-center gap-2 text-lg font-medium text-orange-400 hover:text-orange-300 transition-colors"
+              >
+                Let's work together
+                <span aria-hidden="true">&rarr;</span>
+              </Link>
+            </FadeInSection>
+          </div>
+        </div>
       </div>
-    </ContentShell>
+    </section>
   )
 }
+
+function WorkCard({
+  item,
+  onOpen,
+  index,
+}: {
+  item: PortfolioItem
+  onOpen: (slug: string) => void
+  index: number
+}) {
+  const year = new Date(`${item.date}T00:00:00Z`).getFullYear()
+
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(item.slug)}
+      className="group block w-full text-left"
+    >
+      <ParallaxImage
+        src={item.thumbnail}
+        alt=""
+        className="aspect-[16/10] w-full rounded-xl"
+        sizes="(min-width: 768px) 50vw, 100vw"
+        priority={index < 2}
+      />
+      <div className="mt-4 flex items-center gap-x-3 text-xs font-medium text-gray-500">
+        <span>{item.role}</span>
+        <span className="h-1 w-1 rounded-full bg-orange-400/70" />
+        <span>{year}</span>
+      </div>
+      <h3 className="mt-2 font-satoshi text-xl font-semibold text-white group-hover:text-orange-400 transition-colors">
+        {item.title}
+      </h3>
+    </button>
+  )
+}
+
+function WorksSection({
+  onOpen,
+}: {
+  onOpen: (slug: string) => void
+}) {
+  return (
+    <section className="py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-6 lg:flex lg:px-8">
+        <div className="lg:ml-96 lg:flex lg:w-full lg:justify-end lg:pl-32">
+          <div className="mx-auto max-w-lg lg:mx-0 lg:w-0 lg:max-w-none lg:flex-auto">
+            <FadeInSection>
+              <HighlightHeading className="font-satoshi text-4xl sm:text-5xl font-bold text-white">
+                Selected Works
+              </HighlightHeading>
+            </FadeInSection>
+
+            <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-14">
+              {portfolioItems.map((item, index) => (
+                <FadeInSection key={item.slug} delay={index * 0.04}>
+                  <WorkCard item={item} onOpen={onOpen} index={index} />
+                </FadeInSection>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function AboutSection() {
+  return (
+    <section className="py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-6 lg:flex lg:px-8">
+        <div className="lg:ml-96 lg:flex lg:w-full lg:justify-end lg:pl-32">
+          <div className="mx-auto max-w-lg lg:mx-0 lg:w-0 lg:max-w-2xl lg:flex-auto">
+            <FadeInSection>
+              <HighlightHeading className="font-satoshi text-4xl sm:text-5xl font-bold text-white">
+                About
+              </HighlightHeading>
+            </FadeInSection>
+
+            <FadeInSection delay={0.1}>
+              <p className="mt-6 text-lg text-gray-400 leading-relaxed">
+                Web developer and designer crafting modern digital experiences.
+                Building polished interfaces, seamless interactions, and reliable
+                systems.
+              </p>
+            </FadeInSection>
+
+            <FadeInSection delay={0.15}>
+              <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 gap-8">
+                <div>
+                  <div className="font-satoshi text-3xl font-bold text-orange-400">
+                    8+
+                  </div>
+                  <div className="mt-1 text-sm text-gray-500">
+                    Years Experience
+                  </div>
+                </div>
+                <div>
+                  <div className="font-satoshi text-3xl font-bold text-orange-400">
+                    100+
+                  </div>
+                  <div className="mt-1 text-sm text-gray-500">
+                    Projects Delivered
+                  </div>
+                </div>
+                <div>
+                  <div className="font-satoshi text-3xl font-bold text-orange-400">
+                    5+
+                  </div>
+                  <div className="mt-1 text-sm text-gray-500">
+                    Years Freelance
+                  </div>
+                </div>
+              </div>
+            </FadeInSection>
+
+            <FadeInSection delay={0.2}>
+              <div className="mt-16 border-t border-white/10 pt-8">
+                <h3 className="font-satoshi text-xl font-semibold text-white">
+                  Work Experience
+                </h3>
+                <div className="mt-6 space-y-6">
+                  {workExperience.map((work) => (
+                    <article key={`${work.role}-${work.period}`}>
+                      <div className="flex flex-wrap items-center gap-x-3 text-xs font-medium text-gray-500">
+                        <span>{work.period}</span>
+                        <span className="h-1 w-1 rounded-full bg-orange-400/70" />
+                        <span>{work.location}</span>
+                      </div>
+                      <h4 className="mt-1 font-medium text-white">
+                        {work.role}
+                      </h4>
+                      <p className="mt-0.5 text-sm text-orange-400">
+                        <PrivateCompanyName>{work.company}</PrivateCompanyName>
+                      </p>
+                      <p className="mt-2 text-sm text-gray-400">
+                        {work.description}
+                      </p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </FadeInSection>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function ContactFooter() {
+  return (
+    <section
+      id="contact"
+      className="py-24 sm:py-32 border-t border-white/10"
+    >
+      <div className="mx-auto max-w-7xl px-6 lg:flex lg:px-8">
+        <div className="lg:ml-96 lg:flex lg:w-full lg:justify-end lg:pl-32">
+          <div className="mx-auto max-w-lg lg:mx-0 lg:w-0 lg:max-w-xl lg:flex-auto">
+            <FadeInSection>
+              <h2 className="font-satoshi text-4xl sm:text-5xl font-bold text-white">
+                Let's work together
+              </h2>
+            </FadeInSection>
+
+            <FadeInSection delay={0.1}>
+              <a
+                href="mailto:hello@rkingg.com"
+                className="mt-6 inline-flex items-center gap-2 text-lg font-medium text-orange-400 hover:text-orange-300 transition-colors"
+              >
+                hello@rkingg.com
+                <span aria-hidden="true">&rarr;</span>
+              </a>
+            </FadeInSection>
+
+            <FadeInSection delay={0.15}>
+              <div className="mt-8 flex gap-4">
+                {socialLinks.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={link.label}
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-white/5 text-gray-400 ring-1 ring-white/10 transition-colors hover:bg-white/10 hover:text-orange-400"
+                  >
+                    <SocialIcon icon={link.icon} className="h-4 w-4" />
+                  </a>
+                ))}
+              </div>
+            </FadeInSection>
+
+            <FadeInSection delay={0.2}>
+              <p className="mt-12 text-sm text-gray-600">
+                &copy; {new Date().getFullYear()} RKINGG. All rights reserved.
+              </p>
+            </FadeInSection>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Detail View                                                        */
+/* ------------------------------------------------------------------ */
 
 function PortfolioDetail({
   item,
@@ -681,351 +887,139 @@ function PortfolioDetail({
   onBack: () => void
 }) {
   return (
-    <ContentShell>
-      <article>
-        <button
-          type="button"
-          onClick={onBack}
-          className="inline-flex rounded-lg px-2 py-0.5 text-[0.8125rem]/6 font-medium text-orange-500 transition hover:bg-gray-950/5 hover:text-orange-400 dark:text-orange-300 dark:hover:bg-white/5 dark:hover:text-orange-200"
-        >
-          &lt;- Back to portfolio
-        </button>
-        <div className="mt-6 overflow-hidden rounded-xl bg-gray-100 ring-1 ring-gray-900/10 dark:bg-gray-900 dark:ring-white/10">
-          <Image
-            src={item.thumbnail}
-            alt=""
-            width={1600}
-            height={900}
-            className="aspect-[16/9] w-full object-cover"
-            sizes="(min-width: 1280px) 36rem, (min-width: 1024px) 45vw, (min-width: 640px) 32rem, 95vw"
-            priority
-          />
-        </div>
-        <div className="mt-6 text-2xs/4 font-medium text-gray-500 dark:text-white/45">
-          <time dateTime={item.date}>{formatDate(item.date)}</time>
-        </div>
-        <h2 className="mt-3 font-display text-2xl/8 font-semibold text-gray-950 dark:text-white">
-          {item.title}
-        </h2>
-        <p className="mt-4 text-sm/6 text-gray-600 dark:text-gray-300">
-          {item.description}
-        </p>
-        <dl className="mt-8 grid gap-5 border-y border-gray-900/10 py-6 text-sm/6 dark:border-white/10 sm:grid-cols-2">
-          <div>
-            <dt className="font-semibold text-gray-950 dark:text-white">Role</dt>
-            <dd className="mt-1 text-gray-600 dark:text-gray-300">{item.role}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold text-gray-950 dark:text-white">Stack</dt>
-            <dd className="mt-1 text-gray-600 dark:text-gray-300">
-              {item.stack.join(', ')}
-            </dd>
-          </div>
-        </dl>
-        <div className="mt-8 space-y-4 text-sm/6 text-gray-600 dark:text-gray-300">
-          {item.details.map((detail) => (
-            <p key={detail}>{detail}</p>
-          ))}
-        </div>
-      </article>
-    </ContentShell>
-  )
-}
-
-function NotesContent({
-  items,
-  onOpen,
-  page,
-  totalPages,
-  onPageChange,
-}: {
-  items: NoteItem[]
-  onOpen: (slug: string) => void
-  page: number
-  totalPages: number
-  onPageChange: (page: number) => void
-}) {
-  return (
-    <ContentShell>
-      <div className="space-y-12 lg:pt-[42vh] lg:pb-[38vh]">
-        {items.map((note, index) => (
-          <FocusItem key={note.title} index={index}>
+    <div className="mx-auto max-w-7xl px-6 lg:flex lg:px-8">
+      <div className="lg:ml-96 lg:flex lg:w-full lg:justify-end lg:pl-32">
+        <div className="mx-auto max-w-lg lg:mx-0 lg:w-0 lg:max-w-xl lg:flex-auto py-20 sm:py-32">
+          <motion.article
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          >
             <button
               type="button"
-              onClick={() => onOpen(note.slug)}
-              className="block w-full text-left transition duration-500"
+              onClick={onBack}
+              className="inline-flex rounded-lg px-2 py-0.5 text-[0.8125rem]/6 font-medium text-orange-400 transition hover:bg-white/5 hover:text-orange-300"
             >
-              <p className="text-2xs/4 font-semibold uppercase tracking-[0.14em] text-orange-500">
-                Field Notes
-              </p>
-              <time
-                dateTime={note.date}
-                className="mt-5 block text-2xs/4 font-medium text-gray-500 dark:text-white/45"
-              >
-                {formatDate(note.date)}
-              </time>
-              <h3 className="mt-2 font-display text-lg/7 font-semibold text-gray-950 dark:text-white">
-                {note.title}
-              </h3>
-              <p className="mt-3 text-sm/6 text-gray-600 dark:text-gray-300">
-                {note.description}
-              </p>
+              &larr; Back to works
             </button>
-          </FocusItem>
-        ))}
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          onChange={onPageChange}
-        />
+            <div className="mt-6 overflow-hidden rounded-xl">
+              <Image
+                src={item.thumbnail}
+                alt=""
+                width={1600}
+                height={900}
+                className="aspect-[16/9] w-full object-cover"
+                sizes="(min-width: 1280px) 36rem, (min-width: 1024px) 45vw, (min-width: 640px) 32rem, 95vw"
+                priority
+              />
+            </div>
+            <div className="mt-6 text-xs font-medium text-gray-500">
+              <time dateTime={item.date}>{formatDate(item.date)}</time>
+            </div>
+            <h2 className="mt-3 font-satoshi text-2xl font-bold text-white">
+              {item.title}
+            </h2>
+            <p className="mt-4 text-sm text-gray-400 leading-relaxed">
+              {item.description}
+            </p>
+            <dl className="mt-8 grid gap-5 border-y border-white/10 py-6 text-sm sm:grid-cols-2">
+              <div>
+                <dt className="font-semibold text-white">Role</dt>
+                <dd className="mt-1 text-gray-400">{item.role}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-white">Stack</dt>
+                <dd className="mt-1 text-gray-400">
+                  {item.stack.join(', ')}
+                </dd>
+              </div>
+            </dl>
+            <div className="mt-8 space-y-4 text-sm text-gray-400 leading-relaxed">
+              {item.details.map((detail) => (
+                <p key={detail}>{detail}</p>
+              ))}
+            </div>
+          </motion.article>
+        </div>
       </div>
-    </ContentShell>
+    </div>
   )
 }
 
-function NoteDetail({
-  note,
-  onBack,
-}: {
-  note: NoteItem
-  onBack: () => void
-}) {
-  return (
-    <ContentShell>
-      <article>
-        <button
-          type="button"
-          onClick={onBack}
-          className="inline-flex rounded-lg px-2 py-0.5 text-[0.8125rem]/6 font-medium text-orange-500 transition hover:bg-gray-950/5 hover:text-orange-400 dark:text-orange-300 dark:hover:bg-white/5 dark:hover:text-orange-200"
-        >
-          &lt;- Back to notes
-        </button>
-        <p className="mt-8 text-2xs/4 font-semibold uppercase tracking-[0.14em] text-orange-500">
-          Field Notes
-        </p>
-        <time
-          dateTime={note.date}
-          className="mt-5 block text-2xs/4 font-medium text-gray-500 dark:text-white/45"
-        >
-          {formatDate(note.date)}
-        </time>
-        <h2 className="mt-3 font-display text-2xl/8 font-semibold text-gray-950 dark:text-white">
-          {note.title}
-        </h2>
-        <p className="mt-4 text-sm/6 text-gray-600 dark:text-gray-300">
-          {note.description}
-        </p>
-        <div className="mt-8 space-y-4 border-t border-gray-900/10 pt-6 text-sm/6 text-gray-600 dark:border-white/10 dark:text-gray-300">
-          {note.details.map((detail) => (
-            <p key={detail}>{detail}</p>
-          ))}
-        </div>
-      </article>
-    </ContentShell>
-  )
-}
-
-function AboutContent() {
-  return (
-    <ContentShell>
-      <div className="content-enter">
-        <p className="text-2xs/4 font-semibold uppercase tracking-[0.14em] text-orange-500">
-          About Me
-        </p>
-        <h2 className="mt-3 font-display text-2xl/8 font-semibold text-gray-950 dark:text-white">
-          R King Garcia
-        </h2>
-        <p className="mt-4 text-sm/6 text-gray-600 dark:text-gray-300">
-          Web developer and designer based in Angeles City, Pampanga with over
-          8 years across agency, in-house, freelance, and product-facing web
-          work.
-        </p>
-        <dl className="mt-8 grid gap-5 border-y border-gray-900/10 py-6 text-sm/6 dark:border-white/10 sm:grid-cols-2">
-          <div>
-            <dt className="font-semibold text-gray-950 dark:text-white">
-              Location
-            </dt>
-            <dd className="mt-1 text-gray-600 dark:text-gray-300">
-              Angeles City, Pampanga, PH
-            </dd>
-          </div>
-          <div>
-            <dt className="font-semibold text-gray-950 dark:text-white">
-              Focus
-            </dt>
-            <dd className="mt-1 text-gray-600 dark:text-gray-300">
-              Web apps, WordPress, Webflow, UI design, hosting, deployment
-            </dd>
-          </div>
-          <div>
-            <dt className="font-semibold text-gray-950 dark:text-white">
-              Experience
-            </dt>
-            <dd className="mt-1 text-gray-600 dark:text-gray-300">
-              2017 - Present
-            </dd>
-          </div>
-        </dl>
-        <div className="mt-10">
-          <h3 className="font-display text-lg/7 font-semibold text-gray-950 dark:text-white">
-            Work Experience
-          </h3>
-          <div className="mt-6 space-y-8">
-            {workExperience.map((work) => (
-              <article key={`${work.role}-${work.period}`}>
-                <div className="flex flex-wrap items-center gap-x-3 text-2xs/4 font-medium text-gray-500 dark:text-white/45">
-                  <span>{work.period}</span>
-                  <span className="h-1 w-1 rounded-full bg-orange-400/70" />
-                  <span>{work.location}</span>
-                </div>
-                <h4 className="mt-2 font-display text-base/6 font-semibold text-gray-950 dark:text-white">
-                  {work.role}
-                </h4>
-                <p className="mt-1 text-sm/6 font-medium text-orange-500 dark:text-orange-300">
-                  <PrivateCompanyName>{work.company}</PrivateCompanyName>
-                </p>
-                <p className="mt-3 text-sm/6 text-gray-600 dark:text-gray-300">
-                  {work.description}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-        <div className="mt-10 border-t border-gray-900/10 pt-6 dark:border-white/10">
-          <h3 className="font-display text-base/6 font-semibold text-gray-950 dark:text-white">
-            Contact
-          </h3>
-          <a
-            href="mailto:hello@rkingg.com"
-            className="mt-3 inline-flex text-sm/6 font-semibold text-orange-500 transition hover:text-orange-400 dark:text-orange-300"
-          >
-            hello@rkingg.com
-          </a>
-          <div className="mt-4 flex flex-wrap gap-3">
-            {socialLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                target={link.href.startsWith('mailto:') ? undefined : '_blank'}
-                rel={
-                  link.href.startsWith('mailto:') ? undefined : 'noreferrer'
-                }
-                aria-label={link.label}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-orange-400/10 text-orange-500 ring-1 ring-orange-400/30 transition hover:bg-orange-400/15 dark:text-orange-300"
-              >
-                <SocialIcon icon={link.icon} className="h-4 w-4 flex-none" />
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-    </ContentShell>
-  )
-}
+/* ------------------------------------------------------------------ */
+/*  Main Page                                                          */
+/* ------------------------------------------------------------------ */
 
 export default function Home() {
-  const [section, setSection] = useState<Section>('portfolio')
+  const [activeSection, setActiveSection] = useState<Section>('portfolio')
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null)
-  const [selectedNoteSlug, setSelectedNoteSlug] = useState<string | null>(null)
-  const [portfolioPage, setPortfolioPage] = useState(1)
-  const [notesPage, setNotesPage] = useState(1)
+
+  const worksRef = useRef<HTMLElement>(null)
+  const aboutRef = useRef<HTMLElement>(null)
 
   const selectedItem = useMemo(
     () => portfolioItems.find((item) => item.slug === selectedSlug) ?? null,
     [selectedSlug],
   )
-  const selectedNote = useMemo(
-    () => notes.find((note) => note.slug === selectedNoteSlug) ?? null,
-    [selectedNoteSlug],
-  )
-  const portfolioTotalPages = Math.ceil(portfolioItems.length / ITEMS_PER_PAGE)
-  const notesTotalPages = Math.ceil(notes.length / ITEMS_PER_PAGE)
-  const paginatedPortfolioItems = portfolioItems.slice(
-    (portfolioPage - 1) * ITEMS_PER_PAGE,
-    portfolioPage * ITEMS_PER_PAGE,
-  )
-  const paginatedNotes = notes.slice(
-    (notesPage - 1) * ITEMS_PER_PAGE,
-    notesPage * ITEMS_PER_PAGE,
-  )
 
-  function selectSection(nextSection: Section) {
-    setSection(nextSection)
-    setSelectedSlug(null)
-    setSelectedNoteSlug(null)
-    setPortfolioPage(1)
-    setNotesPage(1)
-  }
+  // Track which section is in view for sidebar highlighting
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const section = entry.target.getAttribute('data-section') as
+              | Section
+              | null
+            if (section) setActiveSection(section)
+          }
+        }
+      },
+      { threshold: 0.3 },
+    )
 
-  function transitionTo(updateView: () => void) {
-    if (!document.startViewTransition) {
-      updateView()
+    const el1 = worksRef.current
+    const el2 = aboutRef.current
+    if (el1) observer.observe(el1)
+    if (el2) observer.observe(el2)
+
+    return () => observer.disconnect()
+  }, [])
+
+  function handleSelectSection(section: Section) {
+    if (selectedSlug) {
+      setSelectedSlug(null)
       return
     }
-
-    document.startViewTransition(() => {
-      flushSync(updateView)
-    })
+    if (section === 'portfolio' || section === 'notes') {
+      worksRef.current?.scrollIntoView({ behavior: 'smooth' })
+    } else if (section === 'about') {
+      aboutRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
   }
 
   return (
     <Layout
-      activeSection={section}
-      onSelectSection={selectSection}
-      scrollKey={`${section}-${portfolioPage}-${notesPage}-${selectedSlug ?? selectedNoteSlug ?? 'list'}`}
+      activeSection={activeSection}
+      onSelectSection={handleSelectSection}
     >
-      <ContentTransition
-        transitionKey={`${section}-${selectedSlug ?? selectedNoteSlug ?? 'list'}-${portfolioPage}-${notesPage}`}
-      >
-        <div
-          className={clsx(
-            'py-20 sm:py-32',
-            section === 'portfolio' && !selectedItem
-              ? 'space-y-12'
-              : 'space-y-20',
-          )}
-        >
-          {section === 'portfolio' && selectedItem ? (
-            <PortfolioDetail
-              item={selectedItem}
-              onBack={() => transitionTo(() => setSelectedSlug(null))}
-            />
-          ) : section === 'portfolio' ? (
-            <PortfolioList
-              items={paginatedPortfolioItems}
-              onOpen={(slug) => transitionTo(() => setSelectedSlug(slug))}
-              page={portfolioPage}
-              totalPages={portfolioTotalPages}
-              onPageChange={(page) => {
-                transitionTo(() => {
-                  setPortfolioPage(page)
-                  setSelectedSlug(null)
-                })
-              }}
-            />
-          ) : section === 'notes' && selectedNote ? (
-            <NoteDetail
-              note={selectedNote}
-              onBack={() => transitionTo(() => setSelectedNoteSlug(null))}
-            />
-          ) : section === 'notes' ? (
-            <NotesContent
-              items={paginatedNotes}
-              onOpen={(slug) => transitionTo(() => setSelectedNoteSlug(slug))}
-              page={notesPage}
-              totalPages={notesTotalPages}
-              onPageChange={(page) =>
-                transitionTo(() => {
-                  setNotesPage(page)
-                  setSelectedNoteSlug(null)
-                })
-              }
-            />
-          ) : (
-            <AboutContent />
-          )}
-        </div>
-      </ContentTransition>
+      {selectedItem ? (
+        <PortfolioDetail
+          item={selectedItem}
+          onBack={() => setSelectedSlug(null)}
+        />
+      ) : (
+        <>
+          <HeroSection />
+          <section ref={worksRef} data-section="portfolio">
+            <WorksSection onOpen={setSelectedSlug} />
+          </section>
+          <section ref={aboutRef} data-section="about">
+            <AboutSection />
+          </section>
+          <ContactFooter />
+        </>
+      )}
     </Layout>
   )
 }

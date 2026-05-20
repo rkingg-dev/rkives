@@ -31,6 +31,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${monaSans.variable}`} suppressHydrationWarning>
       <head>
+        <link
+          href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400,300&display=swap"
+          rel="stylesheet"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `

@@ -35,6 +35,7 @@ module.exports = {
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
         display: ["var(--font-display)", "sans-serif"],
+        satoshi: ["var(--font-satoshi)", "sans-serif"],
       },
       fontSize: {
         "2xs": ["0.6875rem", { lineHeight: "1rem" }],

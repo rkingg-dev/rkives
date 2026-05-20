@@ -1,9 +1,10 @@
+'use client'
+
 import { motion } from 'framer-motion'
 import clsx from 'clsx'
 import Link from 'next/link'
 
 import { Logo } from '@/portfolio-components/Logo'
-import { SignUpForm } from '@/portfolio-components/SignUpForm'
 import { ThemeToggle } from '@/portfolio-components/ThemeToggle'
 
 type Section = 'portfolio' | 'notes' | 'about'
@@ -97,18 +98,6 @@ export function Intro({
         <Link href="/">
           <Logo className="inline-flex items-center gap-x-3" />
         </Link>
-      </motion.div>
-
-      <motion.h1 variants={fadeUp} className="mt-14 font-display text-4xl/tight font-light text-white">
-        More than visuals. <span className="text-orange-300">Designed to work.</span>
-      </motion.h1>
-
-      <motion.p variants={fadeUp} className="mt-4 text-sm/6 text-gray-300">
-        Modern web experiences designed with clarity, built with structure, and focused on how people use products. Creating polished interfaces, seamless interactions, and reliable systems that stay clean after launch.
-      </motion.p>
-
-      <motion.div variants={fadeUp}>
-        <SignUpForm />
       </motion.div>
 
       <motion.div variants={fadeUp} className="mt-8 hidden flex-wrap justify-center gap-x-1 gap-y-3 sm:gap-x-2 lg:flex lg:justify-start">

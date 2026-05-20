@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState, createContext, useContext, useCallback } from 'react'
 import clsx from 'clsx'
+import Lenis from 'lenis'
 
 import { Intro, IntroFooter } from '@/portfolio-components/Intro'
 import { GhostMark } from '@/portfolio-components/Logo'
@@ -175,6 +176,37 @@ export function Layout({
     if (!scrollContainer) return
     scrollContainer.scrollTo({ top: 0, behavior: 'smooth' })
   }, [activeSection, scrollKey])
+
+  // Lenis smooth scroll
+  useEffect(() => {
+    let scrollContainer = scrollRef.current
+    if (!scrollContainer) return
+
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+      wrapper: scrollContainer,
+      content: scrollContainer.firstElementChild as HTMLElement,
+    })
+
+    lenis.on('scroll', () => {
+      // keep scroll position in sync
+    })
+
+    function raf(time: number) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+
+    requestAnimationFrame(raf)
+
+    return () => {
+      lenis.destroy()
+    }
+  }, [])
 
   return (
     <ScrollContext.Provider value={scrollRef}>
