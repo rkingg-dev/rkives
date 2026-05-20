@@ -52,39 +52,26 @@ export default function PortfolioPage() {
       </header>
 
       {/* ─── Hero / Hello Section ─── */}
-      <section className="relative min-h-screen flex items-center px-8 lg:px-16 border-t border-white/[0.06]">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-            {/* Left — Photo card */}
-            <div className="relative">
-              <div className="bg-[#e8e4de] rounded-sm p-6 max-w-sm">
-                <h2 className="text-3xl lg:text-4xl font-bold text-[#0a0a0a] leading-tight mb-6" style={{ fontFamily: "var(--font-satoshi)" }}>
-                  HELLO<br />MY NAME IS<br />R KING
-                </h2>
-                <div className="relative w-full aspect-[4/3] bg-[#0a0a0a] rounded-sm overflow-hidden">
-                  <Image src="/placeholder-portrait.jpg" alt="R King Garcia" fill className="object-cover" />
-                </div>
-              </div>
-              <div className="mt-4 text-[11px] text-white/40 uppercase tracking-wider leading-relaxed" style={{ fontFamily: "var(--font-satoshi)" }}>
-                web development rkingg<br />
-                digital product designer<br />
-                manila, ph<br />
-                ui/ux designer 09200-0240
-              </div>
-            </div>
-
-            {/* Right — Info + arrow */}
-            <div className="flex flex-col justify-between">
-              <div>
-                <span className="text-[11px] text-white/30 uppercase tracking-widest" style={{ fontFamily: "var(--font-satoshi)" }}>"portfolio"</span>
-              </div>
-              <div className="self-end">
-                <svg className="w-12 h-12 text-white/20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M7 17L17 7M17 7H7M17 7v10" />
-                </svg>
-              </div>
-            </div>
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-8 py-32">
+        {/* Photo card — big, centered */}
+        <div className="bg-[#e8e4de] rounded-sm p-8 max-w-lg w-full">
+          <h2 className="text-4xl lg:text-5xl font-bold text-[#0a0a0a] leading-tight mb-8" style={{ fontFamily: "var(--font-satoshi)" }}>
+            HELLO<br />MY NAME IS<br />R KING
+          </h2>
+          <div className="relative w-full aspect-[4/3] bg-[#0a0a0a] rounded-sm overflow-hidden">
+            <Image src="/placeholder-portrait.jpg" alt="R King Garcia" fill className="object-cover" />
           </div>
+        </div>
+
+        {/* Info below card */}
+        <div className="mt-6 w-full max-w-lg flex items-start justify-between">
+          <div className="text-[11px] text-white/40 uppercase tracking-wider leading-relaxed" style={{ fontFamily: "var(--font-satoshi)" }}>
+            web development rkingg<br />
+            digital product designer<br />
+            manila, ph<br />
+            ui/ux designer 09200-0240
+          </div>
+          <span className="text-[11px] text-white/30 uppercase tracking-widest" style={{ fontFamily: "var(--font-satoshi)" }}>"portfolio"</span>
         </div>
       </section>
 
