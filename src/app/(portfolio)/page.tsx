@@ -41,11 +41,6 @@ export default function PortfolioPage() {
       <section className="relative min-h-screen flex flex-col items-center justify-center px-8 py-32">
         {/* Photo card — Instax style */}
         <div className="bg-[#e8e4de] p-4 w-full max-w-[30rem]">
-          {/* RKINGG// at top */}
-          <div className="mb-4">
-            <span className="text-sm font-medium text-[#0a0a0a]" style={{ fontFamily: "var(--font-satoshi)" }}>RKINGG//</span>
-          </div>
-
           <h2 className="text-2xl lg:text-3xl font-bold text-[#0a0a0a] leading-tight mb-4" style={{ fontFamily: "var(--font-satoshi)" }}>
             HELLO MY NAME IS R KING
           </h2>
@@ -54,10 +49,6 @@ export default function PortfolioPage() {
             <Image src="/placeholder-portrait.jpg" alt="R King Garcia" fill className="object-cover" />
           </div>
 
-          {/* ©2026 at bottom */}
-          <div className="mt-4">
-            <span className="text-sm font-medium text-[#0a0a0a]" style={{ fontFamily: "var(--font-satoshi)" }}>©2026</span>
-          </div>
         </div>
 
         {/* Info below card */}
@@ -68,7 +59,11 @@ export default function PortfolioPage() {
             manila, ph<br />
             ui/ux designer 09200-0240
           </div>
-          <span className="text-[11px] text-white/30 uppercase tracking-widest" style={{ fontFamily: "var(--font-satoshi)" }}>"portfolio"</span>
+          <div className="text-right">
+            <span className="text-sm font-medium text-white block" style={{ fontFamily: "var(--font-satoshi)" }}>RKINGG//</span>
+            <span className="text-[11px] text-white/30 uppercase tracking-widest block mt-1" style={{ fontFamily: "var(--font-satoshi)" }}>"portfolio"</span>
+            <span className="text-sm font-medium text-white block mt-1" style={{ fontFamily: "var(--font-satoshi)" }}>©2026</span>
+          </div>
         </div>
       </section>
 
