@@ -953,6 +953,8 @@ function PortfolioDetail({
 export default function Home() {
   const [activeSection, setActiveSection] = useState<Section>('portfolio')
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const dists = useRef<number[]>(new Array(portfolioItems.length).fill(Infinity))
 
   const worksRef = useRef<HTMLElement>(null)
   const aboutRef = useRef<HTMLElement>(null)
@@ -999,27 +1001,78 @@ export default function Home() {
   }
 
   return (
-    <Layout
-      activeSection={activeSection}
-      onSelectSection={handleSelectSection}
-    >
-      {selectedItem ? (
-        <PortfolioDetail
-          item={selectedItem}
-          onBack={() => setSelectedSlug(null)}
-        />
-      ) : (
-        <>
-          <HeroSection />
-          <section ref={worksRef} data-section="portfolio">
-            <WorksSection onOpen={setSelectedSlug} />
-          </section>
-          <section ref={aboutRef} data-section="about">
-            <AboutSection />
-          </section>
-          <ContactFooter />
-        </>
-      )}
-    </Layout>
+    <>
+      {/* ─── Full-width Inertia sections (NO sidebar) ─── */}
+      <HeroSection />
+      <WorksSection onOpen={setSelectedSlug} />
+      <AboutSection />
+      <ContactFooter />
+
+      {/* ─── Divider ─── */}
+      <div className="border-t border-white/10 mx-auto max-w-7xl px-6 lg:px-8" />
+
+      {/* ─── Current portfolio WITH sidebar ─── */}
+      <Layout
+        activeSection={activeSection}
+        onSelectSection={handleSelectSection}
+      >
+        {selectedItem ? (
+          <PortfolioDetail
+            item={selectedItem}
+            onBack={() => setSelectedSlug(null)}
+          />
+        ) : (
+          <div className="px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl lg:ml-96 lg:pl-32">
+              <div className="mx-auto max-w-lg lg:mx-0 lg:w-full">
+                <ThumbnailStrip items={portfolioItems} activeIndex={activeIndex} />
+                <div className="space-y-14 lg:pt-[18vh] lg:pb-[38vh]">
+                  {portfolioItems.map((item, index) => (
+                    <FocusItem key={item.slug} index={index} onDist={(i, d) => {
+                      dists.current[i] = d
+                      let minIdx = 0
+                      for (let j = 1; j < dists.current.length; j++) {
+                        if (dists.current[j] < dists.current[minIdx]) minIdx = j
+                      }
+                      setActiveIndex(minIdx)
+                    }}>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedSlug(item.slug)}
+                        className="block w-full text-left transition duration-500"
+                      >
+                        <div className="relative overflow-hidden rounded-xl bg-gray-100 ring-1 ring-gray-900/10 transition hover:ring-orange-400/50 dark:bg-gray-900 dark:ring-white/10">
+                          <Image
+                            src={item.thumbnail}
+                            alt=""
+                            width={1600}
+                            height={900}
+                            className="aspect-[16/9] w-full object-cover transition duration-500 hover:scale-[1.02]"
+                            sizes="(min-width: 1280px) 36rem, (min-width: 1024px) 45vw, (min-width: 640px) 32rem, 95vw"
+                            priority={index < 2}
+                            loading={index < 2 ? undefined : 'lazy'}
+                          />
+                        </div>
+                        <div className="mt-5 flex items-center gap-x-3 text-2xs/4 font-medium text-gray-500 dark:text-white/45">
+                          <time dateTime={item.date}>{formatDate(item.date)}</time>
+                          <span className="h-1 w-1 rounded-full bg-orange-400/70" />
+                          <span>{item.role}</span>
+                        </div>
+                        <h2 className="mt-3 font-display text-xl/8 font-semibold text-gray-950 transition hover:text-orange-500 dark:text-white">
+                          {item.title}
+                        </h2>
+                        <p className="mt-2 text-sm/6 text-gray-500 dark:text-white/40">
+                          {item.description}
+                        </p>
+                      </button>
+                    </FocusItem>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </Layout>
+    </>
   )
 }
