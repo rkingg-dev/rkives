@@ -208,14 +208,24 @@ export function Layout({
     }
   }, [])
 
+  let [showSidebar, setShowSidebar] = useState(false)
+
+  useEffect(() => {
+    let scrollContainer = scrollRef.current
+    if (!scrollContainer) return
+
+    function check() {
+      // Show sidebar when scrolled past 60vh (past the hero)
+      setShowSidebar(scrollContainer!.scrollTop > window.innerHeight * 0.6)
+    }
+
+    check()
+    scrollContainer.addEventListener("scroll", check, { passive: true })
+    return () => scrollContainer.removeEventListener("scroll", check)
+  }, [])
+
   return (
     <ScrollContext.Provider value={scrollRef}>
-      <div ref={introRef}>
-        <FixedSidebar
-          main={<Intro activeSection={activeSection} onSelectSection={onSelectSection} />}
-          footer={<IntroFooter activeSection={activeSection} onSelectSection={onSelectSection} />}
-        />
-      </div>
       <MobileHeader visible={showMobileHeader} />
       <div
         ref={scrollRef}
@@ -223,6 +233,21 @@ export function Layout({
       >
         <main>{children}</main>
       </div>
+
+      {/* Sidebar — only visible after scrolling past hero */}
+      <div
+        ref={introRef}
+        className={clsx(
+          "transition-opacity duration-500",
+          showSidebar ? "opacity-100" : "opacity-0 pointer-events-none"
+        )}
+      >
+        <FixedSidebar
+          main={<Intro activeSection={activeSection} onSelectSection={onSelectSection} />}
+          footer={<IntroFooter activeSection={activeSection} onSelectSection={onSelectSection} />}
+        />
+      </div>
+
       <MobileFooter activeSection={activeSection} onSelectSection={onSelectSection} />
     </ScrollContext.Provider>
   )
