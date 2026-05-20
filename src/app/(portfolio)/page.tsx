@@ -37,26 +37,31 @@ export default function PortfolioPage() {
 
   return (
     <div className="relative min-h-screen bg-[#0a0a0a]">
-      {/* ─── Header ─── */}
-      <header className="fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-8 py-6">
-        <span className="text-base font-medium text-white" style={{ fontFamily: "var(--font-satoshi)" }}>RKINGG//</span>
-        <span className="text-base font-medium text-white" style={{ fontFamily: "var(--font-satoshi)" }}>©2025</span>
-      </header>
-
       {/* ─── Hero / Hello Section ─── */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-8 py-32">
         {/* Photo card — Instax style */}
-        <div className="bg-[#e8e4de] p-6 w-full max-w-[40rem]">
-          <h2 className="text-4xl lg:text-5xl font-bold text-[#0a0a0a] leading-tight mb-6" style={{ fontFamily: "var(--font-satoshi)" }}>
-            HELLO<br />MY NAME IS<br />R KING
+        <div className="bg-[#e8e4de] p-4 w-full max-w-[30rem]">
+          {/* RKINGG// at top */}
+          <div className="mb-4">
+            <span className="text-sm font-medium text-[#0a0a0a]" style={{ fontFamily: "var(--font-satoshi)" }}>RKINGG//</span>
+          </div>
+
+          <h2 className="text-2xl lg:text-3xl font-bold text-[#0a0a0a] leading-tight mb-4" style={{ fontFamily: "var(--font-satoshi)" }}>
+            HELLO MY NAME IS R KING
           </h2>
+
           <div className="relative w-full aspect-[4/3] bg-[#0a0a0a]">
             <Image src="/placeholder-portrait.jpg" alt="R King Garcia" fill className="object-cover" />
+          </div>
+
+          {/* ©2026 at bottom */}
+          <div className="mt-4">
+            <span className="text-sm font-medium text-[#0a0a0a]" style={{ fontFamily: "var(--font-satoshi)" }}>©2026</span>
           </div>
         </div>
 
         {/* Info below card */}
-        <div className="mt-6 w-full max-w-[40rem] flex items-start justify-between">
+        <div className="mt-6 w-full max-w-[30rem] flex items-start justify-between">
           <div className="text-[11px] text-white/40 uppercase tracking-wider leading-relaxed" style={{ fontFamily: "var(--font-satoshi)" }}>
             web development rkingg<br />
             digital product designer<br />
