@@ -10,11 +10,11 @@ A personal workflow dashboard for freelance web developers. Manage clients, webs
 
 ## Features
 
-### 16 Dashboard Pages
+### 17 Dashboard Pages
 
 | Page | Description |
 |------|-------------|
-| **Overview** | KPI tiles, activity trends chart, tasks table, mini calendar, activity feed |
+| **Overview** | KPI tiles with revenue goal tracking, revenue trend chart, 6-tab tasks table, sidebar with calendar, cash flow, payments, projects, invoices, website health, scratchpad |
 | **Clients** | Client management with contact info, website count, CRUD operations |
 | **Websites** | Website tracking with platform, hosting, domain expiry, monthly fees |
 | **Projects** | Project cards with progress bars, deadlines, and status tracking |
@@ -53,11 +53,27 @@ Every entity supports full Create, Read, Update, Delete:
 - **Command palette** — `Cmd+K` / `Ctrl+K` to search and jump to any page
 - **Real notifications** — tasks due soon, expiring domains, pending payments
 
+### Dashboard Widgets
+
+- **KPI tiles** — active clients, websites, open tasks, monthly revenue (with goal progress bar), overdue count (red alert), maintenance alerts
+- **Revenue trend** — area chart showing monthly revenue and profit from real payments data, with trend percentage badge
+- **Tasks table** — 6 tabs: Task Overview, Overdue & Due Soon (with count badge), Project Timeline, Maintenance, Revenue, Portfolio
+- **Cash flow** — sidebar widget showing income, expenses, net, and savings rate
+- **Pending payments** — pending/verified/outstanding payment summary with peso amounts
+- **Active projects** — compact project list with progress bars and deadline sorting
+- **Invoice pipeline** — stacked bar showing Draft → Sent → Pending → Verified → Paid distribution
+- **Website health** — domain/hosting expiry alerts, WordPress updates pending, stale changelogs
+- **Quick notes** — localStorage scratchpad that persists across sessions
+- **Quick actions** — add task, payment, or note from dashboard via modal
+- **Mini calendar** — month view with task due date dots, links to full calendar
+- **Recurring tasks** — suggests tasks due again based on recurrence intervals
+- **Recent activity** — merged timeline of latest tasks and payments
+
 ### Dashboard Intelligence
 
-- **KPI computation** — active clients, website count, open tasks, revenue totals computed from real data
-- **Activity feed** — recent tasks and payments as a timeline
-- **Client MRR** — monthly recurring revenue computed from website maintenance fees
+- **KPI computation** — all metrics computed from real Supabase data
+- **Revenue goal** — progress bar toward monthly revenue target (₱100k default)
+- **Overdue alerts** — red KPI badge + dedicated table tab for overdue tasks
 - **Bulk actions** — select multiple tasks, batch update status or delete
 
 ### File Uploads
@@ -116,10 +132,17 @@ src/
 │   └── page.tsx                      # Redirect to /dashboard
 ├── components/
 │   ├── dashboard/
-│   │   ├── KpiTabs.tsx               # KPI tiles computed from real data
+│   │   ├── ActiveProjects.tsx        # Sidebar: active projects with progress bars
+│   │   ├── CashFlowWidget.tsx        # Sidebar: income/expenses/savings rate
+│   │   ├── InvoicePipeline.tsx       # Sidebar: payment status pipeline
+│   │   ├── KpiTabs.tsx               # KPI tiles with revenue goal + overdue alert
 │   │   ├── MiniCalendar.tsx          # Calendar widget with task events
-│   │   ├── TasksTable.tsx            # Expandable task table
-│   │   ├── TrendsChart.tsx           # Activity line chart
+│   │   ├── PendingPayments.tsx       # Sidebar: pending/verified/outstanding
+│   │   ├── QuickActions.tsx          # Quick add task/payment/note buttons
+│   │   ├── QuickNotes.tsx            # Sidebar: localStorage scratchpad
+│   │   ├── TasksTable.tsx            # 6-tab table (Overview, Overdue, Timeline, etc.)
+│   │   ├── TrendsChart.tsx           # Revenue area chart from real data
+│   │   ├── WebsiteHealth.tsx         # Sidebar: expiry alerts + WP updates
 │   │   └── WorkspaceWidgets.tsx      # Portfolio + maintenance widgets
 │   ├── forms/
 │   │   ├── CalendarEventForm.tsx
