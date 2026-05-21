@@ -211,7 +211,7 @@ export default function DashboardBuilder() {
         cols={{ lg: 12, md: 12, sm: 12 }}
         width={width}
         rowHeight={60}
-        margin={[16, 16]}
+        margin={[12, 12]}
         containerPadding={[0, 0]}
         compactor={verticalCompactor}
         onLayoutChange={handleLayoutChange}
