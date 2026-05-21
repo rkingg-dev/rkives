@@ -69,7 +69,7 @@ export const widgetRegistry: WidgetDef[] = [
     component: TrendsChart,
     defaultSize: "wide",
     defaultW: 12,
-    defaultH: 6,
+    defaultH: 5,
     minW: 6,
     minH: 4,
     category: "main",
