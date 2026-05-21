@@ -32,8 +32,6 @@ export default function ActiveProjects() {
       .slice(0, 5);
   }, [projects]);
 
-  if (active.length === 0) return null;
-
   return (
     <div className="bg-card rounded-xl border border-border shadow-sm p-5">
       <div className="flex items-center justify-between mb-4">
@@ -45,6 +43,15 @@ export default function ActiveProjects() {
           View all
         </Link>
       </div>
+
+      {active.length === 0 && (
+        <div className="py-4 text-center">
+          <p className="text-xs text-muted-foreground mb-2">No active projects</p>
+          <Link href="/dashboard/projects" className="text-xs text-[var(--accent-brand)] hover:underline">
+            Create a project &rarr;
+          </Link>
+        </div>
+      )}
 
       <div className="space-y-3">
         {active.map((project) => {

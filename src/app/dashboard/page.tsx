@@ -15,6 +15,8 @@ import QuickNotes from "@/components/dashboard/QuickNotes";
 import CashFlowWidget from "@/components/dashboard/CashFlowWidget";
 import ActiveProjects from "@/components/dashboard/ActiveProjects";
 import QuickActions from "@/components/dashboard/QuickActions";
+import MonthlyComparison from "@/components/dashboard/MonthlyComparison";
+import TaskCompletionRate from "@/components/dashboard/TaskCompletionRate";
 import { checkRecurringTasks } from "@/lib/recurring-tasks";
 
 export default function DashboardPage() {
@@ -58,6 +60,10 @@ export default function DashboardPage() {
           <QuickActions />
         </div>
         <KpiTabs />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <MonthlyComparison />
+          <TaskCompletionRate />
+        </div>
         <TrendsChart />
         <TasksTable />
       </div>

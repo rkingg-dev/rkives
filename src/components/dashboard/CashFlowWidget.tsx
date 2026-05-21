@@ -1,6 +1,6 @@
 "use client";
 
-import { monthlyRevenue } from "@/lib/finance-data";
+import { monthlyRevenue, expenseBreakdown } from "@/lib/finance-data";
 import { cn } from "@/lib/utils";
 import { TrendingUp, TrendingDown, Wallet } from "lucide-react";
 import Link from "next/link";
@@ -45,6 +45,23 @@ export default function CashFlowWidget() {
           <span className="text-sm font-semibold text-red-500">
             ₱{totalExpenses.toLocaleString()}
           </span>
+        </div>
+
+        {/* Expense breakdown */}
+        <div className="space-y-1.5 pt-1">
+          {expenseBreakdown.slice(0, 3).map((item) => (
+            <div key={item.category} className="flex items-center gap-2">
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-0.5">
+                  <span className="text-[10px] text-muted-foreground">{item.category}</span>
+                  <span className="text-[10px] font-medium text-foreground">₱{item.amount.toLocaleString()}</span>
+                </div>
+                <div className="h-1 bg-muted rounded-full overflow-hidden">
+                  <div className="h-full bg-red-400 rounded-full" style={{ width: `${item.percent}%` }} />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Divider */}

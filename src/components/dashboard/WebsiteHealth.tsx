@@ -83,8 +83,6 @@ export default function WebsiteHealth() {
     return items;
   }, [websites, wpUpdates, changelogs]);
 
-  if (issues.length === 0) return null;
-
   return (
     <div className="bg-card rounded-xl border border-border shadow-sm p-5">
       <div className="flex items-center justify-between mb-4">
@@ -94,6 +92,12 @@ export default function WebsiteHealth() {
         </h3>
         <span className="text-xs text-muted-foreground">{issues.length} issue{issues.length !== 1 ? "s" : ""}</span>
       </div>
+
+      {issues.length === 0 && (
+        <div className="py-4 text-center">
+          <p className="text-xs text-emerald-500">All websites healthy</p>
+        </div>
+      )}
 
       <div className="space-y-2">
         {issues.slice(0, 6).map((issue, i) => (

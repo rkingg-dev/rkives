@@ -62,7 +62,7 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  // Build notifications from API data
+  // Build notifications from API data with links
   const notifications = [
     ...notiData.dueTasks.map((t) => ({
       id: `task-${t.id}`,
@@ -71,6 +71,7 @@ export default function Navbar() {
       title: `Due: ${t.title}`,
       desc: `Priority: ${t.priority}`,
       time: t.due_date,
+      href: "/dashboard/tasks",
     })),
     ...notiData.expiringDomains.map((d) => ({
       id: `domain-${d.id}`,
@@ -79,6 +80,7 @@ export default function Navbar() {
       title: `Domain expiring: ${d.name}`,
       desc: d.domain_expiry,
       time: d.domain_expiry,
+      href: "/dashboard/websites",
     })),
     ...notiData.pendingPayments.map((p) => ({
       id: `payment-${p.id}`,
@@ -87,6 +89,7 @@ export default function Navbar() {
       title: `Pending payment: \u20B1${p.amount?.toLocaleString()}`,
       desc: p.billing_period,
       time: "",
+      href: "/dashboard/payments",
     })),
   ];
 
@@ -165,14 +168,19 @@ export default function Navbar() {
                   </div>
                 ) : (
                   notifications.map((n) => (
-                    <div key={n.id} className="flex items-start gap-3 px-4 py-3 hover:bg-muted/50 transition-colors cursor-pointer border-b border-border/50 last:border-0">
+                    <Link
+                      key={n.id}
+                      href={n.href}
+                      onClick={() => setNotiOpen(false)}
+                      className="flex items-start gap-3 px-4 py-3 hover:bg-muted/50 transition-colors border-b border-border/50 last:border-0"
+                    >
                       <n.icon className={`h-4 w-4 mt-0.5 shrink-0 ${n.color}`} />
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-foreground">{n.title}</p>
                         <p className="text-xs text-muted-foreground truncate">{n.desc}</p>
                         {n.time && <p className="text-[10px] text-muted-foreground mt-1">{n.time}</p>}
                       </div>
-                    </div>
+                    </Link>
                   ))
                 )}
               </div>
