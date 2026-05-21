@@ -83,6 +83,17 @@ export default function DashboardBuilder() {
     toast.success("Layout reset to default");
   }
 
+  function resizeWidget(id: string, cols: number) {
+    setLayout((prev) => {
+      const next = prev.map((l) => {
+        if (l.i !== id) return l;
+        return { ...l, w: cols, x: 0 };
+      });
+      saveLayout(next);
+      return next;
+    });
+  }
+
   const activeWidgets = widgetRegistry.filter((w) => visible.includes(w.id));
   const hiddenWidgets = widgetRegistry.filter((w) => !visible.includes(w.id));
 
@@ -209,11 +220,36 @@ export default function DashboardBuilder() {
       >
         {activeWidgets.map((w) => {
           const WidgetComponent = w.component;
+          const currentW = layout.find((l) => l.i === w.id)?.w || w.defaultW;
+          const sizes = [
+            { label: "25%", cols: 3 },
+            { label: "50%", cols: 6 },
+            { label: "75%", cols: 9 },
+            { label: "100%", cols: 12 },
+          ];
           return (
             <div key={w.id} className="relative">
               {editMode && (
-                <div className="drag-handle absolute top-1 left-1 z-10 cursor-grab active:cursor-grabbing p-1 rounded bg-muted/80 hover:bg-muted transition-colors">
-                  <GripVertical className="h-3.5 w-3.5 text-muted-foreground" />
+                <div className="absolute top-1 left-1 z-10 flex items-center gap-0.5">
+                  <div className="drag-handle cursor-grab active:cursor-grabbing p-1 rounded bg-muted/80 hover:bg-muted transition-colors">
+                    <GripVertical className="h-3.5 w-3.5 text-muted-foreground" />
+                  </div>
+                  <div className="flex items-center bg-muted/80 rounded overflow-hidden">
+                    {sizes.map((s) => (
+                      <button
+                        key={s.cols}
+                        onClick={() => resizeWidget(w.id, s.cols)}
+                        className={cn(
+                          "px-1.5 py-1 text-[9px] font-medium transition-colors",
+                          currentW === s.cols
+                            ? "bg-[var(--accent-brand)] text-white"
+                            : "text-muted-foreground hover:bg-muted"
+                        )}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
               <WidgetComponent />
