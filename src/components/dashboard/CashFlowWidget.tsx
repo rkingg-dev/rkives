@@ -1,15 +1,11 @@
 "use client";
 
-import { useMemo } from "react";
-import { useSupabaseQuery } from "@/hooks/use-supabase-query";
 import { monthlyRevenue } from "@/lib/finance-data";
 import { cn } from "@/lib/utils";
 import { TrendingUp, TrendingDown, Wallet } from "lucide-react";
 import Link from "next/link";
 
 export default function CashFlowWidget() {
-  const { data: payments } = useSupabaseQuery({ table: "payments" });
-
   const current = monthlyRevenue[monthlyRevenue.length - 1];
   const totalIncome = current.revenue;
   const totalExpenses = current.expenses + current.personal;
