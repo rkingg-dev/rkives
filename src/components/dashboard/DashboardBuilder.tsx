@@ -1,9 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const RGL = require("react-grid-layout");
-const ResponsiveGrid = RGL.WidthProvider(RGL.Responsive);
+import { useState, useEffect, useCallback, useRef } from "react";
+import { ResponsiveGridLayout, verticalCompactor } from "react-grid-layout";
 import { widgetRegistry, defaultLayout, defaultVisible } from "@/lib/widget-registry";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -44,15 +42,29 @@ export default function DashboardBuilder() {
   const [layout, setLayout] = useState(defaultLayout);
   const [visible, setVisible] = useState(defaultVisible);
   const [selectorOpen, setSelectorOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(1200);
 
   useEffect(() => {
     setLayout(loadLayout());
     setVisible(loadVisible());
   }, []);
 
-  const handleLayoutChange = useCallback((newLayout: any[]) => {
-    setLayout(newLayout);
-    saveLayout(newLayout);
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setWidth(entry.contentRect.width);
+      }
+    });
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const handleLayoutChange = useCallback((layout: readonly any[]) => {
+    const mutable = layout.map((l) => ({ ...l }));
+    setLayout(mutable);
+    saveLayout(mutable);
   }, []);
 
   function toggleWidget(id: string) {
@@ -74,7 +86,6 @@ export default function DashboardBuilder() {
   const activeWidgets = widgetRegistry.filter((w) => visible.includes(w.id));
   const hiddenWidgets = widgetRegistry.filter((w) => !visible.includes(w.id));
 
-  // Grid layout for react-grid-layout
   const gridLayout = layout
     .filter((l) => visible.includes(l.i))
     .map((l) => ({
@@ -83,7 +94,7 @@ export default function DashboardBuilder() {
     }));
 
   return (
-    <div>
+    <div ref={containerRef}>
       {/* Edit bar */}
       <div className="flex items-center justify-between mb-4">
         <div />
@@ -121,7 +132,7 @@ export default function DashboardBuilder() {
         </div>
       </div>
 
-      {/* Widget selector (in edit mode) */}
+      {/* Widget selector */}
       {editMode && (
         <div className="mb-4 p-4 bg-card rounded-xl border border-border">
           <div className="flex items-center justify-between mb-3">
@@ -137,7 +148,6 @@ export default function DashboardBuilder() {
             )}
           </div>
 
-          {/* Active widgets */}
           <div className="flex flex-wrap gap-2 mb-2">
             {activeWidgets.map((w) => {
               const Icon = w.icon;
@@ -159,7 +169,6 @@ export default function DashboardBuilder() {
             })}
           </div>
 
-          {/* Hidden widgets to add */}
           {selectorOpen && hiddenWidgets.length > 0 && (
             <div className="pt-2 border-t border-border">
               <p className="text-[10px] text-muted-foreground mb-2">Available widgets:</p>
@@ -185,19 +194,18 @@ export default function DashboardBuilder() {
       )}
 
       {/* Grid */}
-      <ResponsiveGrid
+      <ResponsiveGridLayout
         layouts={{ lg: gridLayout }}
         breakpoints={{ lg: 1200, md: 996, sm: 768 }}
         cols={{ lg: 12, md: 12, sm: 12 }}
+        width={width}
         rowHeight={50}
         margin={[16, 16]}
         containerPadding={[0, 0]}
-        onLayoutChange={(newLayout: any[]) => handleLayoutChange(newLayout)}
-        isDraggable={editMode}
-        isResizable={editMode}
-        draggableHandle=".drag-handle"
-        compactType="vertical"
-        useCSSTransforms
+        compactor={verticalCompactor}
+        onLayoutChange={handleLayoutChange}
+        dragConfig={{ enabled: editMode, handle: ".drag-handle", threshold: 3, bounded: false, cancel: "" }}
+        resizeConfig={{ enabled: editMode, handles: ["se"] }}
       >
         {activeWidgets.map((w) => {
           const WidgetComponent = w.component;
@@ -212,7 +220,7 @@ export default function DashboardBuilder() {
             </div>
           );
         })}
-      </ResponsiveGrid>
+      </ResponsiveGridLayout>
     </div>
   );
 }
