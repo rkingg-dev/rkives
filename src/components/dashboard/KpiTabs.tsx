@@ -60,12 +60,22 @@ export default function KpiTabs() {
     );
   }).length;
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const overdueCount = tasks.filter((t) => {
+    if (!t.due_date || t.status === "Done") return false;
+    return new Date(t.due_date) < today;
+  }).length;
+
+  const revenueGoal = 100000;
+  const revenueProgress = Math.min((monthlyRevenue / revenueGoal) * 100, 100);
+
   const kpiData = [
     { label: "Active Clients", value: String(activeClients), positive: true },
     { label: "Websites", value: String(websiteCount), positive: true },
     { label: "Open Tasks", value: String(openTasks), positive: false },
-    { label: "Monthly Revenue", value: `\u20B1${monthlyRevenue.toLocaleString()}`, positive: true },
-    { label: "Due This Week", value: String(dueThisWeek), positive: true },
+    { label: "Monthly Revenue", value: `\u20B1${monthlyRevenue.toLocaleString()}`, positive: true, goal: revenueGoal, progress: revenueProgress },
+    { label: "Overdue", value: String(overdueCount), positive: false, alert: overdueCount > 0 },
     { label: "Maintenance", value: String(maintenanceCount), positive: false },
   ];
 
@@ -79,15 +89,33 @@ export default function KpiTabs() {
           transition={{ delay: i * 0.05 }}
           className={cn(
             "px-4 md:px-5 py-3 md:py-4 border-b md:border-b-0 md:border-r border-border last:border-r-0 cursor-pointer transition-colors hover:bg-muted/30",
-            i === 0 && "bg-muted/20"
+            i === 0 && "bg-muted/20",
+            "alert" in kpi && kpi.alert && "bg-red-500/5"
           )}
         >
-          <p className="text-[10px] md:text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
+          <p className={cn(
+            "text-[10px] md:text-xs font-medium uppercase tracking-wider mb-1",
+            "alert" in kpi && kpi.alert ? "text-red-500" : "text-muted-foreground"
+          )}>
             {kpi.label}
           </p>
           <div className="flex items-baseline gap-1.5 md:gap-2">
-            <span className="text-lg md:text-xl font-semibold text-foreground">{kpi.value}</span>
+            <span className={cn(
+              "text-lg md:text-xl font-semibold",
+              "alert" in kpi && kpi.alert ? "text-red-500" : "text-foreground"
+            )}>{kpi.value}</span>
           </div>
+          {"goal" in kpi && kpi.goal && (
+            <div className="mt-2">
+              <div className="flex items-center justify-between mb-0.5">
+                <span className="text-[9px] text-muted-foreground">Goal: ₱{kpi.goal.toLocaleString()}</span>
+                <span className="text-[9px] font-medium text-foreground">{Math.round(kpi.progress)}%</span>
+              </div>
+              <div className="h-1 bg-muted rounded-full overflow-hidden">
+                <div className="h-full bg-[var(--accent-brand)] rounded-full" style={{ width: `${kpi.progress}%` }} />
+              </div>
+            </div>
+          )}
         </motion.div>
       ))}
     </div>

@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useSupabaseQuery } from "@/hooks/use-supabase-query";
 import { useSupabaseMutation } from "@/hooks/use-supabase-mutation";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { ExternalLink, UserPlus, CheckCircle, SlidersHorizontal, Repeat } from "lucide-react";
+import { ExternalLink, UserPlus, CheckCircle, SlidersHorizontal, Repeat, AlertTriangle, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TableSkeleton } from "@/components/ui/loading-skeleton";
 
-const tabs = ["Task Overview", "Project Timeline", "Maintenance", "Revenue", "Portfolio"];
+const tabs = ["Task Overview", "Overdue & Due Soon", "Project Timeline", "Maintenance", "Revenue", "Portfolio"];
 
 function getStatusColor(status: string) {
   switch (status) {
@@ -128,6 +128,28 @@ export default function TasksTable() {
 
   const loading = loadingTasks;
 
+  const { overdue, upcoming } = useMemo(() => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const twoWeeks = new Date(now);
+    twoWeeks.setDate(twoWeeks.getDate() + 14);
+
+    const activeTasks = tasks.filter((t) => t.status !== "Done" && t.due_date);
+
+    const overdue = activeTasks
+      .filter((t) => new Date(t.due_date) < now)
+      .sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime());
+
+    const upcoming = activeTasks
+      .filter((t) => {
+        const due = new Date(t.due_date);
+        return due >= now && due <= twoWeeks;
+      })
+      .sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime());
+
+    return { overdue, upcoming };
+  }, [tasks]);
+
   if (loading) {
     return (
       <div className="relative">
@@ -152,6 +174,11 @@ export default function TasksTable() {
         {tabs.map((tab, i) => (
           <button key={tab} onClick={() => setActiveTab(i)} className={cn("relative px-5 py-2.5 text-[13px] font-medium rounded-t-xl transition-all duration-200 -mb-[1px] whitespace-nowrap", activeTab === i ? "bg-card text-foreground border border-border border-b-white dark:border-b-card z-10" : "bg-muted/40 text-muted-foreground hover:bg-muted/60 border border-transparent")}>
             {tab}
+            {i === 1 && overdue.length > 0 && (
+              <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-semibold rounded-full bg-red-500 text-white">
+                {overdue.length}
+              </span>
+            )}
           </button>
         ))}
         <div className="ml-auto pb-2.5">
@@ -210,8 +237,90 @@ export default function TasksTable() {
           )
         )}
 
-        {/* Tab 1: Project Timeline */}
+        {/* Tab 1: Overdue & Due Soon */}
         {activeTab === 1 && (
+          overdue.length === 0 && upcoming.length === 0 ? <EmptyTab message="No overdue or upcoming tasks" /> : (
+          <div className="overflow-x-auto">
+            {overdue.length > 0 && (
+              <>
+                <div className="flex items-center gap-2 px-5 py-3 bg-red-500/5 border-b border-border">
+                  <AlertTriangle className="h-4 w-4 text-red-500" />
+                  <h4 className="text-xs font-semibold text-red-500 uppercase tracking-wider">Overdue ({overdue.length})</h4>
+                </div>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Task</th>
+                      <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Website</th>
+                      <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Priority</th>
+                      <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Due Date</th>
+                      <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Overdue</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {overdue.map((task) => {
+                      const site = websites.find((w) => w.id === task.website_id);
+                      const daysOverdue = Math.floor((new Date().setHours(0,0,0,0) - new Date(task.due_date).setHours(0,0,0,0)) / 86400000);
+                      return (
+                        <tr key={task.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
+                          <td className="px-5 py-3 font-medium text-foreground">{task.title}</td>
+                          <td className="px-5 py-3 text-muted-foreground">{site?.name || "Personal"}</td>
+                          <td className="px-5 py-3">
+                            <span className={cn("text-xs font-medium", getPriorityColor(task.priority))}>{task.priority}</span>
+                          </td>
+                          <td className="px-5 py-3 text-muted-foreground">{task.due_date}</td>
+                          <td className="px-5 py-3 text-red-500 font-medium text-xs">{daysOverdue}d overdue</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </>
+            )}
+            {upcoming.length > 0 && (
+              <>
+                <div className="flex items-center gap-2 px-5 py-3 border-b border-border">
+                  <Clock className="h-4 w-4 text-amber-500" />
+                  <h4 className="text-xs font-semibold text-foreground uppercase tracking-wider">Due Soon ({upcoming.length})</h4>
+                </div>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Task</th>
+                      <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Website</th>
+                      <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Priority</th>
+                      <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Due Date</th>
+                      <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Days Left</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {upcoming.map((task) => {
+                      const site = websites.find((w) => w.id === task.website_id);
+                      const daysUntil = Math.ceil((new Date(task.due_date).setHours(0,0,0,0) - new Date().setHours(0,0,0,0)) / 86400000);
+                      return (
+                        <tr key={task.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
+                          <td className="px-5 py-3 font-medium text-foreground">{task.title}</td>
+                          <td className="px-5 py-3 text-muted-foreground">{site?.name || "Personal"}</td>
+                          <td className="px-5 py-3">
+                            <span className={cn("text-xs font-medium", getPriorityColor(task.priority))}>{task.priority}</span>
+                          </td>
+                          <td className="px-5 py-3 text-muted-foreground">{task.due_date}</td>
+                          <td className="px-5 py-3 text-xs text-muted-foreground font-medium">
+                            {daysUntil === 0 ? "Today" : daysUntil === 1 ? "Tomorrow" : `${daysUntil}d left`}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </>
+            )}
+          </div>
+          )
+        )}
+
+        {/* Tab 2: Project Timeline */}
+        {activeTab === 2 && (
           projects.length === 0 ? <EmptyTab message="No projects yet" /> : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -249,8 +358,8 @@ export default function TasksTable() {
           )
         )}
 
-        {/* Tab 2: Maintenance */}
-        {activeTab === 2 && (
+        {/* Tab 3: Maintenance */}
+        {activeTab === 3 && (
           wpUpdates.length === 0 ? <EmptyTab message="No maintenance items" /> : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -286,8 +395,8 @@ export default function TasksTable() {
           )
         )}
 
-        {/* Tab 3: Revenue */}
-        {activeTab === 3 && (
+        {/* Tab 4: Revenue */}
+        {activeTab === 4 && (
           payments.length === 0 ? <EmptyTab message="No payments yet" /> : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -323,8 +432,8 @@ export default function TasksTable() {
           )
         )}
 
-        {/* Tab 4: Portfolio */}
-        {activeTab === 4 && (
+        {/* Tab 5: Portfolio */}
+        {activeTab === 5 && (
           (() => {
             const portfolioSites = websites.filter((w) => w.is_portfolio);
             return portfolioSites.length === 0 ? <EmptyTab message="No portfolio sites yet" /> : (

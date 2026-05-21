@@ -8,6 +8,13 @@ import KpiTabs from "@/components/dashboard/KpiTabs";
 import TrendsChart from "@/components/dashboard/TrendsChart";
 import TasksTable from "@/components/dashboard/TasksTable";
 import MiniCalendar from "@/components/dashboard/MiniCalendar";
+import PendingPayments from "@/components/dashboard/PendingPayments";
+import InvoicePipeline from "@/components/dashboard/InvoicePipeline";
+import WebsiteHealth from "@/components/dashboard/WebsiteHealth";
+import QuickNotes from "@/components/dashboard/QuickNotes";
+import CashFlowWidget from "@/components/dashboard/CashFlowWidget";
+import ActiveProjects from "@/components/dashboard/ActiveProjects";
+import QuickActions from "@/components/dashboard/QuickActions";
 import { checkRecurringTasks } from "@/lib/recurring-tasks";
 
 export default function DashboardPage() {
@@ -46,6 +53,10 @@ export default function DashboardPage() {
     <div className="flex flex-col xl:flex-row gap-4 md:gap-6">
       {/* Main Content */}
       <div className="flex-1 space-y-4 min-w-0">
+        <div className="flex items-center justify-between">
+          <div />
+          <QuickActions />
+        </div>
         <KpiTabs />
         <TrendsChart />
         <TasksTable />
@@ -54,6 +65,12 @@ export default function DashboardPage() {
       {/* Right Sidebar */}
       <div className="w-full xl:w-[280px] shrink-0 space-y-4">
         <MiniCalendar />
+        <CashFlowWidget />
+        <PendingPayments />
+        <ActiveProjects />
+        <InvoicePipeline />
+        <WebsiteHealth />
+        <QuickNotes />
         {recurringSuggestions.length > 0 && (
           <div className="bg-card rounded-xl border border-border shadow-sm p-5">
             <h3 className="text-sm font-semibold text-foreground mb-3">Recurring Tasks</h3>

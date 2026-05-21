@@ -147,7 +147,7 @@ export default function PortfolioPage() {
               });
 
               // Show label when focused
-              const label = item.querySelector(".carousel-label");
+              const label = item.querySelector(".carousel-label") as HTMLElement | null;
               if (label) {
                 label.style.opacity = ease > 0.9 ? "1" : "0";
               }
