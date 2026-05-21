@@ -3,7 +3,7 @@
 import Sidebar from "@/components/layout/Sidebar";
 import Navbar from "@/components/layout/Navbar";
 import CommandPalette from "@/components/layout/CommandPalette";
-import Fab from "@/components/ui/fab";
+import FloatingActions from "@/components/layout/FloatingActions";
 import BottomNav from "@/components/layout/BottomNav";
 import { SidebarProvider, useSidebar } from "@/components/layout/SidebarContext";
 import { motion } from "framer-motion";
@@ -21,7 +21,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
       >
         <Navbar />
         <CommandPalette />
-        <Fab />
+        <FloatingActions />
         <BottomNav />
         <main className="p-4 md:p-8 pb-20 md:pb-8">{children}</main>
       </motion.div>
