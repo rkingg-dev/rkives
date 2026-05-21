@@ -37,6 +37,42 @@ export default function PaymentsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editItem, setEditItem] = useState<any>(null);
   const [editOpen, setEditOpen] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [batchProcessing, setBatchProcessing] = useState(false);
+
+  const pendingPayments = payments.filter((p) => p.status === "Pending");
+  const allPendingSelected = pendingPayments.length > 0 && pendingPayments.every((p) => selected.has(p.id));
+
+  function toggleSelect(id: string) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleSelectAllPending() {
+    if (allPendingSelected) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(pendingPayments.map((p) => p.id)));
+    }
+  }
+
+  async function handleBatchVerify() {
+    if (selected.size === 0) return;
+    setBatchProcessing(true);
+    let success = 0;
+    for (const id of selected) {
+      const { error } = await (supabase as any).from("payments").update({ status: "Verified", paid_at: new Date().toISOString() }).eq("id", id);
+      if (!error) success++;
+    }
+    toast.success(`${success} payment${success !== 1 ? "s" : ""} verified`);
+    setSelected(new Set());
+    setBatchProcessing(false);
+    refetch();
+  }
 
   async function handleDelete(id: string) {
     if (!confirm("Are you sure you want to delete this payment?")) return;
@@ -55,7 +91,19 @@ export default function PaymentsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-foreground">Payments</h2>
+        <div className="flex items-center gap-4">
+          <h2 className="text-2xl font-bold text-foreground">Payments</h2>
+          {selected.size > 0 && (
+            <button
+              onClick={handleBatchVerify}
+              disabled={batchProcessing}
+              className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-xs font-medium hover:bg-emerald-600 transition-colors disabled:opacity-50"
+            >
+              <CheckCircle className="h-3.5 w-3.5" />
+              Verify {selected.size} selected
+            </button>
+          )}
+        </div>
         <Modal open={modalOpen} onOpenChange={setModalOpen}>
           <ModalTrigger asChild>
             <button onClick={() => setModalOpen(true)} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">Record Payment</button>
@@ -99,6 +147,14 @@ export default function PaymentsPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
+                <th className="text-left px-3 py-3 w-10">
+                  <input
+                    type="checkbox"
+                    checked={allPendingSelected}
+                    onChange={toggleSelectAllPending}
+                    className="rounded border-border"
+                  />
+                </th>
                 <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Client</th>
                 <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Website</th>
                 <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Type</th>
@@ -116,7 +172,17 @@ export default function PaymentsPage() {
                 const client = clients.find((c) => c.id === p.client_id);
                 const site = websites.find((w) => w.id === p.website_id);
                 return (
-                  <tr key={p.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => router.push(`/dashboard/invoice?id=${p.id}`)}>
+                  <tr key={p.id} className={cn("border-b border-border/50 hover:bg-muted/20 transition-colors cursor-pointer", selected.has(p.id) && "bg-muted/30")} onClick={() => router.push(`/dashboard/invoice?id=${p.id}`)}>
+                    <td className="px-3 py-3" onClick={(e) => e.stopPropagation()}>
+                      {p.status === "Pending" && (
+                        <input
+                          type="checkbox"
+                          checked={selected.has(p.id)}
+                          onChange={() => toggleSelect(p.id)}
+                          className="rounded border-border"
+                        />
+                      )}
+                    </td>
                     <td className="px-5 py-3 font-medium text-foreground">{client?.name}</td>
                     <td className="px-5 py-3 text-muted-foreground">{site?.name || "\u2014"}</td>
                     <td className="px-5 py-3 text-muted-foreground">{p.payment_type}</td>

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Command } from "cmdk";
-import { Search, Users, Globe, CheckSquare, CreditCard, StickyNote, Calendar, FileText, Settings, Code } from "lucide-react";
+import { Search, Users, Globe, CheckSquare, CreditCard, StickyNote, Calendar, FileText, Settings, Code, Plus, ArrowRight, Zap } from "lucide-react";
 
 export default function CommandPalette() {
   const [open, setOpen] = useState(false);
@@ -13,7 +13,6 @@ export default function CommandPalette() {
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
-      // Don't trigger shortcuts when typing in inputs
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
 
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
@@ -22,13 +21,9 @@ export default function CommandPalette() {
         return;
       }
 
-      if (open) return; // Don't trigger shortcuts when palette is open
+      if (open) return;
 
-      // Quick navigation shortcuts
       switch (e.key) {
-        case "g":
-          // Wait for second key
-          break;
         case "n":
           if (!e.metaKey && !e.ctrlKey) {
             e.preventDefault();
@@ -61,7 +56,6 @@ export default function CommandPalette() {
           break;
         case "/":
           e.preventDefault();
-          // Focus the search input in navbar
           document.querySelector<HTMLInputElement>('[placeholder="Search..."]')?.focus();
           break;
       }
@@ -93,7 +87,10 @@ export default function CommandPalette() {
     client: <Users className="h-4 w-4" />,
     website: <Globe className="h-4 w-4" />,
     task: <CheckSquare className="h-4 w-4" />,
+    payment: <CreditCard className="h-4 w-4" />,
     note: <StickyNote className="h-4 w-4" />,
+    project: <FileText className="h-4 w-4" />,
+    changelog: <FileText className="h-4 w-4" />,
   };
 
   const staticItems = [
@@ -109,6 +106,13 @@ export default function CommandPalette() {
     { label: "Settings", href: "/dashboard/settings", icon: <Settings className="h-4 w-4" /> },
   ];
 
+  const actions = [
+    { label: "Create Task", icon: <Plus className="h-4 w-4" />, action: () => { setOpen(false); router.push("/dashboard/tasks"); } },
+    { label: "Record Payment", icon: <Plus className="h-4 w-4" />, action: () => { setOpen(false); router.push("/dashboard/payments"); } },
+    { label: "New Note", icon: <Plus className="h-4 w-4" />, action: () => { setOpen(false); router.push("/dashboard/notes"); } },
+    { label: "Add Client", icon: <Plus className="h-4 w-4" />, action: () => { setOpen(false); router.push("/dashboard/clients"); } },
+  ];
+
   if (!open) return null;
 
   return (
@@ -120,7 +124,7 @@ export default function CommandPalette() {
             <Command.Input
               value={search}
               onValueChange={setSearch}
-              placeholder="Search or jump to..."
+              placeholder="Search clients, tasks, payments, websites..."
               className="w-full h-12 bg-transparent text-sm focus:outline-none placeholder:text-muted-foreground"
               autoFocus
             />
@@ -134,26 +138,44 @@ export default function CommandPalette() {
               </div>
             </Command.Empty>
 
+            {/* Search Results */}
             {results.length > 0 && (
-              <Command.Group heading="Search Results">
+              <Command.Group heading="Results">
                 {results.map((r) => (
                   <Command.Item
                     key={`${r.type}-${r.id}`}
-                    value={`${r.type} ${r.title}`}
+                    value={`${r.type} ${r.title} ${r.subtitle || ""}`}
                     onSelect={() => navigate(r.href)}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm cursor-pointer hover:bg-muted transition-colors aria-selected:bg-muted"
                   >
-                    {iconMap[r.type] || <Search className="h-4 w-4" />}
-                    <div>
-                      <div className="text-foreground">{r.title}</div>
-                      {r.subtitle && <div className="text-xs text-muted-foreground">{r.subtitle}</div>}
+                    <span className="text-muted-foreground">{iconMap[r.type] || <Search className="h-4 w-4" />}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-foreground truncate">{r.title}</div>
+                      {r.subtitle && <div className="text-xs text-muted-foreground truncate">{r.subtitle}</div>}
                     </div>
-                    <span className="ml-auto text-xs text-muted-foreground capitalize">{r.type}</span>
+                    <span className="ml-auto text-[10px] text-muted-foreground capitalize px-1.5 py-0.5 rounded bg-muted">{r.type}</span>
                   </Command.Item>
                 ))}
               </Command.Group>
             )}
 
+            {/* Quick Actions */}
+            <Command.Group heading="Actions">
+              {actions.map((item) => (
+                <Command.Item
+                  key={item.label}
+                  value={item.label}
+                  onSelect={item.action}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm cursor-pointer hover:bg-muted transition-colors aria-selected:bg-muted"
+                >
+                  <span className="text-muted-foreground">{item.icon}</span>
+                  <span className="text-foreground">{item.label}</span>
+                  <ArrowRight className="h-3 w-3 text-muted-foreground ml-auto" />
+                </Command.Item>
+              ))}
+            </Command.Group>
+
+            {/* Pages */}
             <Command.Group heading="Pages">
               {staticItems.map((item) => (
                 <Command.Item

@@ -17,6 +17,9 @@ import ActiveProjects from "@/components/dashboard/ActiveProjects";
 import QuickActions from "@/components/dashboard/QuickActions";
 import MonthlyComparison from "@/components/dashboard/MonthlyComparison";
 import TaskCompletionRate from "@/components/dashboard/TaskCompletionRate";
+import DailyFocus from "@/components/dashboard/DailyFocus";
+import TaskTemplates from "@/components/dashboard/TaskTemplates";
+import TimeTracker from "@/components/dashboard/TimeTracker";
 import { checkRecurringTasks } from "@/lib/recurring-tasks";
 
 export default function DashboardPage() {
@@ -59,6 +62,7 @@ export default function DashboardPage() {
           <div />
           <QuickActions />
         </div>
+        <DailyFocus />
         <KpiTabs />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <MonthlyComparison />
@@ -73,7 +77,9 @@ export default function DashboardPage() {
         <MiniCalendar />
         <CashFlowWidget />
         <PendingPayments />
+        <TimeTracker />
         <ActiveProjects />
+        <TaskTemplates />
         <InvoicePipeline />
         <WebsiteHealth />
         <QuickNotes />
