@@ -210,7 +210,7 @@ export default function DashboardBuilder() {
         breakpoints={{ lg: 1200, md: 996, sm: 768 }}
         cols={{ lg: 12, md: 12, sm: 12 }}
         width={width}
-        rowHeight={50}
+        rowHeight={60}
         margin={[16, 16]}
         containerPadding={[0, 0]}
         compactor={verticalCompactor}

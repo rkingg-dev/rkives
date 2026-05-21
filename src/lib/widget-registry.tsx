@@ -45,9 +45,9 @@ export const widgetRegistry: WidgetDef[] = [
     component: DailyFocus,
     defaultSize: "wide",
     defaultW: 12,
-    defaultH: 3,
+    defaultH: 5,
     minW: 6,
-    minH: 2,
+    minH: 3,
     category: "main",
   },
   {
@@ -57,7 +57,7 @@ export const widgetRegistry: WidgetDef[] = [
     component: KpiTabs,
     defaultSize: "wide",
     defaultW: 12,
-    defaultH: 2,
+    defaultH: 3,
     minW: 6,
     minH: 2,
     category: "main",
@@ -69,7 +69,7 @@ export const widgetRegistry: WidgetDef[] = [
     component: TrendsChart,
     defaultSize: "wide",
     defaultW: 12,
-    defaultH: 5,
+    defaultH: 6,
     minW: 6,
     minH: 4,
     category: "main",
@@ -81,7 +81,7 @@ export const widgetRegistry: WidgetDef[] = [
     component: TasksTable,
     defaultSize: "wide",
     defaultW: 12,
-    defaultH: 7,
+    defaultH: 8,
     minW: 8,
     minH: 5,
     category: "main",
@@ -93,7 +93,7 @@ export const widgetRegistry: WidgetDef[] = [
     component: MonthlyComparison,
     defaultSize: "medium",
     defaultW: 6,
-    defaultH: 4,
+    defaultH: 5,
     minW: 4,
     minH: 3,
     category: "main",
@@ -105,7 +105,7 @@ export const widgetRegistry: WidgetDef[] = [
     component: TaskCompletionRate,
     defaultSize: "medium",
     defaultW: 6,
-    defaultH: 4,
+    defaultH: 5,
     minW: 4,
     minH: 3,
     category: "main",
@@ -117,9 +117,9 @@ export const widgetRegistry: WidgetDef[] = [
     component: MiniCalendar,
     defaultSize: "small",
     defaultW: 4,
-    defaultH: 5,
+    defaultH: 7,
     minW: 3,
-    minH: 4,
+    minH: 5,
     category: "sidebar",
   },
   {
@@ -129,9 +129,9 @@ export const widgetRegistry: WidgetDef[] = [
     component: CashFlowWidget,
     defaultSize: "small",
     defaultW: 4,
-    defaultH: 6,
+    defaultH: 8,
     minW: 3,
-    minH: 4,
+    minH: 5,
     category: "sidebar",
   },
   {
@@ -141,9 +141,9 @@ export const widgetRegistry: WidgetDef[] = [
     component: PendingPayments,
     defaultSize: "small",
     defaultW: 4,
-    defaultH: 5,
+    defaultH: 7,
     minW: 3,
-    minH: 4,
+    minH: 5,
     category: "sidebar",
   },
   {
@@ -153,9 +153,9 @@ export const widgetRegistry: WidgetDef[] = [
     component: TimeTracker,
     defaultSize: "small",
     defaultW: 4,
-    defaultH: 3,
+    defaultH: 5,
     minW: 3,
-    minH: 2,
+    minH: 3,
     category: "sidebar",
   },
   {
@@ -165,9 +165,9 @@ export const widgetRegistry: WidgetDef[] = [
     component: ActiveProjects,
     defaultSize: "small",
     defaultW: 4,
-    defaultH: 5,
+    defaultH: 7,
     minW: 3,
-    minH: 3,
+    minH: 4,
     category: "sidebar",
   },
   {
@@ -177,9 +177,9 @@ export const widgetRegistry: WidgetDef[] = [
     component: TaskTemplates,
     defaultSize: "small",
     defaultW: 4,
-    defaultH: 3,
+    defaultH: 4,
     minW: 3,
-    minH: 2,
+    minH: 3,
     category: "sidebar",
   },
   {
@@ -189,9 +189,9 @@ export const widgetRegistry: WidgetDef[] = [
     component: InvoicePipeline,
     defaultSize: "small",
     defaultW: 4,
-    defaultH: 4,
+    defaultH: 6,
     minW: 3,
-    minH: 3,
+    minH: 4,
     category: "sidebar",
   },
   {
@@ -201,9 +201,9 @@ export const widgetRegistry: WidgetDef[] = [
     component: WebsiteHealth,
     defaultSize: "small",
     defaultW: 4,
-    defaultH: 5,
+    defaultH: 7,
     minW: 3,
-    minH: 3,
+    minH: 4,
     category: "sidebar",
   },
   {
@@ -213,9 +213,9 @@ export const widgetRegistry: WidgetDef[] = [
     component: QuickNotes,
     defaultSize: "small",
     defaultW: 4,
-    defaultH: 4,
+    defaultH: 5,
     minW: 3,
-    minH: 3,
+    minH: 4,
     category: "sidebar",
   },
   {
@@ -225,9 +225,9 @@ export const widgetRegistry: WidgetDef[] = [
     component: RecurringTasksWidget,
     defaultSize: "small",
     defaultW: 4,
-    defaultH: 3,
+    defaultH: 4,
     minW: 3,
-    minH: 2,
+    minH: 3,
     category: "sidebar",
   },
   {
@@ -237,22 +237,29 @@ export const widgetRegistry: WidgetDef[] = [
     component: RecentActivityWidget,
     defaultSize: "small",
     defaultW: 4,
-    defaultH: 5,
+    defaultH: 7,
     minW: 3,
-    minH: 3,
+    minH: 4,
     category: "sidebar",
   },
 ];
 
-export const defaultLayout = widgetRegistry.map((w, i) => ({
-  i: w.id,
-  x: 0,
-  y: i * 2,
-  w: w.defaultW,
-  h: w.defaultH,
-  minW: w.minW,
-  minH: w.minH,
-}));
+export const defaultLayout = (() => {
+  let y = 0;
+  return widgetRegistry.map((w, i) => {
+    const item = {
+      i: w.id,
+      x: 0,
+      y,
+      w: w.defaultW,
+      h: w.defaultH,
+      minW: w.minW,
+      minH: w.minH,
+    };
+    y += w.defaultH + 1; // +1 for margin
+    return item;
+  });
+})();
 
 export const defaultVisible = widgetRegistry.map((w) => w.id);
 
