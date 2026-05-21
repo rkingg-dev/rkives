@@ -23,6 +23,7 @@ import {
   X,
   Wallet,
   Calendar,
+  Dumbbell,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
@@ -47,6 +48,7 @@ const iconMap: Record<string, React.ElementType> = {
   refresh: RefreshCw,
   wallet: Wallet,
   calendar: Calendar,
+  dumbbell: Dumbbell,
 };
 
 const mainNav = [
@@ -63,6 +65,7 @@ const mainNav = [
   { label: "Changelog", icon: "scroll", href: "/dashboard/changelog" },
   { label: "Notes", icon: "note", href: "/dashboard/notes" },
   { label: "Pastebin", icon: "code", href: "/dashboard/pastebin" },
+  { label: "Workout", icon: "dumbbell", href: "/dashboard/workout" },
 ];
 
 const bottomNav = [

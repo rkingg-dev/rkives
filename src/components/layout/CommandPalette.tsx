@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Command } from "cmdk";
-import { Search, Users, Globe, CheckSquare, CreditCard, StickyNote, Calendar, FileText, Settings, Code, Plus, ArrowRight, Zap } from "lucide-react";
+import { Search, Users, Globe, CheckSquare, CreditCard, StickyNote, Calendar, FileText, Settings, Code, Plus, ArrowRight, Dumbbell } from "lucide-react";
 
 export default function CommandPalette() {
   const [open, setOpen] = useState(false);
@@ -104,6 +104,7 @@ export default function CommandPalette() {
     { label: "Pastebin", href: "/dashboard/pastebin", icon: <Code className="h-4 w-4" /> },
     { label: "Reports", href: "/dashboard/reports", icon: <FileText className="h-4 w-4" /> },
     { label: "Settings", href: "/dashboard/settings", icon: <Settings className="h-4 w-4" /> },
+    { label: "Workout", href: "/dashboard/workout", icon: <Dumbbell className="h-4 w-4" /> },
   ];
 
   const actions = [
